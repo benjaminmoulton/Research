@@ -1,0 +1,38 @@
+{
+    "weight" : 1.0,
+    "airfoils": {
+        "NACA_2412": {
+            "geometry" : {
+                "NACA": "2412"
+            }
+        }
+    },
+    "wings" : {
+        "canard" : {
+            "ID" : 1,
+            "side" : "both",
+            "connect_to" : {
+                "ID" : 0,
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0
+            },
+            "is_main" : true,
+            "semispan" : 8.0,
+            "dihedral" : [  [0.0,  0.0],
+                            [1.0,  0.0]],
+            "sweep" : [ [0.0, 15.0],
+                        [1.0, 15.0]],
+            "twist" : [ [0.0,  2.0],
+                        [1.0,  20.0]],
+            "chord" : [ [0.0, 2.0],
+                        [1.0, 1.5]],
+            "airfoil": [[0.0, "NACA_2412"],
+                        [1.0, "NACA_2412"]],
+            "grid" : {
+                "N" : 100,
+                "wing_ID": 3
+            }
+        }
+    }
+}

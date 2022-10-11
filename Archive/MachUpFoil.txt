@@ -1,0 +1,190 @@
+{
+	"MachUp": {
+		"version": 5
+	},
+	"metadata": {
+		"version": 4.4,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "D2AE1043-C785-40B4-B8C3-2B3A357A84CF",
+			"type": "SphereBufferGeometry",
+			"radius": 0.1,
+			"widthSegments": 32,
+			"heightSegments": 16,
+			"phiStart": 0,
+			"phiLength": 6.283185307179586,
+			"thetaStart": 0,
+			"thetaLength": 3.141592653589793
+		},
+		{
+			"uuid": "B6D46917-F4B0-4238-BA22-2955B1891E7D",
+			"type": "SphereBufferGeometry",
+			"radius": 0.1,
+			"widthSegments": 32,
+			"heightSegments": 16,
+			"phiStart": 0,
+			"phiLength": 6.283185307179586,
+			"thetaStart": 0,
+			"thetaLength": 3.141592653589793
+		},
+		{
+			"uuid": "22DFCD86-5E41-4D12-A3B4-A2B1293DA0DF",
+			"type": "WingGeometry",
+			"is_main": true,
+			"side": "both",
+			"span": 1,
+			"sweep": 15,
+			"dihedral": 0,
+			"mount": 20,
+			"washout": 0,
+			"root_chord": 1,
+			"tip_chord": 0.5,
+			"root_airfoil": {
+				"NACA 2410": {
+					"properties": {
+						"type": "linear",
+						"alpha_L0": -0.036899751,
+						"CL_alpha": 6.283185307,
+						"Cm_L0": -0.0527,
+						"Cm_alpha": -0.08,
+						"CD0": 0.0055,
+						"CD0_L": -0.0045,
+						"CD0_L2": 0.01,
+						"CL_max": 1.4
+					}
+				}
+			},
+			"tip_airfoil": {
+				"NACA 6610": {
+					"properties": {
+						"type": "linear",
+						"alpha_L0": -0.036899751,
+						"CL_alpha": 6.283185307,
+						"Cm_L0": -0.0527,
+						"Cm_alpha": -0.08,
+						"CD0": 0.0055,
+						"CD0_L": -0.0045,
+						"CD0_L2": 0.01,
+						"CL_max": 1.4
+					}
+				}
+			},
+			"nSeg": 40,
+			"nAFseg": 200,
+			"left_start": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"right_start": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"dy": 0,
+			"control": {
+				"has_control_surface": false,
+				"span_root": 0.2,
+				"span_tip": 0.8,
+				"chord_root": 0.2,
+				"chord_tip": 0.2,
+				"is_sealed": 1,
+				"mix": {
+					"elevator": 1,
+					"rudder": 0,
+					"aileron": 0,
+					"flap": 0
+				}
+			},
+			"same_as_root": false
+		}],
+	"materials": [
+		{
+			"uuid": "894180EF-67BA-4CC1-9D25-42646C99D42C",
+			"type": "MeshStandardMaterial",
+			"color": 16711680,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 16711680,
+			"side": 2,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"skinning": false,
+			"morphTargets": false
+		},
+		{
+			"uuid": "F3473C8A-69DB-471B-827B-E853009E4799",
+			"type": "MeshStandardMaterial",
+			"color": 6684927,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 6684927,
+			"side": 2,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"skinning": false,
+			"morphTargets": false
+		},
+		{
+			"uuid": "65FB84A6-890A-4554-89BD-F19B66FAC1ED",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30,
+			"side": 2,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"skinning": false,
+			"morphTargets": false
+		}],
+	"object": {
+		"uuid": "4C96CB2A-CD14-4608-9107-9181512D791C",
+		"type": "Origin",
+		"name": "MyAirplane",
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "34D87233-1357-44B9-8AFA-BAD40F7ADF1B",
+				"type": "Mesh",
+				"name": "Center of Gravity",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-0.2707485854625702,0,0.02517908439040184,1],
+				"geometry": "D2AE1043-C785-40B4-B8C3-2B3A357A84CF",
+				"material": "894180EF-67BA-4CC1-9D25-42646C99D42C"
+			},
+			{
+				"uuid": "745916AD-DD92-4456-86EB-F492BC5CFAAE",
+				"type": "Mesh",
+				"name": "Aerodynamic Center",
+				"visible": false,
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-0.324527382850647,0,0.009827527217566967,1],
+				"geometry": "B6D46917-F4B0-4238-BA22-2955B1891E7D",
+				"material": "F3473C8A-69DB-471B-827B-E853009E4799"
+			},
+			{
+				"uuid": "0FBE3720-BD07-4146-80FB-C4713AD93285",
+				"type": "PointLight",
+				"name": "PointLight",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,10,10,-20,1],
+				"color": 16777215,
+				"intensity": 1,
+				"distance": 0,
+				"decay": 1
+			},
+			{
+				"uuid": "93094269-EEA1-48EA-A024-AB41173475E5",
+				"type": "Mesh",
+				"name": "Rwing",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"geometry": "22DFCD86-5E41-4D12-A3B4-A2B1293DA0DF",
+				"material": "65FB84A6-890A-4554-89BD-F19B66FAC1ED"
+			}],
+		"background": 11184810
+	}
+}

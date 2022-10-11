@@ -1,0 +1,785 @@
+{
+    "aircraft" : {
+        "A-7A" : {
+            "geometry/mass" : {
+                "S" : 375.0,
+                "b" : 38.7,
+                "W" : 21889.0,
+                "m" : 680.0,
+                "Ix" : 13635.0,
+                "Iy" : 58966.0,
+                "Iz" : 67560.0,
+                "Ixz" : 2933.0
+            },
+            "flight_condition" : {
+                "h" :  0.0,
+                "M" :  0.25,
+                "a" : 1117.0,
+                "p" : 0.002378,
+                "Vto" : 279.0,
+                "qdyn" : 91.5,
+                "ao[deg]" : 11.2,
+                "Uo" : 274.0,
+                "Wo" : 54.2,
+                "deo[deg]" : -7.4,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : -0.0145,
+                "Xu" :  0.0162,
+                "Xde" :  5.75,
+                "Zw" : -0.779,
+                "Zwdot" : 0.0,
+                "Zu" : -0.0814,
+                "Zde" : -29.0,
+                "Mw" : -0.00982,
+                "Mwdot" : -0.000286,
+                "Mq" : -0.466,
+                "Mu" :  0.00201,
+                "Mde" : -5.44
+            },
+            "lateral" : {
+                "Yv" : -0.162,
+                "Ydastar" : -0.00274,
+                "Ydrstar" :  0.043,
+                "Lbprime" : -11.9,
+                "Lpprime" : -2.00,
+                "Lrprime" :  1.18,
+                "Ldaprime" : 5.34,
+                "Ldrprime" : 2.22,
+                "Nbprime" :  1.28,
+                "Npprime" : -0.0870,
+                "Nrprime" : -0.369,
+                "Ndaprime" : 0.402,
+                "Ndrprime" : -1.93
+            },
+            "other" : {
+                "name" : "A-7A",
+                "short_name" : "A-7A",
+                "file_name" : "A_7A.json"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.367,
+                "wn_sp" : 1.76,
+                "zt_ph" : 0.0594,
+                "wn_ph" : 0.156,
+                "Sg_ro" : 1.62,
+                "Sg_sl" : 0.0462,
+                "zt_dr" : 0.237,
+                "wn_dr" : 1.81
+            }
+        },
+        "A-4D" : {
+            "geometry/mass" : {
+                "S" : 260.0,
+                "b" : 27.5,
+                "W" : 17578.0,
+                "m" : 546.0,
+                "Ix" : 8780.0,
+                "Iy" : 25900.0,
+                "Iz" : 28500.0,
+                "Ixz" : -4070.0
+            },
+            "flight_condition" : {
+                "h" :  0.0,
+                "M" :  0.4,
+                "a" : 1117.0,
+                "p" : 0.002378,
+                "Vto" : 447.0,
+                "qdyn" : 237.0,
+                "ao[deg]" : 4.7,
+                "Uo" : 446.0,
+                "Wo" : 36.6,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0687,
+                "Xu" : -0.00934,
+                "Xde" :  7.612,
+                "Zw" : -0.899,
+                "Zwdot" : 0.0,
+                "Zu" : -0.0765,
+                "Zde" : -42.08,
+                "Mw" : -0.0228,
+                "Mwdot" : -0.000763,
+                "Mq" : -1.151,
+                "Mu" :  0.00232,
+                "Mde" : -13.728
+            },
+            "lateral" : {
+                "Yv" : -0.2484,
+                "Ydastar" : -0.00582,
+                "Ydrstar" :  0.044,
+                "Lbprime" : -29.71,
+                "Lpprime" : -1.813,
+                "Lrprime" :  0.8731,
+                "Ldaprime" : 17.2,
+                "Ldrprime" : 8.217,
+                "Nbprime" :  13.203,
+                "Npprime" : -0.029,
+                "Nrprime" : -0.5761,
+                "Ndaprime" : 1.4875,
+                "Ndrprime" : -6.1953
+            },
+            "other" : {
+                "name" : "A-4D",
+                "short_name" : "A-4D",
+                "file_name" : "A_4D.json"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.352,
+                "wn_sp" : 3.39,
+                "zt_ph" : 0.0735,
+                "wn_ph" : 0.1035,
+                "Sg_ro" : 1.744,
+                "Sg_sl" : 0.00914,
+                "zt_dr" : 0.112,
+                "wn_dr" : 3.955
+            }
+        },
+        "F-105B" : {
+            "geometry/mass" : {
+                "S" : 385.0,
+                "b" : 34.9,
+                "W" : 30000.0,
+                "m" : 932.0,
+                "Ix" : 12600.0,
+                "Iy" : 140000.0,
+                "Iz" : 177000.0,
+                "Ixz" : 0.0
+            },
+            "flight_condition" : {
+                "h" :  0.0,
+                "M" :  0.241,
+                "a" : 1117.0,
+                "p" : 0.00237,
+                "Vto" : 269.0,
+                "qdyn" : 86.0,
+                "ao[deg]" : 5.2,
+                "Uo" : 267.892903227696,
+                "Wo" : 24.380164073202863,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : -5.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.086,
+                "Xu" : -0.0263,
+                "Xde" : 0.0,
+                "Zw" : -0.406,
+                "Zwdot" : 0.0,
+                "Zu" : -0.1719,
+                "Zde" : -19.88,
+                "Mw" : -0.00324,
+                "Mwdot" : -0.000259,
+                "Mq" : -0.319,
+                "Mu" : -0.0000101,
+                "Mde" : -2.703
+            },
+            "lateral" : {
+                "Yv" : -0.1878,
+                "Ydastar" : -0.0021,
+                "Ydrstar" : 0.0241,
+                "Lbprime" : -21.5,
+                "Lpprime" : -1.185,
+                "Lrprime" : 1.251,
+                "Ldaprime" : 3.72,
+                "Ldrprime" : 2.86,
+                "Nbprime" : 4.38,
+                "Npprime" : 0.0725,
+                "Nrprime" : -0.242,
+                "Ndaprime" : -0.277,
+                "Ndrprime" : -0.975
+            },
+            "other" : {
+                "name" : "F-105B",
+                "short_name" : "F-105B",
+                "file_name" : "F_105B.json",
+                "notes" : "Power Approach Clean, flight condition 4; hq data available"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.398,
+                "wn_sp" : 0.998,
+                "zt_ph" : 0.1016,
+                "wn_ph" : 0.1342,
+                "Sg_ro" : 2.13,
+                "Sg_sl" : -0.00870,
+                "zt_dr" : 0.184,
+                "wn_dr" : 3.29
+            }
+        },
+        "Navion" : {
+            "geometry/mass" : {
+                "S" : 180.0,
+                "b" : 33.4,
+                "W" : 2750.0,
+                "m" : 85.4,
+                "Ix" : 1048.0,
+                "Iy" : 3000.0,
+                "Iz" : 3530.0,
+                "Ixz" : 0.0
+            },
+            "flight_condition" : {
+                "h" : 0.0,
+                "M" : 0.158,
+                "a" : 1117.0,
+                "p" : 0.002378,
+                "Vto" : 176.0,
+                "qdyn" : 36.8,
+                "ao[deg]" : 0.6,
+                "Uo" : 175.99034980833014,
+                "Wo" : 1.8430340044592595,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.03607,
+                "Xu" : -0.0451,
+                "Xde" : 0.0,
+                "Zw" : -2.0244,
+                "Zwdot" : 0.0,
+                "Zu" : -0.3697,
+                "Zde" : -28.17,
+                "Mw" : -0.04997,
+                "Mwdot" : -0.005165,
+                "Mq" : -2.0767,
+                "Mu" : 0.0,
+                "Mde" : -11.1892
+            },
+            "lateral" : {
+                "Yv" : -0.2543,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.0708,
+                "Lbprime" : -15.982,
+                "Lpprime" : -8.402,
+                "Lrprime" : 2.193,
+                "Ldaprime" : 28.984,
+                "Ldrprime" : 2.548,
+                "Nbprime" : 4.495,
+                "Npprime" : -0.3498,
+                "Nrprime" : -0.7605,
+                "Ndaprime" : -0.2218,
+                "Ndrprime" : -4.597
+            },
+            "other" : {
+                "name" : "Navion",
+                "short_name" : "Navion",
+                "file_name" : "navion.json",
+                "notes" : "hq data available"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.6957,
+                "wn_sp" : 3.6083,
+                "zt_ph" : 0.0801,
+                "wn_ph" : 0.2137,
+                "Sg_ro" : 8.435,
+                "Sg_sl" : 0.00876,
+                "zt_dr" : 0.204,
+                "wn_dr" : 2.385
+            }
+        },
+        "DC-8" : {
+            "geometry/mass" : {
+                "S" : 2600.0,
+                "b" : 142.3,
+                "W" : 190000.0,
+                "m" : 5900.0,
+                "Ix" : 3090000.0,
+                "Iy" : 2940000.0,
+                "Iz" : 5580000.0,
+                "Ixz" : 28000.0
+            },
+            "flight_condition" : {
+                "h" : 0.0,
+                "M" : 0.218,
+                "a" : 1117.0,
+                "p" : 0.002378,
+                "Vto" : 243.5,
+                "qdyn" : 71.02,
+                "ao[deg]" : 0.0,
+                "Uo" : 243.5,
+                "Wo" : 0.0,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0629,
+                "Xu" : -0.0291,
+                "Xde" : 0.0,
+                "Zw" : -0.6277,
+                "Zwdot" : 0.0,
+                "Zu" : -0.2506,
+                "Zde" : -10.19,
+                "Mw" : -0.0087,
+                "Mwdot" : -0.001068,
+                "Mq" : -0.7924,
+                "Mu" : -0.0000077,
+                "Mde" : -1.33
+            },
+            "lateral" : {
+                "Yv" : -0.1113,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.0238,
+                "Lbprime" : -1.328,
+                "Lpprime" : -0.951,
+                "Lrprime" : 0.609,
+                "Ldaprime" : -0.726,
+                "Ldrprime" : 0.1813,
+                "Nbprime" : 0.757,
+                "Npprime" : -0.124,
+                "Nrprime" : -0.265,
+                "Ndaprime" : -0.0532,
+                "Ndrprime" : -0.389
+            },
+            "other" : {
+                "name" : "DC-8",
+                "short_name" : "DC-8",
+                "file_name" : "DC_8.json",
+                "notes" : "hq data available"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.522,
+                "wn_sp" : 1.619,
+                "zt_ph" : 0.0606,
+                "wn_ph" : 0.1635,
+                "Sg_ro" : 1.121,
+                "Sg_sl" : -0.013,
+                "zt_dr" : 0.1096,
+                "wn_dr" : 0.996
+            }
+        },
+        "X-15" : {
+            "geometry/mass" : {
+                "S" : 200.0,
+                "b" : 22.36,
+                "W" : 15560.0,
+                "m" : 483.62031453969047,
+                "Ix" : 3650.0,
+                "Iy" : 80003.0,
+                "Iz" : 82003.0,
+                "Ixz" : 590.0
+            },
+            "flight_condition" : {
+                "h" : 0.0,
+                "M" : 0.5,
+                "a" : 1117.0,
+                "p" : 2.37689261479e-03,
+                "Vto" : 558.0,
+                "qdyn" : 370,
+                "ao[deg]" : 4.0,
+                "Uo" : 556.640740044982,
+                "Wo" : 38.92411234922192,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0269,
+                "Xu" : -0.0339,
+                "Xde" : 11.2,
+                "Zw" : -1.01,
+                "Zwdot" : 0.0,
+                "Zu" : -0.0471,
+                "Zde" : -160.0,
+                "Mw" : -0.0116,
+                "Mwdot" : -0.000250,
+                "Mq" : -0.735,
+                "Mu" : 0.000808,
+                "Mde" : -13.8
+            },
+            "lateral" : {
+                "Yv" : -0.357,
+                "Ydastar" : -0.0274,
+                "Ydrstar" : 0.137,
+                "Lbprime" : -12.4,
+                "Lpprime" : -2.54,
+                "Lrprime" : -0.184,
+                "Ldaprime" : 35.2,
+                "Ldrprime" : 5.87,
+                "Nbprime" : 10.4,
+                "Npprime" : 0.0129,
+                "Nrprime" : -0.576,
+                "Ndaprime" : 1.59,
+                "Ndrprime" : -5.81
+            },
+            "other" : {
+                "name" : "X-15",
+                "short_name" : "X-15",
+                "file_name" : "X_15.json",
+                "from" : "NASA CR-2144 -- Heffley et al.",
+                "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.351,
+                "wn_sp" : 2.68,
+                "zt_ph" : 0.247,
+                "wn_ph" : 0.0773,
+                "Sg_ro" : 2.46,
+                "Sg_sl" : 0.0149,
+                "zt_dr" : 0.148,
+                "wn_dr" : 3.36
+            }
+        },
+        "HL-10" : {
+            "geometry/mass" : {
+                "S" : 160.0,
+                "b" : 13.60,
+                "W" : 6466.0,
+                "m" : 200.96972710884566,
+                "Ix" : 1353.0,
+                "Iy" : 6413.0,
+                "Iz" : 7407.0,
+                "Ixz" : 399.0
+            },
+            "flight_condition" : {
+                "h" : 3000.0,
+                "M" : 0.5,
+                "a" : 1.10487726191e+03,
+                "p" : 2.17516370329e-03,
+                "Vto" : 552.0,
+                "qdyn" : 329.0,
+                "ao[deg]" : 10.2,
+                "Uo" : 543.2759755990215,
+                "Wo" : 97.75077665640998,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : -32.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.164,
+                "Xu" : -0.0509,
+                "Xde" : 38.1,
+                "Zw" : -0.916,
+                "Zwdot" : 0.0,
+                "Zu" : 0.0383,
+                "Zde" : -212.0,
+                "Mw" : -0.0305,
+                "Mwdot" : 0.0,
+                "Mq" : -0.662,
+                "Mu" : 0.00463,
+                "Mde" : -28.0
+            },
+            "lateral" : {
+                "Yv" : -0.354,
+                "Ydastar" : -0.00523,
+                "Ydrstar" : 0.0865,
+                "Lbprime" : -102.0,
+                "Lpprime" : -1.49,
+                "Lrprime" : 1.16,
+                "Ldaprime" : 36.0,
+                "Ldrprime" : 13.0,
+                "Nbprime" : 13.9,
+                "Npprime" : 0.0390,
+                "Nrprime" : -0.458,
+                "Ndaprime" : 3.39,
+                "Ndrprime" : -10.6
+            },
+            "other" : {
+                "name" : "HL-10",
+                "short_name" : "HL-10",
+                "file_name" : "HL_10.json",
+                "from" : "NASA CR-2144 -- Heffley et al.",
+                "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.0186,
+                "wn_sp" : 4.19,
+                "zt_ph" : 0.469,
+                "wn_ph" : 0.0760,
+                "Sg_ro" : 0.812,
+                "Sg_sl" : 0.0868,
+                "zt_dr" : 0.132,
+                "wn_dr" : 5.64
+            }
+        }
+    },
+    "unused" : {
+        "F-106B" : {
+            "geometry/mass" : {
+                "S" : 695.0,
+                "b" : 38.13,
+                "W" : 25500.0,
+                "m" : 791.9,
+                "Ix" : 15800.0,
+                "Iy" : 160783.0,
+                "Iz" : 170301.0,
+                "Ixz" : 5727.0
+            },
+            "flight_condition" : {
+                "h" :  0.0,
+                "M" :  0.2,
+                "a" : 1116.0,
+                "p" : 0.002377,
+                "Vto" : 223.2,
+                "qdyn" : 59.3,
+                "ao[deg]" : 18.0,
+                "Uo" : 212.0,
+                "Wo" : 73.0,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0,
+                "Xu" : 0.0,
+                "Xde" : 0.0,
+                "Zw" : 0.0,
+                "Zwdot" : 0.0,
+                "Zu" : 0.0,
+                "Zde" : 0.0,
+                "Mw" : 0.0,
+                "Mwdot" : 0.0,
+                "Mq" : 0.0,
+                "Mu" : 0.0,
+                "Mde" : 0.0
+            },
+            "lateral" : {
+                "Yv" : -0.126,
+                "Ydastar" : 0.0392,
+                "Ydrstar" :  0.0280,
+                "Lbprime" : -20.0,
+                "Lpprime" : -1.22,
+                "Lrprime" :  3.51,
+                "Ldaprime" : -13.3,
+                "Ldrprime" : 2.08,
+                "Nbprime" :  -0.192,
+                "Npprime" : -0.0351,
+                "Nrprime" : -0.199,
+                "Ndaprime" : -1.12,
+                "Ndrprime" : -0.505
+            },
+            "other" : {
+                "name" : "F-106B-lateral-only",
+                "short_name" : "F106**",
+                "file_name" : "F_106B_lateral_only.json",
+                "notes" : "flight condition 4"
+            },
+            "handling_qualities" : {
+                "zt_sp" : "n/a",
+                "wn_sp" : "n/a",
+                "zt_ph" : "n/a",
+                "wn_ph" : "n/a",
+                "Sg_ro" : 0.169,
+                "Sg_sl" : 0.592,
+                "zt_dr" : 2.42,
+                "wn_dr" : 0.162
+            }
+        },
+        "T-38" : {
+            "geometry/mass" : {
+                "S" : 170.0,
+                "b" : 25.25,
+                "W" : 10000.0,
+                "m" : 311.0,
+                "Ix" : 4400.0,
+                "Iy" : 30000.0,
+                "Iz" : 34000.0,
+                "Ixz" : 0.0
+            },
+            "flight_condition" : {
+                "h" :  0.0,
+                "M" :  0.6,
+                "a" : 1117.0,
+                "p" : 0.002378,
+                "Vto" : 670.0,
+                "qdyn" : 535.0,
+                "ao[deg]" : 1.1,
+                "Uo" : 669.8,
+                "Wo" : 12.7,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0,
+                "Xu" : 0.0,
+                "Xde" : 0.0,
+                "Zw" : 0.0,
+                "Zwdot" : 0.0,
+                "Zu" : 0.0,
+                "Zde" : 0.0,
+                "Mw" : 0.0,
+                "Mwdot" : 0.0,
+                "Mq" : 0.0,
+                "Mu" : 0.0,
+                "Mde" : 0.0
+            },
+            "lateral" : {
+                "Yv" : -0.311,
+                "Ydastar" : 0.0,
+                "Ydrstar" :  0.0675,
+                "Lbprime" : -29.69,
+                "Lpprime" : -3.14,
+                "Lrprime" :  0.785,
+                "Ldaprime" : 19.27,
+                "Ldrprime" : 8.334,
+                "Nbprime" :  17.65,
+                "Npprime" : 0.0965,
+                "Nrprime" : -0.597,
+                "Ndaprime" : 0.876,
+                "Ndrprime" : -6.2
+            },
+            "other" : {
+                "name" : "T-38-lateral-only",
+                "short_name" : "T38***",
+                "file_name" : "T_38_lateral_only.json"
+            },
+            "handling_qualities" : {
+                "zt_sp" : "n/a",
+                "wn_sp" : "n/a",
+                "zt_ph" : "n/a",
+                "wn_ph" : "n/a",
+                "Sg_ro" : 3.0197,
+                "Sg_sl" : 0.0025,
+                "zt_dr" : 0.121,
+                "wn_dr" : 4.251
+            }
+        },
+        "F-5A" : {
+            "geometry/mass" : {
+                "S" : 170.0,
+                "b" : 25.25,
+                "W" : 17000.0,
+                "m" : 528.0,
+                "Ix" : 0.0,
+                "Iy" : 34400.0,
+                "Iz" : 0.0,
+                "Ixz" : 0.0
+            },
+            "flight_condition" : {
+                "h" :  0.0,
+                "M" :  0.5,
+                "a" : 1117.0,
+                "p" : 0.002378,
+                "Vto" : 560.0,
+                "qdyn" : 370.0,
+                "ao[deg]" : 4.4,
+                "Uo" : 558.3495412470753,
+                "Wo" : 42.962655751018445,
+                "deo[deg]" : -2.86,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.00128,
+                "Xu" : -0.0182,
+                "Xde" : 0.0,
+                "Zw" : -1.02,
+                "Zwdot" : 0.0,
+                "Zu" : -0.115,
+                "Zde" : -99.1,
+                "Mw" : -0.0174,
+                "Mwdot" : -0.0000176,
+                "Mq" : -0.667,
+                "Mu" : 0.000327,
+                "Mde" : -17.0
+            },
+            "lateral" : {
+                "Yv" : 0.0,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.0,
+                "Lbprime" : 0.0,
+                "Lpprime" : 0.0,
+                "Lrprime" : 0.0,
+                "Ldaprime" : 0.0,
+                "Ldrprime" : 0.0,
+                "Nbprime" : 0.0,
+                "Npprime" : 0.0,
+                "Nrprime" : 0.0,
+                "Ndaprime" : 0.0,
+                "Ndrprime" : 0.0
+            },
+            "other" : {
+                "name" : "F-5A-longitudinal-only",
+                "short_name" : "***F5A",
+                "file_name" : "F_5A_longitudinal_only.json",
+                "notes" : "at 50% fuel, config II, flight condition 13; has thrust"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 3.50,
+                "wn_sp" : 0.243,
+                "zt_ph" : 0.0852,
+                "wn_ph" : 0.106,
+                "Sg_ro" : "n/a",
+                "Sg_sl" : "n/a",
+                "zt_dr" : "n/a",
+                "wn_dr" : "n/a"
+            }
+        },
+        "B-58" : {
+            "geometry/mass" : {
+                "S" : 1542.0,
+                "b" : 56.82,
+                "W" : 150000.0,
+                "m" : 4655.0,
+                "Ix" : 430070.0,
+                "Iy" : 1045000.0,
+                "Iz" : 1402030.0,
+                "Ixz" : -215646.0
+            },
+            "flight_condition" : {
+                "h" : 0.0,
+                "M" : 0.32,
+                "a" : 1117,
+                "p" : 0.002377,
+                "Vto" : 357,
+                "qdyn" : 0.0,
+                "ao[deg]" : 0.0,
+                "Uo" : 0.0,
+                "Wo" : 0.0,
+                "deo[deg]" : 0.0,
+                "yo[deg]" : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0,
+                "Xu" : 0.0,
+                "Xde" : 0.0,
+                "Zw" : 0.0,
+                "Zwdot" : 0.0,
+                "Zu" : 0.0,
+                "Zde" : 0.0,
+                "Mw" : 0.0,
+                "Mwdot" : 0.0,
+                "Mq" : 0.0,
+                "Mu" : 0.0,
+                "Mde" : 0.0
+            },
+            "lateral" : {
+                "Yv" : 0.0,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.0,
+                "Lbprime" : 0.0,
+                "Lpprime" : 0.0,
+                "Lrprime" : 0.0,
+                "Ldaprime" : 0.0,
+                "Ldrprime" : 0.0,
+                "Nbprime" : 0.0,
+                "Npprime" : 0.0,
+                "Nrprime" : 0.0,
+                "Ndaprime" : 0.0,
+                "Ndrprime" : 0.0
+            },
+            "other" : {
+                "name" : "B-58-lateral-only",
+                "short_name" : "B58***",
+                "file_name" : "B_58_lateral_only.json",
+                "notes" : "No alpha given, cannot determine the rest"
+            },
+            "handling_qualities" : {
+                "zt_sp" : "n/a",
+                "wn_sp" : "n/a",
+                "zt_ph" : "n/a",
+                "wn_ph" : "n/a",
+                "Sg_ro" : "n/a",
+                "Sg_sl" : "n/a",
+                "zt_dr" : "n/a",
+                "wn_dr" : "n/a"
+            }
+        },
+        "handling_qualities" : {
+            "zt_sp" : 0.0,
+            "wn_sp" : 0.0,
+            "zt_ph" : 0.0,
+            "wn_ph" : 0.0,
+            "Sg_ro" : 0.0,
+            "Sg_sl" : 0.0,
+            "zt_dr" : 0.0,
+            "wn_dr" : 0.0
+        }
+    }
+}

@@ -1,0 +1,82 @@
+{
+    "aircraft" : {
+        "name" : "Cessna 172",
+        "short_name" : "Cna172",
+        "wing_area[ft^2]" : 174.0,
+        "wing_span[ft]" : 35.8,
+        "weight[lbf]" : 2645.0,
+        "Ixx[slug-ft^2]" : 948.0,
+        "Iyy[slug-ft^2]" : 1348.0,
+        "Izz[slug-ft^2]" : 1967.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : 0.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "Airplane Aerodynamics and Performance -- Roskam"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 2.04817262048e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.31,
+            "alpha" : 4.6,
+            "qbar" : 3.9,
+            "alpha_hat" : 1.7,
+            "mu_hat" : 0.0,
+            "de" : 0.43
+        },
+        "CS" : {
+            "beta" : -0.31,
+            "pbar" : -0.037,
+			"Lpbar": 0.0,
+            "rbar" : 0.21,
+            "da" : 0.0,
+            "dr" : 0.187
+        },
+        "CD" : {
+            "L0" : 0.026619565217391304,
+            "L" : 0.0,
+            "L2" : 0.04558204768583451,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.06
+        },
+        "Cl" : {
+            "beta" : -0.089,
+            "pbar" : -0.47,
+            "rbar" : 0.096,
+			"Lrbar": 0.0,
+            "da" : 0.178,
+            "dr" : 0.0147
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.89,
+            "qbar" : -12.4,
+            "alpha_hat" : -5.2,
+            "mu_hat" : 0.0,
+            "de" : -1.28
+        },
+        "Cn" : {
+            "beta" : 0.065,
+            "pbar" : -0.03,
+			"Lpbar": 0.0,
+            "rbar" : -0.099,
+            "da" : -0.053,
+            "dr" : -0.0657
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": "n/a",
+        "wn_sp": "n/a",
+        "zt_ph": "n/a",
+        "wn_ph": "n/a",
+        "Sg_ro": "n/a",
+        "Sg_sl": "n/a",
+        "zt_dr": "n/a",
+        "wn_dr": "n/a"
+    }
+}

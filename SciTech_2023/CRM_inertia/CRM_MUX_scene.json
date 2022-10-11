@@ -1,0 +1,28 @@
+{
+    "tag" : "CRM",
+    "solver" : {
+        "type" : "nonlinear",
+	"convergence" : 1e-6,
+	"relaxation" : 0.9,
+	"max_iterations" : 1000
+    },
+    "units" : "SI",
+    "scene" : {
+        "atmosphere" : {
+    		"rho" : "standard",
+    		"viscosity" : "standard",
+    		"speed_of_sound" : "standard"
+    	},
+        "aircraft" : {
+            "CRM" : {
+                "file" : "CRM_aircraft.json",
+                "state" : {
+            		    "position": [0.0,0.0,-11275.0],
+                    "velocity" : 250.80916,
+                    "alpha" : 0.0,
+                    "beta" : 0.0
+                }
+            }
+        }
+    }
+}

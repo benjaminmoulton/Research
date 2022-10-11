@@ -1,0 +1,35 @@
+{
+    "tag": "Horizon V0 - to run through MUX and get distributions over alpha",
+    "solver": {
+        "type": "linear"
+    },
+    "units": "English",
+    "scene": {
+        "atmosphere": {
+            "rho": 0.0020482,
+            "density_note": "Density of air @ approx 5000 ft--> ref. book"
+        },
+        "aircraft": {
+            "V1": {
+                "file": "V1.json",
+                "state": {
+                    "type": "aerodynamic",
+                    "velocity": 70,
+                    "alpha": 15.0
+                }
+            }
+        }
+    },
+    "constants": {
+        "gravity": 32.17
+    },
+    "aircraft": {
+        "name": "V1",
+        "note_name": "Make sure this name matches the 'aircraft' key name above",
+        "Sw": 8.430654,
+        "Ra": 6.90411,
+        "b": 8,
+        "cbar": 1.15873,
+        "trim": 0.0
+    }
+}

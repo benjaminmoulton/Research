@@ -1,0 +1,81 @@
+{
+    "aircraft" : {
+        "name" : "Lockheed Jetstar",
+        "short_name" : "LkdJsr",
+        "wing_area[ft^2]" : 542.5,
+        "wing_span[ft]" : 53.75,
+        "weight[lbf]" : 23904.0,
+        "Ixx[slug-ft^2]" : 42273.0,
+        "Iyy[slug-ft^2]" : 126099.0,
+        "Izz[slug-ft^2]" : 160104.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : 5470.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "NASA CR-2144 -- Heffley et al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 2.37689261479e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.737,
+            "alpha" : 5.0,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.4
+        },
+        "CS" : {
+            "beta" : -0.72,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "dr" : 0.175
+        },
+        "CD" : {
+            "L0" : 0.039724999999999996,
+            "L" : 0.0,
+            "L2" : 0.101763907734057,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.103,
+            "pbar" : -0.37,
+            "rbar" : 0.11,
+			"Lrbar": 0.0,
+            "da" : 0.054,
+            "dr" : 0.029
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.80,
+            "qbar" : -8.0,
+            "alpha_hat" : -3.0,
+            "mu_hat" : 0.0,
+            "de" : -0.81
+        },
+        "Cn" : {
+            "beta" : 0.137,
+            "pbar" : -0.14,
+			"Lpbar": 0.0,
+            "rbar" : -0.16,
+            "da" : -0.0075,
+            "dr" : -0.063
+        }
+    },
+    "handling_qualities": {
+        "S1_sp": 0.528,
+        "S2_sp": 1.66,
+        "S1_ph": 0.0521,
+        "S2_ph": 0.188,
+        "Sg_ro": 1.95,
+        "Sg_sl": -0.0112,
+        "zt_dr": 0.0832,
+        "wn_dr": 1.45
+    }
+}

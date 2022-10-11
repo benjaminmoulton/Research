@@ -1,0 +1,12 @@
+{
+    "scene": {
+        "aircraft": {
+            "wing": {
+                "file": "wing.json",
+                "state": {
+                    "velocity": 200.0
+                }
+            }
+        }
+    }
+}

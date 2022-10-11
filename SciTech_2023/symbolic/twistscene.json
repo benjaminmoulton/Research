@@ -1,0 +1,12 @@
+{
+    "scene": {
+        "aircraft": {
+            "twist": {
+                "file": "twist.json",
+                "state": {
+                    "velocity": 200.0
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "tag" : "Example of flight simulator input.",
+    "simulation" : {
+        "real_time" : true,
+        "enable_graphics" : true,
+        "simple_graphics" : true,
+        "target_framerate" : 30
+    },
+    "units" : "English",
+    "atmosphere" : {
+        "density" : 0.0023769
+    },
+    "aircraft" : {
+        "name" : "horizon",
+        "file" : "HorizonCustCS.json",
+        "trim" : {
+            "airspeed" : 50,
+            "position" : [0.0, 0.0, -500.0],
+            "climb_angle" : 0.0,
+            "bank_angle" : 0.0,
+            "heading" : 0.0,
+            "trim_controls" : ["throttle", "sym", "asym", "tips"]
+        },
+        "controller" : "keyboard",
+        "controller2" : "control_outputs_trim.csv",
+        "control_output" : "control_outputs_trim.csv",
+        "state_output" : "state_outputs_trim.csv"
+    }
+}

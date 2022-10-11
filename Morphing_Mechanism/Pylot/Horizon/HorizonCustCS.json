@@ -1,0 +1,138 @@
+{
+    "CG" : [-0.33966184,  0.00, -0.09702828],
+    "CG_new" : [-0.405403526725174,	0.002403205192756,	-0.109    ],
+    "CG_note": "we will need to determine cg location",
+    "units" : "English",
+    "weight" : 16.0,
+    "weight_new" : 17.9493625,
+    "reference" : {
+        "note": "including these here means MUX doesn't have to compute it saving time",
+        "area": 12.29923797666569,
+        "longitudinal_length": 1.2399212835586666,
+        "lateral_length": 9.91936999529998
+    },
+    "inertia" : {
+        "Ixx" : 2.11266,
+        "Iyy" : 0.34593,
+        "Izz" : 2.43679,
+        "Ixy" : 0.11509,
+        "Ixz" : 0.05722,
+        "Iyz" : -0.03893
+    },
+    "inertia_new" : {
+        "Ixx" : 2.65210461520783,
+        "Iyy" : 0.541855094223749,
+        "Izz" : 3.15799034480942,
+        "Ixy" : 0.104055962585926,
+        "Ixz" : 0.081649273284913,
+        "Iyz" : 0.014093227619986
+        
+    },
+    "engines" : {
+        "EDF" : {
+            "T0" : 11.28,
+            "T1" : -0.04,
+            "T2" : 0.0002,
+            "control" : "throttle"
+        }
+    },
+    "aero_model" : {
+        "type" : "MachUpX",
+        "solver" : "linear"
+    },
+    "controls": {
+        "sym": {
+            "is_symmetric": true,
+            "max_deflection" : 10.0,
+            "input_axis" : 1,
+            "column_index" : 1,
+            "note" : "max_deflection and input_axis only affect the controls if the joystick controller is used"
+        },
+        "asym": {
+            "is_symmetric": false,
+            "max_deflection" : 10.0,
+            "input_axis" : 0,
+            "column_index" : 2
+        },
+        "tips": {
+            "is_symmetric" : false,
+            "max_deflection" : 10.0,
+            "input_axis" : 2,
+            "column_index" : 3
+        },
+        "throttle" : {
+            "input_axis" : 3,
+            "column_index" : 4
+        }
+    },
+    "airfoils": {
+        "NACA_2412_fcf56_linearAlpha": {
+            "type": "poly_fit",
+            "input_file": "HorizonFits_fcf56_linearAlpha.json",
+            "geometry": {
+                "NACA": "2412"
+            }
+        }
+    },
+    "wings" : {
+        "wing" : {
+            "ID" : 1,
+            "side" : "both",
+            "is_main" : true,
+            "semispan" : 4.95968499764999,
+            "sweep" : [[0.0, 0.0],
+                       [1.0, 40.5]],
+            "dihedral" : [[0.0, 0.0],
+                          [1.0, 10.0]],
+            "chord": 1.0,
+            "grid" : {
+                "N" : 30,
+                "cluster_points": [ 0.07560964056743188,
+                                    0.1613005665438547,
+                                    0.42047294,
+                                    0.65427572,
+                                    0.83982266,
+                                    0.95895113],
+                "wing_ID": 0
+            },
+            "control_surface": {
+                "chord_fraction": [ [0.0, 0.56],
+                                    [0.07560964056743188, 0.56],
+                                    [0.07560964056743188, 0.0],
+                                    [0.1613005665438547, 0.0],
+                                    [0.1613005665438547, 0.56],
+                                    [1.0, 0.56]],
+                "control_mixing": {
+                    "sym": 1.0,
+                    "asym": 1.0
+                }
+            }
+        },
+        "winglet": {
+            "ID": 2,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 1
+            },
+            "semispan": 0.551076110849999,
+            "sweep": [[0.0, 40.5],
+                      [1.0, 45.0]],
+            "dihedral": [[0.0, 10.0],
+                         [1.0, 75.0]],
+            "chord": [[0.0, 0.9166666666666666],
+                      [1.0, 0.22916666666666666]],
+            "grid": {
+                "N": 10,
+                "wing_ID": 0
+            },
+            "control_surface": {
+                "chord_fraction": [ [0.0, 0.56],
+                                    [1.0, 0.56]],
+                "control_mixing": {
+                    "tips": 1.0
+                }
+            }
+        }
+    }
+}

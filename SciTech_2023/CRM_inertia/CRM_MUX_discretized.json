@@ -1,0 +1,1616 @@
+{
+    "CG": [
+        -5.473864055,
+        0,
+        0.053933959
+    ],
+    "weight": 2160557.0,
+    "reference": {
+        "longitudinal_length": 7.0132,
+        "area": 337.0
+    },
+    "controls": {
+        "flaps1": {
+            "is_symmetric": true
+        },
+        "elevator": {
+            "is_symmetric": true
+        }
+    },
+    "airfoils": {
+        "uCRM-9_w0": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_0_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr0_xfoil.txt"
+            }
+        },
+        "uCRM-9_w10": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_10_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr10_xfoil.txt"
+            }
+        },
+        "uCRM-9_w15": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_15_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr15_xfoil.txt"
+            }
+        },
+        "uCRM-9_w20": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_20_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr20_xfoil.txt"
+            }
+        },
+        "uCRM-9_w25": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_25_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr25_xfoil.txt"
+            }
+        },
+        "uCRM-9_w30": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_30_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr30_xfoil.txt"
+            }
+        },
+        "uCRM-9_w35": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_35_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr35_xfoil.txt"
+            }
+        },
+        "uCRM-9_w37": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_37_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr37_xfoil.txt"
+            }
+        },
+        "uCRM-9_w40": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_40_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr40_xfoil.txt"
+            }
+        },
+        "uCRM-9_w45": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_45_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr45_xfoil.txt"
+            }
+        },
+        "uCRM-9_w50": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_50_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr50_xfoil.txt"
+            }
+        },
+        "uCRM-9_w55": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_55_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr55_xfoil.txt"
+            }
+        },
+        "uCRM-9_w60": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_60_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr60_xfoil.txt"
+            }
+        },
+        "uCRM-9_w65": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_65_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr65_xfoil.txt"
+            }
+        },
+        "uCRM-9_w70": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_70_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr70_xfoil.txt"
+            }
+        },
+        "uCRM-9_w75": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_75_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr75_xfoil.txt"
+            }
+        },
+        "uCRM-9_w80": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_80_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr80_xfoil.txt"
+            }
+        },
+        "uCRM-9_w85": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_85_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr85_xfoil.txt"
+            }
+        },
+        "uCRM-9_w90": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_90_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr90_xfoil.txt"
+            }
+        },
+        "uCRM-9_w95": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_95_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr95_xfoil.txt"
+            }
+        },
+        "uCRM-9_w100": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/wr_100_fitsLw.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/uCRM-9_wr100_xfoil.txt"
+            }
+        },
+        "uCRM-9_h1692": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h1692_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h1692.txt"
+            }
+        },
+        "uCRM-9_h20": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h20_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h20.txt"
+            }
+        },
+        "uCRM-9_h30": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h30_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h30.txt"
+            }
+        },
+        "uCRM-9_h40": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h40_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h40.txt"
+            }
+        },
+        "uCRM-9_h50": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h50_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h50.txt"
+            }
+        },
+        "uCRM-9_h60": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h60_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h60.txt"
+            }
+        },
+        "uCRM-9_h70": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h70_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h70.txt"
+            }
+        },
+        "uCRM-9_h80": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h80_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h80.txt"
+            }
+        },
+        "uCRM-9_h90": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h90_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h90.txt"
+            }
+        },
+        "uCRM-9_h100": {
+            "type": "poly_fit",
+            "input_file": "AirfoilDatabase/af_data/h100_fits.json",
+            "geometry": {
+                "outline_points": "AirfoilDatabase/airfoils/h100.txt"
+            }
+        }
+    },
+    "wings": {
+        "main_wing": {
+            "ID": 1,
+            "side": "both",
+            "is_main": true,
+            "semispan": 29.38,
+            "sweep": [
+                [
+                    0.0,
+                    29.7522
+                ],
+                [
+                    0.1,
+                    29.9501
+                ],
+                [
+                    0.15,
+                    31.169
+                ],
+                [
+                    0.2,
+                    31.6678
+                ],
+                [
+                    0.25,
+                    31.5728
+                ],
+                [
+                    0.3,
+                    31.7263
+                ],
+                [
+                    0.35,
+                    31.0666
+                ],
+                [
+                    0.37,
+                    32.9494
+                ],
+                [
+                    0.4,
+                    35.6796
+                ],
+                [
+                    0.45,
+                    34.8209
+                ],
+                [
+                    0.5,
+                    35.0526
+                ],
+                [
+                    0.55,
+                    34.9914
+                ],
+                [
+                    0.6,
+                    35.0048
+                ],
+                [
+                    0.65,
+                    35.0039
+                ],
+                [
+                    0.7,
+                    35.0048
+                ],
+                [
+                    0.75,
+                    34.9974
+                ],
+                [
+                    0.8,
+                    34.9986
+                ],
+                [
+                    0.85,
+                    35.0031
+                ],
+                [
+                    0.9,
+                    35.0034
+                ],
+                [
+                    0.95,
+                    35.002
+                ],
+                [
+                    1.0,
+                    34.9949
+                ]
+            ],
+            "dihedral": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.1,
+                    3.6709
+                ],
+                [
+                    0.15,
+                    2.4339
+                ],
+                [
+                    0.2,
+                    2.036
+                ],
+                [
+                    0.25,
+                    2.2941
+                ],
+                [
+                    0.3,
+                    2.3945
+                ],
+                [
+                    0.35,
+                    2.4187
+                ],
+                [
+                    0.37,
+                    2.5002
+                ],
+                [
+                    0.4,
+                    3.0022
+                ],
+                [
+                    0.45,
+                    3.6606
+                ],
+                [
+                    0.5,
+                    4.1806
+                ],
+                [
+                    0.55,
+                    4.825
+                ],
+                [
+                    0.6,
+                    5.3523
+                ],
+                [
+                    0.65,
+                    6.0639
+                ],
+                [
+                    0.7,
+                    6.8534
+                ],
+                [
+                    0.75,
+                    7.6114
+                ],
+                [
+                    0.8,
+                    8.4165
+                ],
+                [
+                    0.85,
+                    9.103
+                ],
+                [
+                    0.9,
+                    9.7474
+                ],
+                [
+                    0.95,
+                    10.1231
+                ],
+                [
+                    1.0,
+                    9.839
+                ]
+            ],
+            "chord": [
+                [
+                    0.0,
+                    13.6161
+                ],
+                [
+                    0.1,
+                    11.8976
+                ],
+                [
+                    0.15,
+                    11.0384
+                ],
+                [
+                    0.2,
+                    10.179
+                ],
+                [
+                    0.25,
+                    9.3197
+                ],
+                [
+                    0.3,
+                    8.4604
+                ],
+                [
+                    0.35,
+                    7.601
+                ],
+                [
+                    0.37,
+                    7.2573
+                ],
+                [
+                    0.4,
+                    7.0416
+                ],
+                [
+                    0.45,
+                    6.6821
+                ],
+                [
+                    0.5,
+                    6.3226
+                ],
+                [
+                    0.55,
+                    5.9631
+                ],
+                [
+                    0.6,
+                    5.6035
+                ],
+                [
+                    0.65,
+                    5.244
+                ],
+                [
+                    0.7,
+                    4.8845
+                ],
+                [
+                    0.75,
+                    4.525
+                ],
+                [
+                    0.8,
+                    4.1654
+                ],
+                [
+                    0.85,
+                    3.8059
+                ],
+                [
+                    0.9,
+                    3.4464
+                ],
+                [
+                    0.95,
+                    3.0869
+                ],
+                [
+                    1.0,
+                    2.7274
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w0"
+                ],
+                [
+                    0.1,
+                    "uCRM-9_w10"
+                ],
+                [
+                    0.15,
+                    "uCRM-9_w15"
+                ],
+                [
+                    0.2,
+                    "uCRM-9_w20"
+                ],
+                [
+                    0.25,
+                    "uCRM-9_w25"
+                ],
+                [
+                    0.3,
+                    "uCRM-9_w30"
+                ],
+                [
+                    0.35,
+                    "uCRM-9_w35"
+                ],
+                [
+                    0.37,
+                    "uCRM-9_w37"
+                ],
+                [
+                    0.4,
+                    "uCRM-9_w40"
+                ],
+                [
+                    0.45,
+                    "uCRM-9_w45"
+                ],
+                [
+                    0.5,
+                    "uCRM-9_w50"
+                ],
+                [
+                    0.55,
+                    "uCRM-9_w55"
+                ],
+                [
+                    0.6,
+                    "uCRM-9_w60"
+                ],
+                [
+                    0.65,
+                    "uCRM-9_w65"
+                ],
+                [
+                    0.7,
+                    "uCRM-9_w70"
+                ],
+                [
+                    0.75,
+                    "uCRM-9_w75"
+                ],
+                [
+                    0.8,
+                    "uCRM-9_w80"
+                ],
+                [
+                    0.85,
+                    "uCRM-9_w85"
+                ],
+                [
+                    0.9,
+                    "uCRM-9_w90"
+                ],
+                [
+                    0.95,
+                    "uCRM-9_w95"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w100"
+                ]
+            ],
+            "control_surface": {
+                "chord_fraction": 1.0,
+                "control_mixing": {
+                    "flaps1": 1.0
+                }
+            },
+            "grid": {
+                "N": 100,
+                "cluster_points": [
+                    0.15,
+                    0.3,
+                    0.475,
+                    0.65,
+                    0.825
+                ],
+                "flap_edge_cluster": true,
+                "reid_corrections": true,
+                "xwing_ID": 0
+            }
+        },
+        "horizontal_tail": {
+            "ID": 2,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "dx": -30.15011535,
+                "dz": -2.29744401
+            },
+            "semispan": 10.668,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    5.744095
+                ],
+                [
+                    0.2,
+                    5.614777815
+                ],
+                [
+                    0.3,
+                    5.194853718
+                ],
+                [
+                    0.4,
+                    4.774968337
+                ],
+                [
+                    0.5,
+                    4.35513287
+                ],
+                [
+                    0.6,
+                    3.935363292
+                ],
+                [
+                    0.7,
+                    3.515683202
+                ],
+                [
+                    0.8,
+                    3.096128992
+                ],
+                [
+                    0.9,
+                    2.676759856
+                ],
+                [
+                    1.0,
+                    2.256543698
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h1692"
+                ],
+                [
+                    0.2,
+                    "uCRM-9_h20"
+                ],
+                [
+                    0.3,
+                    "uCRM-9_h30"
+                ],
+                [
+                    0.4,
+                    "uCRM-9_h40"
+                ],
+                [
+                    0.5,
+                    "uCRM-9_h50"
+                ],
+                [
+                    0.6,
+                    "uCRM-9_h60"
+                ],
+                [
+                    0.7,
+                    "uCRM-9_h70"
+                ],
+                [
+                    0.8,
+                    "uCRM-9_h80"
+                ],
+                [
+                    0.9,
+                    "uCRM-9_h90"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h100"
+                ]
+            ],
+            "control_surface": {
+                "chord_fraction": 1.0,
+                "control_mixing": {
+                    "elevator": 1.0
+                }
+            },
+            "grid": {
+                "N": 50,
+                "flap_edge_cluster": true,
+                "reid_corrections": true,
+                "blending_distance": 0.25,
+                "xwing_ID": 1
+            }
+        },
+        "main_wing_0": {
+            "ID": 3,
+            "side": "both",
+            "is_main": true,
+            "semispan": 2.937994974952516,
+            "sweep": 29.762137554636354,
+            "dihedral": 0.18354499999998447,
+            "chord": [
+                [
+                    0.0,
+                    13.6161
+                ],
+                [
+                    1.0,
+                    11.8976
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w0"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w10"
+                ]
+            ]
+        },
+        "main_wing_1": {
+            "ID": 4,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999286745241,
+            "sweep": 30.102466838952132,
+            "dihedral": 3.516275000000815,
+            "chord": [
+                [
+                    0.0,
+                    11.8976
+                ],
+                [
+                    1.0,
+                    11.0384
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w10"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w15"
+                ]
+            ],
+            "connect_to": {
+                "ID": 3
+            }
+        },
+        "main_wing_2": {
+            "ID": 5,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999926200292,
+            "sweep": 31.256290676786843,
+            "dihedral": 2.364267499989382,
+            "chord": [
+                [
+                    0.0,
+                    11.0384
+                ],
+                [
+                    1.0,
+                    10.179
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w15"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w20"
+                ]
+            ],
+            "connect_to": {
+                "ID": 4
+            }
+        },
+        "main_wing_3": {
+            "ID": 6,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.468999996894852,
+            "sweep": 31.64642507426421,
+            "dihedral": 2.094072500011407,
+            "chord": [
+                [
+                    0.0,
+                    10.179
+                ],
+                [
+                    1.0,
+                    9.3197
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w20"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w25"
+                ]
+            ],
+            "connect_to": {
+                "ID": 5
+            }
+        },
+        "main_wing_4": {
+            "ID": 7,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999995301828,
+            "sweep": 31.61501256095483,
+            "dihedral": 2.321709999962233,
+            "chord": [
+                [
+                    0.0,
+                    9.3197
+                ],
+                [
+                    1.0,
+                    8.4604
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w25"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w30"
+                ]
+            ],
+            "connect_to": {
+                "ID": 6
+            }
+        },
+        "main_wing_5": {
+            "ID": 8,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999999727164,
+            "sweep": 31.51189847065229,
+            "dihedral": 2.402365000020009,
+            "chord": [
+                [
+                    0.0,
+                    8.4604
+                ],
+                [
+                    1.0,
+                    7.601
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w30"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w35"
+                ]
+            ],
+            "connect_to": {
+                "ID": 7
+            }
+        },
+        "main_wing_6": {
+            "ID": 9,
+            "side": "both",
+            "is_main": true,
+            "semispan": 0.587599999980166,
+            "sweep": 31.74440927682225,
+            "dihedral": 2.4480400000907716,
+            "chord": [
+                [
+                    0.0,
+                    7.601
+                ],
+                [
+                    1.0,
+                    7.2573
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w35"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w37"
+                ]
+            ],
+            "connect_to": {
+                "ID": 8
+            }
+        },
+        "main_wing_7": {
+            "ID": 10,
+            "side": "both",
+            "is_main": true,
+            "semispan": 0.8813999974627463,
+            "sweep": 34.000533657946384,
+            "dihedral": 2.693470000013097,
+            "chord": [
+                [
+                    0.0,
+                    7.2573
+                ],
+                [
+                    1.0,
+                    7.0416
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w37"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w40"
+                ]
+            ],
+            "connect_to": {
+                "ID": 9
+            }
+        },
+        "main_wing_8": {
+            "ID": 11,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999797937903,
+            "sweep": 35.31465477112773,
+            "dihedral": 3.2820199999977584,
+            "chord": [
+                [
+                    0.0,
+                    7.0416
+                ],
+                [
+                    1.0,
+                    6.6821
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w40"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w45"
+                ]
+            ],
+            "connect_to": {
+                "ID": 10
+            }
+        },
+        "main_wing_9": {
+            "ID": 12,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999873959034,
+            "sweep": 34.930957867106265,
+            "dihedral": 3.9075999999968793,
+            "chord": [
+                [
+                    0.0,
+                    6.6821
+                ],
+                [
+                    1.0,
+                    6.3226
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w45"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w50"
+                ]
+            ],
+            "connect_to": {
+                "ID": 11
+            }
+        },
+        "main_wing_10": {
+            "ID": 13,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999806439655,
+            "sweep": 35.02047036433151,
+            "dihedral": 4.518909999991941,
+            "chord": [
+                [
+                    0.0,
+                    6.3226
+                ],
+                [
+                    1.0,
+                    5.9631
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w50"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w55"
+                ]
+            ],
+            "connect_to": {
+                "ID": 12
+            }
+        },
+        "main_wing_11": {
+            "ID": 14,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999870394923,
+            "sweep": 34.99910523772153,
+            "dihedral": 5.128197500001797,
+            "chord": [
+                [
+                    0.0,
+                    5.9631
+                ],
+                [
+                    1.0,
+                    5.6035
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w55"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w60"
+                ]
+            ],
+            "connect_to": {
+                "ID": 13
+            }
+        },
+        "main_wing_12": {
+            "ID": 15,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999763964687,
+            "sweep": 35.004237931455215,
+            "dihedral": 5.797049999997864,
+            "chord": [
+                [
+                    0.0,
+                    5.6035
+                ],
+                [
+                    1.0,
+                    5.244
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w60"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w65"
+                ]
+            ],
+            "connect_to": {
+                "ID": 14
+            }
+        },
+        "main_wing_13": {
+            "ID": 16,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999709457489,
+            "sweep": 35.0045080397316,
+            "dihedral": 6.5968125000049245,
+            "chord": [
+                [
+                    0.0,
+                    5.244
+                ],
+                [
+                    1.0,
+                    4.8845
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w65"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w70"
+                ]
+            ],
+            "connect_to": {
+                "ID": 15
+            }
+        },
+        "main_wing_14": {
+            "ID": 17,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999732180012,
+            "sweep": 34.99943549135267,
+            "dihedral": 7.402950000004,
+            "chord": [
+                [
+                    0.0,
+                    4.8845
+                ],
+                [
+                    1.0,
+                    4.525
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w70"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w75"
+                ]
+            ],
+            "connect_to": {
+                "ID": 16
+            }
+        },
+        "main_wing_15": {
+            "ID": 18,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999697862437,
+            "sweep": 34.99833054615221,
+            "dihedral": 8.235352500005625,
+            "chord": [
+                [
+                    0.0,
+                    4.525
+                ],
+                [
+                    1.0,
+                    4.1654
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w75"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w80"
+                ]
+            ],
+            "connect_to": {
+                "ID": 17
+            }
+        },
+        "main_wing_16": {
+            "ID": 19,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999780322298,
+            "sweep": 35.00231290219836,
+            "dihedral": 8.982862499997598,
+            "chord": [
+                [
+                    0.0,
+                    4.1654
+                ],
+                [
+                    1.0,
+                    3.8059
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w80"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w85"
+                ]
+            ],
+            "connect_to": {
+                "ID": 18
+            }
+        },
+        "main_wing_17": {
+            "ID": 20,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.4689999806439227,
+            "sweep": 35.00336284216816,
+            "dihedral": 9.666849999996447,
+            "chord": [
+                [
+                    0.0,
+                    3.8059
+                ],
+                [
+                    1.0,
+                    3.4464
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w85"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w90"
+                ]
+            ],
+            "connect_to": {
+                "ID": 19
+            }
+        },
+        "main_wing_18": {
+            "ID": 21,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.468999993420472,
+            "sweep": 35.00210512097414,
+            "dihedral": 10.094922499984454,
+            "chord": [
+                [
+                    0.0,
+                    3.4464
+                ],
+                [
+                    1.0,
+                    3.0869
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w90"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w95"
+                ]
+            ],
+            "connect_to": {
+                "ID": 20
+            }
+        },
+        "main_wing_19": {
+            "ID": 22,
+            "side": "both",
+            "is_main": true,
+            "semispan": 1.468999996237901,
+            "sweep": 34.995077568938584,
+            "dihedral": 9.846102500018556,
+            "chord": [
+                [
+                    0.0,
+                    3.0869
+                ],
+                [
+                    1.0,
+                    2.7274
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_w95"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_w100"
+                ]
+            ],
+            "connect_to": {
+                "ID": 21
+            }
+        },
+        "horizontal_tail_0": {
+            "ID": 23,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "dx": -30.15011535,
+                "dz": -2.29744401
+            },
+            "semispan": 2.1336,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    5.744095
+                ],
+                [
+                    1.0,
+                    5.614777815
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h1692"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h20"
+                ]
+            ]
+        },
+        "horizontal_tail_1": {
+            "ID": 24,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 23
+            },
+            "semispan": 1.0667999999999997,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    5.614777815
+                ],
+                [
+                    1.0,
+                    5.194853718
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h20"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h30"
+                ]
+            ]
+        },
+        "horizontal_tail_2": {
+            "ID": 25,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 24
+            },
+            "semispan": 1.0668000000000002,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    5.194853718
+                ],
+                [
+                    1.0,
+                    4.774968337
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h30"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h40"
+                ]
+            ]
+        },
+        "horizontal_tail_3": {
+            "ID": 26,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 25
+            },
+            "semispan": 1.0667999999999997,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    4.774968337
+                ],
+                [
+                    1.0,
+                    4.35513287
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h40"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h50"
+                ]
+            ]
+        },
+        "horizontal_tail_4": {
+            "ID": 27,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 26
+            },
+            "semispan": 1.0667999999999997,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    4.35513287
+                ],
+                [
+                    1.0,
+                    3.935363292
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h50"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h60"
+                ]
+            ]
+        },
+        "horizontal_tail_5": {
+            "ID": 28,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 27
+            },
+            "semispan": 1.0667999999999997,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    3.935363292
+                ],
+                [
+                    1.0,
+                    3.515683202
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h60"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h70"
+                ]
+            ]
+        },
+        "horizontal_tail_6": {
+            "ID": 29,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 28
+            },
+            "semispan": 1.0668000000000009,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    3.515683202
+                ],
+                [
+                    1.0,
+                    3.096128992
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h70"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h80"
+                ]
+            ]
+        },
+        "horizontal_tail_7": {
+            "ID": 30,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 29
+            },
+            "semispan": 1.0667999999999997,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    3.096128992
+                ],
+                [
+                    1.0,
+                    2.676759856
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h80"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h90"
+                ]
+            ]
+        },
+        "horizontal_tail_8": {
+            "ID": 31,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 30
+            },
+            "semispan": 1.0667999999999997,
+            "sweep": 37.0,
+            "dihedral": 7.51132,
+            "chord": [
+                [
+                    0.0,
+                    2.676759856
+                ],
+                [
+                    1.0,
+                    2.256543698
+                ]
+            ],
+            "airfoil": [
+                [
+                    0.0,
+                    "uCRM-9_h90"
+                ],
+                [
+                    1.0,
+                    "uCRM-9_h100"
+                ]
+            ]
+        }
+    }
+}

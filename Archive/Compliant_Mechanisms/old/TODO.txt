@@ -1,0 +1,138 @@
+perhaps we should put f1 or f2 at the move when the u and x axes are moving so quickly (mostly u)
+so that the feed rate keeps the machine from getting a joint following error.  that would help quite a bit doncha think?
+
+
+
+
+
+Would it work to put 2 power supplies on the system such that the wire is under constant current, and the motor driver is setup for constant voltage.
+
+also, what temperature do i need for the wire to cut the foam such that it does not stall with the motors driving.
+
+
+
+we need to fix the way the foil is shifted up and down in the foam so that it stays within the params of the foil and the machine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+make xy lists a single list of tuples
+
+no need for each for loops
+# make each set of points in the following manner: ie assume x is a list of pts
+x2 = x[1:]
+x1 = x[:-1]
+dx = x2-x1
+like so
+then make the points for the bigger shape, then make a fish bone after this 
+based on a new set of geometries for the indents changing width, dist and so on
+#    x2 = x[1:]
+#    x1 = x[:-1]
+#    y2 = y[1:]
+#    y1 = y[:-1]
+#    
+#    dx = x2 - x1
+#    dy = y2 - y1
+#    
+#    dxt = dx[:len(dx)//2]
+#    dxb = dx[len(dx)//2:]
+#    dyt = dy[:len(dy)//2]
+#    dyb = dy[len(dy)//2:]
+
+
+
+
+The thicker the wire is, the less resistance it supplies...... we need a thinner wire
+Maybe get a weigth to add to design so that it hold the wire taut
+
+
+use partial functions: if certain values will not be used, call an easier function to use

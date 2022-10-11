@@ -1,0 +1,97 @@
+{
+    "aircraft" : {
+        "name" : "F-16",
+        "short_name" : "F-16",
+        "wing_area[ft^2]" : 300.0,
+        "wing_span[ft]" : 30.0,
+        "weight[lbf]" : 20500.0,
+        "Ixx[slug-ft^2]" : 9496.0,
+        "Iyy[slug-ft^2]" : 55814.0,
+        "Izz[slug-ft^2]" : 63100.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : 982.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "derived from data in NASA TP 1538 -- Nguyen, L. T. et. al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19800005879/downloads/19800005879.pdf",
+        "notes" : "hq data on pages 113-114, no longitudinal modes data",
+        "notes2" : "model at alpha=0.8509057050859657deg, using 5deg from plots for hq"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 0.0023769
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.0582,
+            "alpha" : 3.9189,
+            "qbar" :  2.6436,
+            "alpha_hat" : 0.2507381322158053,
+            "mu_hat" : 0.0,
+            "de" : 0.74
+        },
+        "CS" : {
+            "beta" : -0.6114,
+            "pbar" : -0.0135,
+			"Lpbar": 0.388,
+            "rbar" : 0.3804,
+            "da" : 0.0956,
+            "dr" : 0.1887
+        },
+        "CD" : {
+            "L0" : 0.0074,
+            "L" : 0.0002,
+            "L2" : 0.1033,
+            "S2" : 0.872,
+            "Spbar" : 0.0824,
+			"qbar": -0.0506,
+			"Lqbar": 0.6874,
+			"L2qbar": -0.048,
+            "Srbar" : 0.0093,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : -0.0092,
+            "Lde" : 0.1651,
+            "de2" : 0.4128,
+            "Sda" : 0.1609,
+            "Sdr" : 0.2275
+        },
+        "Cl" : {
+            "beta" : -0.0624,
+            "pbar" : -0.4111,
+            "rbar" : 0.0623,
+			"Lrbar": 0.1034,
+            "da" : -0.097,
+            "dr" : 0.0299
+        },
+        "Cm" : {
+            "0" : -0.0353,
+            "alpha" : 0.2058,
+            "qbar" :   -4.5175,
+            "alpha_hat" : -0.44690561733616274,
+            "mu_hat" : 0.0,
+            "de" : -0.817
+        },
+        "Cn" : {
+            "beta" : 0.2331,
+            "pbar" : 0.0235,
+			"Lpbar": -0.1833,
+            "rbar" : -0.1581,
+            "da" : -0.0359,
+            "Lda" : -0.0345,
+            "dr" : -0.0888
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": "n/a",
+        "wn_sp": "n/a",
+        "zt_ph": "n/a",
+        "wn_ph": "n/a",
+        "Sg_ro": 1.487873347110379,
+        "Sg_sl": 0.00989859277827559,
+        "zt_dr": 0.10402338625257364,
+        "wn_dr": 2.287886379420733,
+        "1/t_ro_50[1/sec]" : 2.1465474993470073,
+        "1/t_sl_50[1/sec]" : 0.0142806507129975,
+        "T_dr-assumed-wd[sec]" : 2.7612640709231244,
+        "1/t_dr_50[1/sec]" : 0.34335231423177204
+    }
+}

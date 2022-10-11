@@ -1,0 +1,101 @@
+{
+    "aircraft" : {
+        "name" : "Convair 880M",
+        "short_name" : "Con880",
+        "wing_area[ft^2]" : 2000.0,
+        "wing_span[ft]" : 120.0,
+        "weight[lbf]" : 126000.0,
+        "Ixx[slug-ft^2]" : 1150000.0,
+        "Iyy[slug-ft^2]" : 2450000.0,
+        "Izz[slug-ft^2]" : 4070000.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : 0.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "NASA CR-2144 -- Heffley et al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 2.37689261479e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.68,
+            "alpha" : 4.52,
+            "qbar" : 7.72,
+            "alpha_hat" : 2.7,
+            "mu_hat" : 0.0,
+            "de" : 0.213,
+            "dte" : 0.0532
+        },
+        "CS" : {
+            "beta" : -0.877,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "da" : 0.0,
+            "dta" : 0.0,
+            "ds" : -0.0315,
+            "dr" : 0.2155,
+            "dtr" : 0.0467
+        },
+        "CD" : {
+            "L0" : 0.05969026548672566,
+            "L" : 0.0,
+            "L2" : 0.043922436231129625,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.196,
+            "pbar" : -0.381,
+            "rbar" : 0.198,
+			"Lrbar": 0.0,
+            "da" : -0.0384,
+            "dta" : -0.0056,
+            "ds" : 0.0405,
+            "dr" : 0.0226,
+            "dtr" : 0.0027
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.903,
+            "qbar" : -12.1,
+            "alpha_hat" : -4.13,
+            "mu_hat" : 0.0,
+            "de" : -0.637,
+            "dte" : -0.159
+        },
+        "Cn" : {
+            "beta" : 0.139,
+            "pbar" : -0.049,
+			"Lpbar": 0.0,
+            "rbar" : -0.185,
+            "da" : 0.0172,
+            "dta" : 0.0,
+            "ds" : 0.0129,
+            "dr" : -0.0958,
+            "dtr" : -0.019
+        },
+        "Ch" : {
+            "de" : -0.328,
+            "dte" : -0.285,
+            "da" : -0.481,
+            "dta" : -0.227,
+            "dr" : -0.2125,
+            "dtr" : -0.253
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": 0.793,
+        "wn_sp": 0.818,
+        "zt_ph": 0.120,
+        "wn_ph": 0.131,
+        "Sg_ro": 1.50,
+        "Sg_sl": 0.00912,
+        "zt_dr": 0.119,
+        "wn_dr": 1.02
+    }
+}

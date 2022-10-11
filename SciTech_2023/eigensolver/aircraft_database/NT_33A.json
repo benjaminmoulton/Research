@@ -1,0 +1,81 @@
+{
+    "aircraft" : {
+        "name" : "NT-33A",
+        "short_name" : "NT-33A",
+        "wing_area[ft^2]" : 234.8,
+        "wing_span[ft]" : 37.54,
+        "weight[lbf]" : 11800.0,
+        "Ixx[slug-ft^2]" : 12700.0,
+        "Iyy[slug-ft^2]" : 20700.0,
+        "Izz[slug-ft^2]" : 32000.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : 480.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "NASA CR-2144 -- Heffley et al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 2.37689261479e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.813,
+            "alpha" : 5.22,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.34
+        },
+        "CS" : {
+            "beta" : -0.72,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "dr" : 0.17
+        },
+        "CD" : {
+            "L0" : 0.09294827586206897,
+            "L" : 0.0,
+            "L2" : 0.06362132586843111,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.127,
+            "pbar" : -0.57,
+            "rbar" : 0.20,
+			"Lrbar": 0.0,
+            "da" : 0.14,
+            "dr" : -0.002
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.401,
+            "qbar" : -10.0,
+            "alpha_hat" : -5.0,
+            "mu_hat" : 0.0,
+            "de" : -0.89
+        },
+        "Cn" : {
+            "beta" : 0.049,
+            "pbar" : -0.045,
+			"Lpbar": 0.0,
+            "rbar" : -0.16,
+            "da" : -0.009,
+            "dr" : -0.073
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": 0.622,
+        "wn_sp": 1.59,
+        "zt_ph": 0.0948,
+        "wn_ph": 0.172,
+        "Sg_ro": 2.20,
+        "Sg_sl": 0.0318,
+        "zt_dr": 0.0609,
+        "wn_dr": 1.13
+    }
+}

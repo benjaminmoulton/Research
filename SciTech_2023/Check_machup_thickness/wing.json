@@ -1,0 +1,57 @@
+{
+    "weight" : 1.0,
+    "airfoils": {
+        "NACA_2412": {
+            "geometry" : {
+                "NACA": "2412"
+            }
+        },
+        "NACA_2408": {
+            "geometry" : {
+                "NACA": "2408"
+            }
+        },
+        "NACA_2401": {
+            "geometry" : {
+                "NACA": "2401"
+            }
+        },
+        "NACA_0012": {
+            "geometry" : {
+                "NACA": "0012"
+            }
+        },
+        "NACA_0008": {
+            "geometry" : {
+                "NACA": "0008"
+            }
+        }
+    },
+    "wings" : {
+        "wing" : {
+            "ID" : 1,
+            "side" : "right",
+            "connect_to" : {
+                "dx" : -0.0,
+                "dy" :  0.0,
+                "dz" : -0.0
+            },
+            "is_main" : true,
+            "semispan" : 1.0,
+            "dihedral" : [  [0.0, 0.0],
+                            [1.0, 0.0]],
+            "sweep" : [ [0.0, 0.0],
+                        [1.0, 0.0]],
+            "twist" : [ [0.0,  0.0],
+                        [1.0,  0.0]],
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 0.25]],
+            "airfoil": [[0.0, "NACA_2401"],
+                        [1.0, "NACA_2412"]],
+            "grid" : {
+                "N" : 100,
+                "wing_ID": 0
+            }
+        }
+    }
+}

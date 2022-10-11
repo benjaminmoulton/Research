@@ -1,0 +1,83 @@
+{
+    "aircraft" : {
+        "name" : "Boeing 747",
+        "short_name" : "Boe747",
+        "wing_area[ft^2]" : 5500.0,
+        "wing_span[ft]" : 195.68,
+        "weight[lbf]" : 636636.0,
+        "Ixx[slug-ft^2]" : 18.4e6,
+        "Iyy[slug-ft^2]" : 33.1e6,
+        "Izz[slug-ft^2]" : 49.5e6,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : -2.76e6,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "NASA CR-2144 -- Heffley et al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 1.26725882157e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.680,
+            "alpha" : 4.67,
+            "qbar" : 5.13,
+            "alpha_hat" : 6.53,
+            "mu_hat" : 0.0,
+            "de" : 0.336,
+            "M" : -1.1
+        },
+        "CS" : {
+            "beta" : -0.90,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "dr" : 0.179
+        },
+        "CD" : {
+            "L0" : 0.057626905151782336,
+            "L" : 0.0,
+            "L2" : 0.057626905151782336,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.193,
+            "pbar" : -0.323,
+            "rbar" : 0.212,
+			"Lrbar": 0.0,
+            "da" : 0.0530,
+            "dr" : 0.0
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -1.146,
+            "qbar" : -20.7,
+            "alpha_hat" : -3.35,
+            "mu_hat" : 0.0,
+            "de" : -1.40,
+            "M" : 0.36
+        },
+        "Cn" : {
+            "beta" : 0.147,
+            "pbar" : -0.0687,
+			"Lpbar": 0.0,
+            "rbar" : -0.278,
+            "da" : 0.0083,
+            "dr" : -0.112
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": 0.616,
+        "wn_sp": 0.771,
+        "zt_ph": 0.0417,
+        "wn_ph": 0.152,
+        "Sg_ro": 1.11,
+        "Sg_sl": 0.0427,
+        "zt_dr": 0.0878,
+        "wn_dr": 0.735
+    }
+}

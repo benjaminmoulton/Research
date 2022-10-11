@@ -1,0 +1,82 @@
+{
+    "aircraft" : {
+        "name" : "XB-70A",
+        "short_name" : "XB-70A",
+        "wing_area[ft^2]" : 6297.8,
+        "wing_span[ft]" : 105.0,
+        "weight[lbf]" : 300000.0,
+        "Ixx[slug-ft^2]" : 1.45e6,
+        "Iyy[slug-ft^2]" : 16.0e6,
+        "Izz[slug-ft^2]" : 17.2e6,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : -0.6e6,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "NASA CR-2144 -- Heffley et al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 2.37689261479e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.333,
+            "alpha" : 2.6,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.46
+        },
+        "CS" : {
+            "beta" : -0.183,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "da" : -0.063,
+            "dr" : 0.12
+        },
+        "CD" : {
+            "L0" : 0.01913846153846154,
+            "L" : 0.0,
+            "L2" : 0.3234003234003234,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.072,
+            "pbar" : -0.18,
+            "rbar" : -0.03,
+			"Lrbar": 0.0,
+            "da" : 0.042,
+            "dr" : -0.0018
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.23,
+            "qbar" : -1.5,
+            "alpha_hat" : 0.05,
+            "mu_hat" : 0.0,
+            "de" : -0.19
+        },
+        "Cn" : {
+            "beta" : 0.132,
+            "pbar" : -0.26,
+			"Lpbar": 0.0,
+            "rbar" : -0.25,
+            "da" : -0.0052,
+            "dr" : -0.103
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": 0.591,
+        "wn_sp": 1.25,
+        "S1_ph": 0.0652,
+        "S2_ph": 0.103,
+        "Sg_ro": 1.77,
+        "Sg_sl": 0.0287,
+        "zt_dr": 0.0615,
+        "wn_dr": 1.27
+    }
+}

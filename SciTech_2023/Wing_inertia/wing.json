@@ -1,0 +1,192 @@
+{
+    "weight" : 1.0,
+    "airfoils": {
+        "NACA_2412": {
+            "geometry" : {
+                "NACA": "2412"
+            }
+        },
+        "NACA_2416": {
+            "geometry" : {
+                "NACA": "2416"
+            }
+        },
+        "NACA_2408": {
+            "geometry" : {
+                "NACA": "2408"
+            }
+        },
+        "NACA_4812": {
+            "geometry" : {
+                "NACA": "4812"
+            }
+        },
+        "NACA_0012": {
+            "geometry" : {
+                "NACA": "0012"
+            }
+        },
+        "NACA_63A412": {
+            "type" : "linear",
+            "geometry" : {
+                "outline_points": "NACA_63A412.txt"
+            },
+            "thickness" : "12% at 34.9% x/c",
+            "camber" : "2.2% at 50% x/c"
+        },
+        "Eppler_360": {
+            "type" : "linear",
+            "geometry" : {
+                "outline_points": "Eppler_360.txt"
+            },
+            "thickness" : "12.2% at 36.9% x/c",
+            "camber" : "1.6% at 27.2% x/c"
+        },
+        "NACA_64A206": {
+            "type" : "linear",
+            "geometry" : {
+                "outline_points": "NACA_64A206.txt"
+            },
+            "thickness" : "6% at 40% x/c",
+            "camber" : "1.1% at 50% x/c"
+        },
+        "Eppler_397": {
+            "type" : "linear",
+            "geometry" : {
+                "outline_points": "Eppler_397.txt"
+            },
+            "thickness" : "13.5% at 29.4% x/c",
+            "camber" : "5.3% at 52.1% x/c"
+        },
+        "Eppler_1210": {
+            "type" : "linear",
+            "geometry" : {
+                "outline_points": "Eppler_1210.txt"
+            },
+            "thickness" : "15.9% at 21.1% x/c",
+            "camber" : "5.2% at 33.3% x/c"
+        }
+    },
+    "wings" : {
+        "rectangular" : {
+            "ID" : 1,
+            "side" : "right",
+            "is_main" : true,
+            "semispan" : 8.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "airfoil": [[0.0, "NACA_2412"],
+                        [1.0, "NACA_2412"]]
+        },
+        "symmetric" : {
+            "ID" : 9,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "airfoil": [[0.0, "NACA_0012"],
+                        [1.0, "NACA_0012"]]
+        },
+        "taper" : {
+            "ID" : 2,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.5],
+                        [1.0, 0.5]],
+            "airfoil": [[0.0, "NACA_2412"],
+                        [1.0, "NACA_2412"]]
+        },
+        "thickness" : {
+            "ID" : 3,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "airfoil": [[0.0, "NACA_2416"],
+                        [1.0, "NACA_2408"]]
+        },
+        "camber" : {
+            "ID" : 4,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "airfoil": [[0.0, "NACA_4812"],
+                        [1.0, "NACA_0012"]]
+        },
+        "airfoil" : {
+            "ID" : 5,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "airfoil": [[0.0, "NACA_63A412"],
+                        [1.0, "Eppler_360"]]
+        },
+        "dihedral" : {
+            "ID" : 6,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 9.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "airfoil": [[0.0, "NACA_2412"],
+                        [1.0, "NACA_2412"]]
+        },
+        "sweep" : {
+            "ID" : 7,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 0.0,
+            "sweep" : 14.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "airfoil": [[0.0, "NACA_2412"],
+                        [1.0, "NACA_2412"]]
+        },
+        "all" : {
+            "ID" : 8,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 9.0,
+            "sweep" : 14.0,
+            "chord" : [ [0.0, 1.5],
+                        [1.0, 0.5]],
+            "airfoil": [[0.0, "NACA_64A206"],
+                        [1.0, "Eppler_397"]]
+        },
+        "all2" : {
+            "ID" : 10,
+            "side" : "right",
+            "is_main" : false,
+            "semispan" : 8.0,
+            "dihedral" : 9.0,
+            "sweep" : 14.0,
+            "chord" : [ [0.0, 1.5],
+                        [1.0, 0.5]],
+            "airfoil": [[0.0, "NACA_63A412"],
+                        [1.0, "Eppler_360"]]
+        }
+    }
+}

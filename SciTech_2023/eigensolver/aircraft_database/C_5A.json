@@ -1,0 +1,82 @@
+{
+    "aircraft" : {
+        "name" : "C-5A",
+        "short_name" : "C-5A",
+        "wing_area[ft^2]" : 6200.0,
+        "wing_span[ft]" : 219.2,
+        "weight[lbf]" : 580723.0,
+        "Ixx[slug-ft^2]" : 19.1e6,
+        "Iyy[slug-ft^2]" : 31.3e6,
+        "Izz[slug-ft^2]" : 47.0e6,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : 2.5e6,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "NASA CR-2144 -- Heffley et al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 2.37689261479e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 1.29,
+            "alpha" : 6.08,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.385
+        },
+        "CS" : {
+            "beta" : -0.77,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "da" : -0.0044,
+            "dr" : 0.211
+        },
+        "CD" : {
+            "L0" : 0.07901480263157894,
+            "L" : 0.0,
+            "L2" : 0.03965218278253774,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.123,
+            "pbar" : -0.458,
+            "rbar" : 0.290,
+			"Lrbar": 0.0,
+            "da" : 0.089,
+            "dr" : 0.0209
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.827,
+            "qbar" : -23.2,
+            "alpha_hat" : -8.3,
+            "mu_hat" : 0.0,
+            "de" : -1.60
+        },
+        "Cn" : {
+            "beta" : 0.075,
+            "pbar" : -0.098,
+			"Lpbar": 0.0,
+            "rbar" : -0.293,
+            "da" : 0.0091,
+            "dr" : -0.106
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": 0.843,
+        "wn_sp": 0.865,
+        "zt_ph": 0.100,
+        "wn_ph": 0.119,
+        "Sg_ro": 1.13,
+        "Sg_sl": 0.0283,
+        "zt_dr": 0.226,
+        "wn_dr": 0.530
+    }
+}

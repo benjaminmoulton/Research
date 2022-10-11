@@ -1,0 +1,406 @@
+{
+    "CG" : [-5.473864055,0,0.053933959],
+    "weight" : 2160557.0,
+    "reference" : {
+    	"longitudinal_length": 7.0132,
+        "area" : 337.0
+    },
+    "controls" : {
+        "flaps1" : {
+            "is_symmetric" : true
+        },
+        "elevator" : {
+            "is_symmetric" : true
+        }
+    },
+    "airfoils" : {
+	    "uCRM-9_w0": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_0_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr0_xfoil.txt"
+			    }
+	    },
+	    "uCRM-9_w10": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_10_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr10_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w15": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_15_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr15_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w20": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_20_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr20_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w25": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_25_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr25_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w30": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_30_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr30_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w35": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_35_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr35_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w37": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_37_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr37_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w40": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_40_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr40_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w45": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_45_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr45_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w50": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_50_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr50_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w55": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_55_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr55_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w60": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_60_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr60_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w65": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_65_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr65_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w70": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_70_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr70_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w75": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_75_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr75_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w80": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_80_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr80_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w85": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_85_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr85_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w90": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_90_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr90_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w95": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_95_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr95_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w100": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/wr_100_fitsLw.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/uCRM-9_wr100_xfoil.txt"
+		    }
+	    },
+        "uCRM-9_h1692": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h1692_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h1692.txt"
+		    }
+	    },
+        "uCRM-9_h20": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h20_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h20.txt"
+		    }
+	    },
+        "uCRM-9_h30": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h30_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h30.txt"
+		    }
+	    },
+        "uCRM-9_h40": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h40_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h40.txt"
+		    }
+	    },
+        "uCRM-9_h50": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h50_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h50.txt"
+		    }
+	    },
+        "uCRM-9_h60": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h60_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h60.txt"
+		    }
+	    },
+        "uCRM-9_h70": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h70_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h70.txt"
+		    }
+	    },
+        "uCRM-9_h80": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h80_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h80.txt"
+		    }
+	    },
+        "uCRM-9_h90": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h90_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h90.txt"
+		    }
+	    },
+        "uCRM-9_h100": {
+		    "type": "poly_fit",
+		    "input_file" : "AirfoilDatabase/af_data/h100_fits.json",
+		    "geometry" : {
+			    "outline_points" : "AirfoilDatabase/airfoils/h100.txt"
+		    }
+	    }
+    },
+    "wings" : {
+        "main_wing" : {
+            "ID" : 1,
+            "side" : "both",
+            "is_main" : true,
+            "semispan" : 29.38,
+            "twist" : 	[	[0.00,	 6.7166	],
+							[0.10,	 4.4402	],
+							[0.15,	 3.6063	],
+							[0.20,	 3.0131	],
+							[0.25,	 2.2419	],
+							[0.30,	 1.5252	],
+							[0.35,	 0.9379	],
+							[0.37,	 0.7635	],
+							[0.40,	 0.4285	],
+							[0.45,	-0.2621	],
+							[0.50,	-0.6782	],
+							[0.55,	-0.9436	],
+							[0.60,	-1.2067	],
+							[0.65,	-1.4526	],
+							[0.70,	-1.6350	],
+							[0.75,	-1.8158	],
+							[0.80,	-2.0301	],
+							[0.85,	-2.2772	],
+							[0.90,	-2.5773	],
+							[0.95,	-3.1248	],
+							[1.00,	-3.7500	]],
+			"sweep" :	 [	[0.00,	29.7522	],
+							[0.10,	29.9501	],
+							[0.15,	31.1690	],
+							[0.20,	31.6678	],
+							[0.25,	31.5728	],
+							[0.30,	31.7263	],
+							[0.35,	31.0666	],
+							[0.37,	32.9494	],
+							[0.40,	35.6796	],
+							[0.45,	34.8209	],
+							[0.50,	35.0526	],
+							[0.55,	34.9914	],
+							[0.60,	35.0048	],
+							[0.65,	35.0039	],
+							[0.70,	35.0048	],
+							[0.75,	34.9974	],
+							[0.80,	34.9986	],
+							[0.85,	35.0031	],
+							[0.90,	35.0034	],
+							[0.95,	35.0020	],
+							[1.00,	34.9949	]],
+            "dihedral" : [	[0.00,	 0.0000	],
+							[0.10,	 3.6709	],
+							[0.15,	 2.4339	],
+							[0.20,	 2.0360	],
+							[0.25,	 2.2941	],
+							[0.30,	 2.3945	],
+							[0.35,	 2.4187	],
+							[0.37,	 2.5002	],
+							[0.40,	 3.0022	],
+							[0.45,	 3.6606	],
+							[0.50,	 4.1806	],
+							[0.55,	 4.8250	],
+							[0.60,	 5.3523	],
+							[0.65,	 6.0639	],
+							[0.70,	 6.8534	],
+							[0.75,	 7.6114	],
+							[0.80,	 8.4165	],
+							[0.85,	 9.1030	],
+							[0.90,	 9.7474	],
+							[0.95,	10.1231	],
+							[1.00,	 9.8390	]],
+            "chord" : 	[	[0.00,	13.6161	],
+							[0.10,	11.8976	],
+							[0.15,	11.0384	],
+							[0.20,	10.1790	],
+							[0.25,	 9.3197	],
+							[0.30,	 8.4604	],
+							[0.35,	 7.6010	],
+							[0.37,	 7.2573	],
+							[0.40,	 7.0416	],
+							[0.45,	 6.6821	],
+							[0.50,	 6.3226	],
+							[0.55,	 5.9631	],
+							[0.60,	 5.6035	],
+							[0.65,	 5.2440	],
+							[0.70,	 4.8845	],
+							[0.75,	 4.5250	],
+							[0.80,	 4.1654	],
+							[0.85,	 3.8059	],
+							[0.90,	 3.4464	],
+							[0.95,	 3.0869	],
+							[1.00,	 2.7274	]],
+	    	"airfoil" : [	[0.00,	"uCRM-9_w0"		],
+							[0.10,	"uCRM-9_w10"	],
+							[0.15,	"uCRM-9_w15"	],
+							[0.20,	"uCRM-9_w20"	],
+							[0.25,	"uCRM-9_w25"	],
+							[0.30,	"uCRM-9_w30"	],
+							[0.35,	"uCRM-9_w35"	],
+							[0.37,	"uCRM-9_w37"	],
+							[0.40,	"uCRM-9_w40"	],
+							[0.45,	"uCRM-9_w45"	],
+							[0.50,	"uCRM-9_w50"	],
+							[0.55,	"uCRM-9_w55"	],
+							[0.60,	"uCRM-9_w60"	],
+							[0.65,	"uCRM-9_w65"	],
+							[0.70,	"uCRM-9_w70"	],
+							[0.75,	"uCRM-9_w75"	],
+							[0.80,	"uCRM-9_w80"	],
+							[0.85,	"uCRM-9_w85"	],
+							[0.90,	"uCRM-9_w90"	],
+							[0.95,	"uCRM-9_w95"	],
+							[1.00,	"uCRM-9_w100"	]],
+	    	"control_surface" : {
+    	    	"chord_fraction" : 1.0,
+    	    	"control_mixing" : {
+            	    	"flaps1" : 1.0
+    	    	}
+	    	},
+            "grid" : {
+                "N" : 100,
+                "cluster_points" : [0.15, 0.3, 0.475, 0.65, 0.825],
+                "flap_edge_cluster" : true,
+                "reid_corrections" : true,
+                "xwing_ID" : 0
+            }
+        },
+        "horizontal_tail" : {
+            "ID" : 2,
+            "side" : "both",
+            "is_main" : false,
+            "connect_to" : {
+                "dx" : -30.15011535,
+                "dz" : -2.29744401
+            },
+            "semispan" : 10.668,
+            "sweep" : 37.0,
+            "dihedral" : 7.51132,
+            "chord" : 	[	[0.00,	5.744095000	],
+							[0.20,	5.614777815	],
+							[0.30,	5.194853718	],
+							[0.40,	4.774968337	],
+							[0.50,	4.355132870	],
+							[0.60,	3.935363292	],
+							[0.70,	3.515683202	],
+							[0.80,	3.096128992	],
+							[0.90,	2.676759856	],
+							[1.00,	2.256543698	]],
+            "airfoil" : [	[0.00,	"uCRM-9_h1692"	],
+							[0.20,	"uCRM-9_h20"	],
+							[0.30,	"uCRM-9_h30"	],
+							[0.40,	"uCRM-9_h40"	],
+							[0.50,	"uCRM-9_h50"	],
+							[0.60,	"uCRM-9_h60"	],
+							[0.70,	"uCRM-9_h70"	],
+							[0.80,	"uCRM-9_h80"	],
+							[0.90,	"uCRM-9_h90"	],
+							[1.00,	"uCRM-9_h100"	]],
+            "control_surface" : {
+                "chord_fraction" : 1.0,
+                "control_mixing" : {
+                    "elevator" : 1.0
+                }
+            },
+            "grid" : {
+                "N" : 50,
+                "flap_edge_cluster" : true,
+                "reid_corrections" : true,
+                "blending_distance" : 0.25,
+                "xwing_ID" : 1
+            }
+        }
+    }
+}

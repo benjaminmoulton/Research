@@ -1,0 +1,81 @@
+{
+    "aircraft" : {
+        "name" : "",
+        "short_name" : "",
+        "wing_area[ft^2]" : ,
+        "wing_span[ft]" : ,
+        "weight[lbf]" : ,
+        "Ixx[slug-ft^2]" : ,
+        "Iyy[slug-ft^2]" : ,
+        "Izz[slug-ft^2]" : ,
+        "Ixy[slug-ft^2]" : ,
+        "Ixz[slug-ft^2]" : ,
+        "Iyz[slug-ft^2]" : ,
+        "from" : "NASA CR-2144 -- Heffley et al.",
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 2.37689261479e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : ,
+            "alpha" : ,
+            "qbar" : ,
+            "alpha_hat" : ,
+            "mu_hat" : 0.00,
+            "de" : 
+        },
+        "CS" : {
+            "beta" : ,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "dr" : 
+        },
+        "CD" : {
+            "L0" : ,
+            "L" : 0.0,
+            "L2" : ,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : ,
+            "pbar" : ,
+            "rbar" : ,
+			"Lrbar": 0.0,
+            "da" : ,
+            "dr" : 
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : ,
+            "qbar" : ,
+            "alpha_hat" : ,
+            "mu_hat" : 0.0,
+            "de" : 
+        },
+        "Cn" : {
+            "beta" : ,
+            "pbar" : ,
+			"Lpbar": 0.0,
+            "rbar" : ,
+            "da" : ,
+            "dr" : 
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": ,
+        "wn_sp": ,
+        "zt_ph": ,
+        "wn_ph": ,
+        "Sg_ro": ,
+        "Sg_sl": ,
+        "zt_dr": ,
+        "wn_dr": 
+    }
+}
