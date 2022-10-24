@@ -1,0 +1,39 @@
+{
+    "components" : {
+        "pseudo_wing_component" : {
+            "ID" : 1,
+            "type" : "pseudo_prismoid",
+            "side" : "right",
+            "mass" : 1.0,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" : 0.0,
+                "dy" : 0.0,
+                "dz" : 0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 5.0,
+            "dihedral" : [
+                [0.0, 0.0],
+                [1.0, 0.0]
+            ],
+            "sweep" : [
+                [0.0, 10.0],
+                [1.0, 10.0]
+            ],
+            "chord" : [
+                [0.0, 10.0],
+                [1.0, 10.0]
+            ],
+            "thickness" : [
+                [0.0, 0.12],
+                [1.0, 0.12]
+            ],
+            "camber" : [
+                [0.0, 0.02],
+                [1.0, 0.02]
+            ]
+        }
+    }
+}
