@@ -67,6 +67,8 @@ class AircraftSystem:
         # store component input values
         components = self.input_dict.get("components",{})
 
+        wing_types = ["pseudo_prismoid","symmetric_airfoil","diamond_airfoil"]
+
         # initialize components, and each
         self.components = {}
         for component in components:
@@ -74,7 +76,7 @@ class AircraftSystem:
             id_number = input_dict.get("ID")
 
             # initialize PseudoPrismoid
-            if input_dict["type"] in ["pseudo_prismoid","symmetric_airfoil"]:
+            if input_dict["type"] in wing_types:
                 self.components[id_number] = Wing(input_dict)
 
 

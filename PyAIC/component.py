@@ -37,6 +37,7 @@ class Component:
         return self.density
 
 
+
 class PseudoPrismoid(Component):
     """A default class for calculating and containing the mass properties of a
     Psuedo Prismoid.
@@ -53,6 +54,15 @@ class PseudoPrismoid(Component):
 
         # retrieve additional info
         self._retrieve_info(input_dict)
+
+        # initialize the volume
+        cr,ct = self._cr,self._ct
+        tr,tt = self._tr,self._tt
+        cr2, ct2 = cr**2., ct**2.
+        crct = cr * ct
+        ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+        u0 = 1.0
+        self.volume = self._b / 12. * ka * u0
 
 
     def _retrieve_info(self,input_dict):
@@ -81,8 +91,11 @@ class PseudoPrismoid(Component):
         self._cr,self._ct = geometry.get("chord",[1.0,1.0])
         self._tr,self._tt = geometry.get("thickness",[0.1,0.1])
         self._ur,self._ut = geometry.get("camber",[0.01,0.01])
+        self._xmt = geometry.get("max_thickness_location",0.1)
         self._Lambda = np.deg2rad(input_dict.get("sweep",0.0))
         self._Gamma = np.deg2rad(input_dict.get("dihedral",0.0))
+        self._root_location = input_dict.get("root_location",[0.0,0.0,0.0])
+        self._root_location = np.array(self._root_location)[:,np.newaxis]
 
 
     def _get_kappa_values(self):
@@ -103,7 +116,7 @@ class PseudoPrismoid(Component):
         
         one = 4.*cr3 + 3.*cr2ct + 2.*crct2 +    ct3
         two =    cr3 + 2.*cr2ct + 3.*crct2 + 4.*ct3
-        self._kb = tr * one + tr * two
+        self._kb = tr * one + tt * two
 
         one = 3.*cr2 + 4.*crct + 3.*ct2
         two =    cr2 + 3.*crct + 6.*ct2
@@ -128,38 +141,55 @@ class PseudoPrismoid(Component):
         self._kg = tr**3. *one + tr**2.*tt *two + tr*tt**2. *thr + tt**3. *fou
 
 
+    def _get_upsilon_values(self):
+
+        # calculate upsilon values
+        self._u0 = 1.0
+        self._u1 = 1.0
+        self._u2 = 1.0
+        self._u3 = 1.0
+
+
     def get_mass_properties(self):
+        """Method which returns mass, cg, I about cg rotated to total cframe"""
 
         # calculate kappa values
         self._get_kappa_values()
 
+        # calculate upsilon values
+        self._get_upsilon_values()
+
         # calculate mass
-        self._V = self._b / 12. * self._ka
+        # self.volume = self._b / 12. * self._ka
         if self._given_density_not_mass:
-            self.mass = self.density * self._V
+            self.mass = self.density * self.volume
         
         # calculate center of gravity values
-        num = 3. * self._kb + 4. * self._b * self._kc * np.tan(self._Lambda)
-        xbar = - num / 20. / self._ka
-        ybar = self._delta * self._b * self._kc / 5. / self._ka
-        self.cg_location = np.array([xbar,ybar,0.0])
+        num1 = 3. * self._kb * self._u1
+        num = num1 + 4. * self._b * self._kc * self._u0 * np.tan(self._Lambda)
+        xbar = - num / 20. / self._ka / self._u0
+        ybar = self._delta * self._b * self._kc * self._u0/5./self._ka/self._u0
+        self.cg_location = np.array([xbar,ybar,0.0])[:,np.newaxis]
 
         # calculate moments and products of inertia about the wing root c/4
-        num = 56. * self._b**2. * self._kf + self._kg
-        Ixxo = self.mass * num / 280. / self._ka
+        num = 56. * self._b**2. * self._kf * self._u0 + self._kg * self._u3
+        Ixxo = self.mass * num / 280. / self._ka / self._u0
         
-        one = 2. * self._b * self._kf * np.tan(self._Lambda)**2.
-        two = self._kd * np.tan(self._Lambda)
-        num = 84. * self._b * (one + two) + 49. * self._ke + 3. * self._kg
-        Iyyo = self.mass * num / 840. / self._ka
+        one = 2. * self._b * self._kf * self._u0 * np.tan(self._Lambda)**2.
+        two = self._kd * self._u1 * np.tan(self._Lambda)
+        num1 = 84. * self._b * (one + two) + 49. * self._ke * self._u2
+        num = num1 + 3. * self._kg * self._u3
+        Iyyo = self.mass * num / 840. / self._ka / self._u0
 
-        one = self._b * self._kf * ( np.tan(self._Lambda)**2. + 1. )
-        two = self._kd * np.tan(self._Lambda)
-        num = 12. * self._b * (one + two) + 7. * self._ke
-        Izzo = self.mass * num / 120. / self._ka
+        one = self._b * ( np.tan(self._Lambda)**2. + 1. ) * self._kf * self._u0
+        two = self._kd * self._u1 * np.tan(self._Lambda)
+        num = 6. * self._b * (4. * one + two) + 7. * self._ke * self._u2
+        Izzo = self.mass * num / 120. / self._ka / self._u0
+        # this is wrong
 
-        num = 4. * self._b * self._kf * np.tan(self._Lambda) + self._kd
-        Ixyo = self._delta * self._b * self.mass * num / 20. / self._ka
+        num1 = 4. * self._b * self._kf * self._u0 * np.tan(self._Lambda)
+        num = num1 + self._kd * self._u1
+        Ixyo = -self._delta * self._b * self.mass * num / 20./self._ka/self._u0
 
         Ixzo = 0.0
         Iyzo = 0.0
@@ -172,13 +202,69 @@ class PseudoPrismoid(Component):
         ])
 
         # calculate mass shift from parallel axis theorem
-        s = self.cg_location[:,np.newaxis]
+        s = self.cg_location
         inn_prod = np.matmul(s.T,s)[0,0]
         out_prod = np.matmul(s,s.T)
         I_shift = self.mass*( inn_prod * np.eye(3) - out_prod )
 
         # calculate inertia tensor about the cg
-        self.inertia_tensor = Io - I_shift
+        Icg = Io - I_shift
+        # rows = [0,1,2,0,0,1]
+        # cols = [0,1,2,1,2,2]
+        # I_cg = Icg[rows,cols]
+        # lbm_slug = 32.17405082
+        # m_wng = 2.66974726 / lbm_slug
+        # cg_wng = np.array([ 
+        #     -0.13712589,
+        #     0.72910392,
+        #     0.00000000000001
+        # ])
+        # I_wng = np.array([
+        #     2.16737992,
+        #     0.15240118,
+        #     2.31726753,
+        #     0.23551551,
+        #     -0.00000002,
+        #     -0.00000100
+        # ]) / lbm_slug
+        # I_wng_abt_cg = np.array([
+        #     0.74816221,
+        #     0.10220056,
+        #     0.84784920,
+        #     -0.03140323,
+        #     -0.00000015,
+        #     -0.00000032
+        # ]) / lbm_slug
+        # for i in range(6):
+        #     print(I_wng[i])
+        #     print(I_cg[i])
+        #     print(I_wng_abt_cg[i])
+        #     print()
+        # # print( Icg[0,0])
+        # # print( Icg[1,1])
+        # # print( Icg[2,2])
+        # # print(-Icg[0,1])
+        # # print(-Icg[0,2])
+        # # print(-Icg[1,2])
+        # # print()
+
+        # define a rotation matrix
+        CG = np.cos(-self._delta*self._Gamma)
+        SG = np.sin(-self._delta*self._Gamma)
+        Rx = np.array([
+            [1.0, 0.0, 0.0],
+            [0.0,  CG, -SG],
+            [0.0,  SG,  CG]
+        ])
+
+        # rotate cg location and inertia for dihedral
+        # print(self.cg_location)
+        self.cg_location = np.matmul(Rx,self.cg_location)
+        # print(self.cg_location)
+        self.inertia_tensor = np.matmul(Rx.T,np.matmul(Icg,Rx))
+
+        # shift cg by root location given
+        self.cg_location += self._root_location
 
         output_dict = {
             "mass" : self.mass,
@@ -187,6 +273,7 @@ class PseudoPrismoid(Component):
         }
         return output_dict
         
+
 
 class SymmetricAirfoil(PseudoPrismoid):
     """A default class for calculating and containing the mass properties of a
@@ -201,3 +288,88 @@ class SymmetricAirfoil(PseudoPrismoid):
 
         # invoke init of parent
         PseudoPrismoid.__init__(self,input_dict)
+
+        # save a coefficients for NACA 4-digit thickness distribution
+        self._a0 = 2.969
+        self._a1 = -1.260
+        self._a2 = -3.516
+        self._a3 = 2.843
+        self._a4 = -1.036
+
+        # initialize the volume
+        cr,ct = self._cr,self._ct
+        tr,tt = self._tr,self._tt
+        cr2, ct2 = cr**2., ct**2.
+        crct = cr * ct
+        ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+        a0 = self._a0
+        a1 = self._a1
+        a2 = self._a2
+        a3 = self._a3
+        a4 = self._a4
+        u0 = 1./ 60.*( 40.*a0+ 30.*a1+ 20.*a2+ 15.*a3+ 12.*a4)
+        self.volume = self._b / 12. * ka * u0
+
+
+    def _get_upsilon_values(self):
+
+        # initialize certain values for ease of calculation
+        a0 = self._a0
+        a1 = self._a1
+        a2 = self._a2
+        a3 = self._a3
+        a4 = self._a4
+        a03, a13, a23, a33, a43 = a0**3., a1**3., a2**3., a3**3., a4**3.
+        a02, a12, a22, a32, a42 = a0**2., a1**2., a2**2., a3**2., a4**2.
+
+        # calculate upsilon values
+        self._u0 = 1./ 60.*( 40.*a0+ 30.*a1+ 20.*a2+ 15.*a3+ 12.*a4)
+        self._u1 = 1./ 60.*( 56.*a0+ 50.*a1+ 40.*a2+ 33.*a3+ 28.*a4)
+        self._u2 = 1./980.*(856.*a0+770.*a1+644.*a2+553.*a3+484.*a4)
+        one1 = 2./5.*a03 + 1*a02*a1 + 3./4.*a02*a2 + 3./5.*a02*a3
+        one2 = 1./2.*a02*a4 + 6./7.*a0*a12 + 4./3.*a0*a1*a2
+        one3 = 12./11.*a0*a1*a3 + 12./13.*a0*a1*a4
+        two1 = 6./11*a0*a22 + 12./13.*a0*a2*a3 + 4./5.*a0*a2*a4 +2./5.*a0*a32
+        two2 = 12./17.*a0*a3*a4 + 6./19.*a0*a42 + 1./4.*a13 + 3./5.*a12*a2
+        thr1 = 1./2.*a12*a3 + 3./7.*a12*a4 + 1./2.*a1*a22 + 6./7.*a1*a2*a3
+        thr2 = 3./4.*a1*a2*a4 + 3./8.*a1*a32 + 2./3.*a1*a3*a4 + 3./10.*a1*a42
+        fou1 = 1./7.*a23 + 3./8.*a22*a3 + 1./3.*a22*a4 + 1./3.*a2*a32
+        fou2 = 3./5.*a2*a3*a4 + 3./11.*a2*a42 + 1./10.*a33 + 3./11.*a32*a4
+        fou3 = 1./4.*a3*a42 + 1./13.*a43
+        one = one1 + one2 + one3
+        self._u3 = one + two1 + two2 + thr1 + thr2 + fou1 + fou2 + fou3
+
+
+
+class DiamondAirfoil(PseudoPrismoid):
+    """A default class for calculating and containing the mass properties of a
+    Diamond Airfoil.
+
+    Parameters
+    ----------
+    input_vars : dict , optional
+        Must be a python dictionary
+    """
+    def __init__(self,input_dict={}):
+
+        # invoke init of parent
+        PseudoPrismoid.__init__(self,input_dict)
+
+        # initialize the volume
+        cr,ct = self._cr,self._ct
+        tr,tt = self._tr,self._tt
+        cr2, ct2 = cr**2., ct**2.
+        crct = cr * ct
+        ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+        u0 = 1. / 4.
+        self.volume = self._b / 12. * ka * u0
+
+
+    def _get_upsilon_values(self):
+
+        # calculate upsilon values
+        self._u0 = 1. /  4.
+        self._u1 = ( 4. * self._xmt     + 1. ) / 12.
+        self._u2 = ( 8. * self._xmt**2. + 3. ) / 28.
+        self._u3 = 1. / 32.
+

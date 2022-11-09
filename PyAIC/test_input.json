@@ -1,9 +1,65 @@
 {
     "components" : {
-        "pseudo_wing_component" : {
-            "ID" : 1,
+        "diamond_airfoil_component" : {
+            "ID" : 2,
+            "type" : "diamond_airfoil",
+            "side" : "right",
+            "density" : 1.0,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" : 0.0,
+                "dy" : 0.0,
+                "dz" : 0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 5.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [
+                [0.0, 1.0],
+                [1.0, 1.0]
+            ],
+            "thickness" : [
+                [0.0, 0.12],
+                [1.0, 0.12]
+            ],
+            "camber" : 0.02,
+            "max_thickness_location" : 0.6
+        }
+    },
+    "other" : {
+        "next" : {
+            "ID" : 2,
             "type" : "pseudo_prismoid",
             "side" : "right",
+            "density" : 1.0,
+            "massj" : 0.0828408055556,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" : 0.0,
+                "dy" : 0.0,
+                "dz" : 0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 2.0,
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
+            "chord" : [
+                [0.0, 1.0],
+                [1.0, 0.5]
+            ],
+            "thickness" : [
+                [0.0, 0.12],
+                [1.0, 0.08]
+            ],
+            "camber" : 0.02
+        },
+        "pseudo_wing_component" : {
+            "ID" : 1,
+            "type" : "symmetric_airfoil",
+            "side" : "both",
             "mass" : 1.0,
             "connect_to" : {
                 "ID" : 0,
@@ -14,26 +70,15 @@
                 "y_offset" : 0.0
             },
             "semispan" : 5.0,
-            "dihedral" : [
-                [0.0, 0.0],
-                [1.0, 0.0]
-            ],
-            "sweep" : [
-                [0.0, 10.0],
-                [1.0, 10.0]
-            ],
+            "dihedral" : 0.0,
+            "sweep" : 0.0,
             "chord" : [
-                [0.0, 10.0],
-                [1.0, 10.0]
+                [0.0, 1.0],
+                [0.5, 1.0],
+                [1.0, 1.0]
             ],
-            "thickness" : [
-                [0.0, 0.12],
-                [1.0, 0.12]
-            ],
-            "camber" : [
-                [0.0, 0.02],
-                [1.0, 0.02]
-            ]
+            "thickness" : 0.12,
+            "camber" : 0.02
         }
     }
 }

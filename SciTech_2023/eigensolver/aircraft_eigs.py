@@ -73,6 +73,7 @@ if __name__ == "__main__":
 
     # plot eigenvalues
     klik = ["trad","buck","diml"]
+    craft_marker = {"I":".","II":"v","III":"2","IV":"x"}
     # short period eigenvalues
     for k in range(3):
         fig, ax = plt.subplots(tight_layout=True)
@@ -89,9 +90,10 @@ if __name__ == "__main__":
             i_sp = dicti["lon"]["sp"]
             for j in i_sp:
                 eig = dicti["lon"][evals][j]
-                ax.plot(np.real(eig),np.imag(eig),"kx")
-                ax.text(np.real(eig),np.imag(eig) + 0.0025,\
-                    str(i+1) + "-" + craft_class[i],ha="center",size=10.0)
+                ax.plot(np.real(eig),np.imag(eig),\
+                    marker=craft_marker[craft_class[i]],c="k")
+                # ax.text(np.real(eig),np.imag(eig) + 0.0025,str(i+1),\
+                #     ha="center",size=10.0)
         # get limits
         xlim = ax.get_xlim(); ax.set_xlim(xlim)
         ylim = ax.get_ylim(); ax.set_ylim(ylim)
@@ -105,29 +107,29 @@ if __name__ == "__main__":
         else:
             plt.close()
     
-    # run boeing 747
-    file_boeing = run_files[8]
+    # # run boeing 747
+    # file_boeing = run_files[8]
 
-    # initialize weights, altitudes, velocities
-    n_W = 5; n_rho = 5; n_CL = 5
+    # # initialize weights, altitudes, velocities
+    # n_W = 5; n_rho = 5; n_CL = 5
+    # # W = np.linspace(400000.0,636600.0,n_W)
     # W = np.linspace(400000.0,636600.0,n_W)
-    W = np.linspace(400000.0,636600.0,n_W)
-    rho = np.linspace(2.37689261479e-03,1.26725882157e-03,n_rho) # SL, 20Kft
-    # V = np.linspace(221.0,850.0,n_V)
-    CL = np.linspace(0.1,0.8,n_CL)
+    # rho = np.linspace(2.37689261479e-03,1.26725882157e-03,n_rho) # SL, 20Kft
+    # # V = np.linspace(221.0,850.0,n_V)
+    # CL = np.linspace(0.1,0.8,n_CL)
 
-    for i in range(n_W):
-        for j in range(n_rho):
-            for k in range(n_CL):
-                # get json file
-                input_dict = json.loads(open(run_files[i]).read())
+    # for i in range(n_W):
+    #     for j in range(n_rho):
+    #         for k in range(n_CL):
+    #             # get json file
+    #             input_dict = json.loads(open(run_files[i]).read())
 
-                # change W, CL, rho
-                Sw = input_dict["aircraft"]["wing_area[ft^2]"]
-                input_dict["aircraft"]["weight[lbf]"] = W[i]
-                input_dict["analysis"]["density[slugs/ft^3]"] = rho[j]
-                V = (W[i]/0.5/rho[j]/CL[k]/Sw)**0.5
-                print(i,j,k,V)
-                input_dict["aerodynamics"]["CL"]["0"] = CL[k]
-                eigensolved[i] = es.Solver(input_dict,report=False)
+    #             # change W, CL, rho
+    #             Sw = input_dict["aircraft"]["wing_area[ft^2]"]
+    #             input_dict["aircraft"]["weight[lbf]"] = W[i]
+    #             input_dict["analysis"]["density[slugs/ft^3]"] = rho[j]
+    #             V = (W[i]/0.5/rho[j]/CL[k]/Sw)**0.5
+    #             print(i,j,k,V)
+    #             input_dict["aerodynamics"]["CL"]["0"] = CL[k]
+    #             eigensolved[i] = es.Solver(input_dict,report=False)
 

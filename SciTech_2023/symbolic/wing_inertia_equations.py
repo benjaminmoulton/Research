@@ -47,6 +47,7 @@ if __name__ == "__main__":
     c_eq = (ct-cr) * yp + cr
     tmax_eq = (tt-tr) * yp + tr
     t_eq = a0 * sy.sqrt(xp) + a1*(xp) + a2*(xp)**2 + a3*(xp)**3 +a4*(xp)**4
+    t_eq = a0 * sy.sqrt(xp)
     x = c_eq * ( sy.Rational(1,4) - xp )
     y = b * yp
     # z = t_eq * tmax_eq * c_eq * ( zp - sy.Rational(1,2) )
@@ -59,6 +60,22 @@ if __name__ == "__main__":
     xp_bnd = (xp,xp_lo,xp_up)
     yp_bnd = (yp,yp_lo,yp_up)
     zp_bnd = (z,z_lo,z_up)
+    # c_eq = (ct-cr) * yp + cr
+    # tmax_eq = (tt-tr) * yp + tr
+    # t_eq = 1#a0 * sy.sqrt(xp) + a1*(xp) + a2*(xp)**2 + a3*(xp)**3 +a4*(xp)**4
+    # x = c_eq * ( sy.Rational(1,4) - xp )
+    # y = b * yp
+    # z = t_eq * tmax_eq * c_eq * ( sy.Rational(1,2) - zp )
+    # dx = c_eq
+    # dy = b
+    # dz = t_eq * tmax_eq * c_eq
+    # xp_up = 1; xp_lo = 0
+    # # z_up = sy.Rational(1,2) * t_eq * tmax_eq * c_eq; z_lo = - z_up
+    # zp_up = 1; zp_lo = 0
+    # yp_up = 1; yp_lo = 0
+    # xp_bnd = (xp,xp_lo,xp_up)
+    # yp_bnd = (yp,yp_lo,yp_up)
+    # zp_bnd = (zp,zp_lo,zp_up)
 
     # define S integration constants
     S000 = x**0*y**0*z**0 # 0
@@ -158,22 +175,121 @@ if __name__ == "__main__":
         2.16737992,
         0.15240118,
         2.31726753,
-        -0.23551551,
-        0.00000002,
-        0.00000100
+        0.23551551,
+        -0.00000002,
+        -0.00000100
     ]) / lbm_slug
+    I_wng_abt_cg = np.array([
+        0.74816221,
+        0.10220056,
+        0.84784920,
+        -0.03140323,
+        -0.00000015,
+        -0.00000032
+    ]) / lbm_slug
+
+    # my eqs
+    cr = 1.0 # ],
+    ct = 0.5 # ],
+    tr = 0.12 # ],
+    tt = 0.08 # ],
+    b = 2.0 # ],
+    a0 = 2.969 # ], # 2.969,-1.26,-3.516,2.843,-1.036
+    a1 = -1.260 # ],
+    a2 = -3.516 # ],
+    a3 = 2.843 # ],
+    a4 = -1.036 # 
+    cr2, ct2 = cr**2., ct**2.
+    crct = cr * ct
+    cr3, ct3 = cr**3., ct**3.
+    cr2ct, crct2 = cr2 * ct, cr * ct2
+    cr4, ct4 = cr**4., ct**4.
+    cr3ct, cr2ct2, crct3 = cr3 * ct, cr2 * ct2, cr * ct3
+
+    # calculate kappa values
+    ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+    one = 4.*cr3 + 3.*cr2ct + 2.*crct2 +    ct3
+    two =    cr3 + 2.*cr2ct + 3.*crct2 + 4.*ct3
+    kb = tr * one + tt * two
+    one = 3.*cr2 + 4.*crct + 3.*ct2
+    two =    cr2 + 3.*crct + 6.*ct2
+    kc = tr * one + 2. * tt * two
+    one = (cr + ct) * (2.*cr2 + crct + 2.*ct2)
+    two = cr3 + 3.*cr2ct + 6.*crct2 + 10.*ct3
+    kd = tr * one + tt * two
+    one = 5.*cr4 + 4.*cr3ct + 3.*cr2ct2 + 2.*crct3 +    ct4
+    two =    cr4 + 2.*cr3ct + 3.*cr2ct2 + 4.*crct3 + 5.*ct4
+    ke = tr * one + tt * two
+    one = cr2 + 2.*crct +  2.*ct2
+    two = cr2 + 4.*crct + 10.*ct2
+    kf = tr * one + tt * two
+    one = 35.*cr4 + 20.*cr3ct + 10.*cr2ct2 +  4.*crct3 +     ct4
+    two = 15.*cr4 + 20.*cr3ct + 18.*cr2ct2 + 12.*crct3 +  5.*ct4
+    thr =  5.*cr4 + 12.*cr3ct + 18.*cr2ct2 + 20.*crct3 + 15.*ct4
+    fou =     cr4 +  4.*cr3ct + 10.*cr2ct2 + 20.*crct3 + 35.*ct4
+    kg = tr**3. *one + tr**2.*tt *two + tr*tt**2. *thr + tt**3. *fou
+    # calculate upsilon values
+    u0 = 1./ 60.*( 40.*a0+ 30.*a1+ 20.*a2+ 15.*a3+ 12.*a4)
+    u1 = 1./ 60.*( 56.*a0+ 50.*a1+ 40.*a2+ 33.*a3+ 28.*a4)
+    u2 = 1./980.*(856.*a0+770.*a1+644.*a2+553.*a3+484.*a4)
+    one1 = 2./5.*a0**3. + 1*a0**2.*a1 + 3./4.*a0**2.*a2 + 3./5.*a0**2.*a3
+    one2 = 1./2.*a0**2.*a4 + 6./7.*a0*a1**2. + 4./3.*a0*a1*a2
+    one3 = 12./11.*a0*a1*a3 + 12./13.*a0*a1*a4
+    two1 = 6./11*a0*a2**2. + 12./13.*a0*a2*a3 + 4./5.*a0*a2*a4 +2./5.*a0*a3**2.
+    two2 = 12./17.*a0*a3*a4 + 6./19.*a0*a4**2. + 1./4.*a1**3. + 3./5.*a1**2.*a2
+    thr1 = 1./2.*a1**2.*a3 + 3./7.*a1**2.*a4 + 1./2.*a1*a2**2. + 6./7.*a1*a2*a3
+    thr2 = 3./4.*a1*a2*a4 + 3./8.*a1*a3**2. + 2./3.*a1*a3*a4 + 3./10.*a1*a4**2.
+    fou1 = 1./7.*a2**3. + 3./8.*a2**2.*a3 + 1./3.*a2**2.*a4 + 1./3.*a2*a3**2.
+    fou2 = 3./5.*a2*a3*a4 + 3./11.*a2*a4**2. + 1./10.*a3**3. + 3./11.*a3**2.*a4
+    fou3 = 1./4.*a3*a4**2. + 1./13.*a4**3.
+    u3 = one1 + one2 + one3 + two1 + two2 + thr1 + thr2 + fou1 + fou2 + fou3
+    SP_S = [
+        b/12. * ka * u0,
+        -b/80. * kb * u1,
+        b**2. / 60. * kc * u0,
+        0.0,
+        -b**2./240.*kd*u1,
+        0.0,
+        0.0,
+        7.*b/1440.*ke*u2,
+        b**3./60.*kf*u0,
+        b/3360.*kg*u3
+    ]
+    # for i in range(len(SP_S)):
+    #     print(S[i])
+    #     print(SP_S[i])
+    #     print()
+    
+    m_sps = SP_S[0]
+    cg_sps = np.array([
+        SP_S[1] / SP_S[0], # wrong
+        SP_S[2] / SP_S[0],
+        float(SP_S[3] / SP_S[0])
+    ])
+    I_sps = np.array([
+        SP_S[8] + SP_S[9],
+        SP_S[7] + SP_S[9],
+        SP_S[7] + SP_S[8],
+        -SP_S[4],
+        float(SP_S[5]),
+        -float(SP_S[6]),
+    ])
 
     eq_props = np.concatenate(([m_eqs],cg_eqs,I_eqs))
     wn_props = np.concatenate(([m_wng],cg_wng,I_wng))
+    sp_props = np.concatenate(([m_sps],cg_sps,I_sps))
 
     pd_props = (wn_props - eq_props) / wn_props
+    pe_props = (wn_props - sp_props) / wn_props
     names = ["mass","cg-x","cg-y","cg-z","Ixx","Iyy","Izz","Ixy","Ixz","Iyz"]
 
     for i in range(eq_props.shape[0]):
         print(names[i])
-        print("eq = {:< 16.12}".format(eq_props[i]))
-        print("SW = {:< 16.12}".format(wn_props[i]))
-        print("PD = {:< 16.12}".format(pd_props[i]))
+        print("eq       = {:< 16.12}".format(eq_props[i]))
+        print("SCPP     = {:< 16.12}".format(sp_props[i]))
+        print("SW       = {:< 16.12}".format(wn_props[i]))
+        print("PD SW eq = {:< 16.12}".format(pd_props[i]))
+        print("PD SW SC = {:< 16.12}".format(pe_props[i]))
         print()
 
 

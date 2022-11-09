@@ -2,7 +2,7 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 
-from component import Component, PseudoPrismoid, SymmetricAirfoil
+from component import Component, PseudoPrismoid, SymmetricAirfoil, DiamondAirfoil
 
 class Wing:
     """A class calculating and containing the mass properties of an aircraft.
@@ -23,15 +23,25 @@ class Wing:
         # retrieve info
         self._retrieve_info(input_dict)
 
+        # organize input info
+        self._organize_inputs()
+
+        # initialize components
+        self._initialize_components()
+        
+        # if given total mass, determine density
+        if not self._given_density_not_mass:
+            self._get_density_for_components()
+
 
     def _retrieve_info(self,input_dict):
         """A function which retrieves the information and stores it globally.
         """
         
         # store variables from file input dictionary
-        wing_type = input_dict.get("type","symmetric_airfoil")
+        self._wing_type = input_dict.get("type","symmetric_airfoil")
 
-        side = input_dict.get("side","both")
+        self._side = input_dict.get("side","both")
 
         # store mass / density variables
         if "density" in input_dict:
@@ -45,22 +55,274 @@ class Wing:
         
         # import connect_to info
         connect = input_dict.get("connect_to",{})
-        connect_ID = connect.get("ID",0)
-        location = connect.get("location", "tip")
-        connect_dx = connect.get("dx", 0.0)
-        connect_dy = connect.get("dy", 0.0)
-        connect_dz = connect.get("dz", 0.0)
-        connect_y_offset = connect.get("y_offset", 0.0)
+        self._connect_ID = connect.get("ID",0)
+        self._location = connect.get("location", "tip")
+        self._connect_dx = connect.get("dx", 0.0)
+        self._connect_dy = connect.get("dy", 0.0)
+        self._connect_dz = connect.get("dz", 0.0)
+        self._connect_y_offset = connect.get("y_offset", 0.0)
 
         # import geometry info
-        b = input_dict.get("semispan",1.0)
-        dihedral = input_dict.get("dihedral",1.0)
-        sweep = input_dict.get("sweep",0.0)
-        chord = input_dict.get("chord",1.0)
-        thickness = input_dict.get("thickness",0.10)
-        camber = input_dict.get("camber",0.02)
+        self._b = input_dict.get("semispan",1.0)
+        self._dihedral = input_dict.get("dihedral",1.0)
+        self._sweep = input_dict.get("sweep",0.0)
+        self._chord = input_dict.get("chord",1.0)
+        self._thickness = input_dict.get("thickness",0.10)
+        self._camber = input_dict.get("camber",0.02)
+
+        # check for incorrect format of values
+        if isinstance(self._dihedral,(float,int)):
+            val = float(self._dihedral)
+            self._dihedral = np.array([[0.0,val],[1.0,val]])
+        elif isinstance(self._dihedral,list):
+            self._dihedral = np.array(self._dihedral)
+        else:
+            raise ValueError("dihedral input not correctly formatted")
+
+        if isinstance(self._sweep,(float,int)):
+            val = float(self._sweep)
+            self._sweep = np.array([[0.0,val],[1.0,val]])
+        elif isinstance(self._sweep,list):
+            self._sweep = np.array(self._sweep)
+        else:
+            raise ValueError("sweep input not correctly formatted")
+
+        if isinstance(self._chord,(float,int)):
+            val = float(self._chord)
+            self._chord = np.array([[0.0,val],[1.0,val]])
+        elif isinstance(self._chord,list):
+            self._chord = np.array(self._chord)
+        else:
+            raise ValueError("chord input not correctly formatted")
+
+        if isinstance(self._thickness,(float,int)):
+            val = float(self._thickness)
+            self._thickness = np.array([[0.0,val],[1.0,val]])
+        elif isinstance(self._thickness,list):
+            self._thickness = np.array(self._thickness)
+        else:
+            raise ValueError("thickness input not correctly formatted")
+
+        if isinstance(self._camber,(float,int)):
+            val = float(self._camber)
+            self._camber = np.array([[0.0,val],[1.0,val]])
+        elif isinstance(self._camber,list):
+            self._camber = np.array(self._camber)
+        else:
+            raise ValueError("camber input not correctly formatted")
+
+
+    def _straighten_c_4(self,geo_dict):
+
+        ### "straighten"
+        # determine initial and difference angles for calculation
+        s_init = np.deg2rad(geo_dict["sweep"][0])
+        s_diff = np.deg2rad(geo_dict["sweep"][1] - geo_dict["sweep"][0])
+        d_init = np.deg2rad(geo_dict["dihedral"][0])
+        d_diff = np.deg2rad(geo_dict["dihedral"][1] - geo_dict["dihedral"][0])
+
+        # calculate shift distance
+        if d_diff != 0.0:
+            z_shift = -geo_dict["span"] / d_diff * \
+                ( np.cos(d_init) - np.cos(d_diff + d_init) )
+            y_shift = geo_dict["span"] / d_diff * \
+                ( np.sin(d_diff + d_init) - np.sin(d_init) )
+        elif d_init != 0.0:
+            y_shift = geo_dict["span"] * np.cos(d_init)
+            z_shift = geo_dict["span"] * np.sin(d_init)
+        else:
+            y_shift = geo_dict["span"]
+            z_shift = 0.0
+        if s_diff != 0.0:
+            x_shift = geo_dict["span"] / s_diff * \
+                np.log(np.abs(np.cos(s_init) / np.cos(s_diff + s_init)))
+        elif s_init != 0.0:
+            x_shift = geo_dict["span"] * np.tan(s_init)
+        else:
+            x_shift = 0.0
+
+        
+        # calculate corresponding constant angles
+        # if d_diff != 0.0:
+        # if s_diff != 0.0:
+        geo_dict["span"] = np.sqrt(z_shift**2. + y_shift**2.)
+        geo_dict["dihedral"] = np.rad2deg(np.arctan(z_shift / y_shift))
+        geo_dict["sweep"] = np.rad2deg(np.arctan2(x_shift,geo_dict["span"]))
+
+        # determine shift from root quarter chord to tip quarter chord
+        if self._side == "left": y_shift *= -1.
+        shift = np.array([-x_shift,y_shift,z_shift])
+        
+        return geo_dict,shift
+
+
+    def _organize_inputs(self):
+
+        # determine span fraction values
+        span_fracs = np.unique(np.concatenate((self._dihedral[:,0], \
+            self._sweep[:,0],self._chord[:,0],self._thickness[:,0], \
+            self._camber[:,0])))
+        
+        # initialize a components dictionary
+        self._component_inputs = {}
+
+        # initialize counters
+        i_d = i_s = i_c = i_t = i_m = 0
+
+        # root location
+        root_location = np.zeros((3,))
+        root_location[1] = self._connect_y_offset * 1.0
+
+        # create dictionary for input to component
+        for i in range(span_fracs.shape[0]-1):
+
+            # determine span value
+            b = (span_fracs[i+1] - span_fracs[i]) * self._b
+
+            # determine root and tip values
+            dihedral = self._dihedral[i_d:i_d+2]
+            dr = np.interp(span_fracs[i  ],dihedral[:,0],dihedral[:,1])
+            dt = np.interp(span_fracs[i+1],dihedral[:,0],dihedral[:,1])
+
+            sweep = self._sweep[i_s:i_s+2]
+            sr = np.interp(span_fracs[i  ],sweep[:,0],sweep[:,1])
+            st = np.interp(span_fracs[i+1],sweep[:,0],sweep[:,1])
+
+            chord = self._chord[i_c:i_c+2]
+            cr = np.interp(span_fracs[i  ],chord[:,0],chord[:,1])
+            ct = np.interp(span_fracs[i+1],chord[:,0],chord[:,1])
+            
+            thickness = self._thickness[i_t:i_t+2]
+            tr = np.interp(span_fracs[i  ],thickness[:,0],thickness[:,1])
+            tt = np.interp(span_fracs[i+1],thickness[:,0],thickness[:,1])
+
+            camber = self._camber[i_m:i_m+2]
+            mr = np.interp(span_fracs[i  ],camber[:,0],camber[:,1])
+            mt = np.interp(span_fracs[i+1],camber[:,0],camber[:,1])
+
+            # create component dictionary
+            geo_dict = {}
+            geo_dict["span"] = b
+            geo_dict["chord"] = [cr,ct]
+            geo_dict["thickness"] = [tr,tt]
+            geo_dict["camber"] = [mr,mt]
+            geo_dict["sweep"] = [sr,st]
+            geo_dict["dihedral"] = [dr,dt]
+
+            # "straighten" quarter chord line for each component section
+            geo_dict,shift = self._straighten_c_4(geo_dict)
+
+            # add to components input dictionary
+            self._component_inputs[i] = {}
+            if self._given_density_not_mass:
+                self._component_inputs[i]["density"] = self.density
+            else:
+                self._component_inputs[i]["density"] = 1.0
+            self._component_inputs[i]["geometry"] = geo_dict
+            self._component_inputs[i]["sweep"] = geo_dict["sweep"]
+            self._component_inputs[i]["dihedral"] = geo_dict["dihedral"]
+            self._component_inputs[i]["root_location"] = root_location.tolist()
+            if self._side == "both":
+                self._component_inputs[i]["side"] = "right"
+            else:
+                self._component_inputs[i]["side"] = self._side
+
+            # add to root location
+            root_location = root_location + shift
+            
+            # update indices
+            if i < span_fracs.shape[0]-2:
+                i1b = span_fracs[i+1]
+
+                if self._dihedral[i_d+1,0] <= i1b: i_d += 1
+                if self._dihedral[i_d+1,0] == self._dihedral[i_d,0]:  i_d += 1
+
+                if self._sweep[i_s+1,0] <= i1b: i_s += 1
+                if self._sweep[i_s+1,0] == self._sweep[i_d,0]:  i_s += 1
+
+                if self._chord[i_c+1,0] <= i1b: i_c += 1
+                if self._chord[i_c+1,0] == self._chord[i_c,0]:  i_c += 1
+
+                if self._thickness[i_t+1,0] <= i1b: i_t += 1
+                if self._thickness[i_t+1,0] == self._thickness[i_t,0]:  i_t +=1
+
+                if self._camber[i_m+1,0] <= i1b: i_m += 1
+                if self._camber[i_m+1,0] == self._camber[i_m,0]:  i_m += 1
+        
+        # if both wings
+        if self._side == "both":
+            for i in range(span_fracs.shape[0]-1):
+                j = i + span_fracs.shape[0]-1
+
+                self._component_inputs[j] = self._component_inputs[i].copy()
+                self._component_inputs[j]["side"] = "left"
+                arr = np.array(self._component_inputs[j]["root_location"])
+                arr[1] *= -1.0
+                self._component_inputs[j]["root_location"] = arr.tolist()
+        
+        # add in shift from input
+        in_shift = np.array([self._connect_dx,self._connect_dy,self._connect_dz])
+        for i in range(len(self._component_inputs)):
+            arr = np.array(self._component_inputs[i]["root_location"])
+            arr += in_shift * 1.0
+            self._component_inputs[i]["root_location"] = arr.tolist()
+
+
+    def _initialize_components(self):
+
+        self._components = {}
+        if self._wing_type == "diamond_airfoil":
+            for i in self._component_inputs:
+                self._components[i] = DiamondAirfoil(self._component_inputs[i])
+        elif self._wing_type == "symmetric_airfoil":
+            for i in self._component_inputs:
+                self._components[i] = SymmetricAirfoil(self._component_inputs[i])
+        elif self._wing_type == "pseudo_prismoid":
+            for i in self._component_inputs:
+                self._components[i] = PseudoPrismoid(self._component_inputs[i])
+
+
+    def _get_density_for_components(self):
+
+        # sum volume, save density if given mass
+        self.volume = 0.0
+        for i in self._components:
+            self.volume += self._components[i].volume
+
+        self.density = self.mass / self.volume
+        
+        # update individual densities
+        for i in self._components:
+            self._components[i].density = self.density * 1.
 
 
     def get_mass_properties(self):
+        """Method which runs the mass properties of each component of the wing
+        and returns the total wing mass, cg location, and inertia tensor about
+        the cg."""
 
-        print("yeah")
+        # run mass props for each component
+        for i in self._components:
+            self._components[i].get_mass_properties()
+        
+        # determine total mass
+        self.mass = 0.0
+        for i in self._components:
+            self.mass += self._components[i].mass
+        
+        # determine total cg location
+        self.cg_location = np.zeros((3,1))
+        for i in self._components:
+            self.cg_location += self._components[i].mass * \
+                self._components[i].cg_location
+            print(self._components[i].mass)
+            # print(self._components[i]._root_location)
+            print(self._components[i].cg_location)
+            print(self._components[i].inertia_tensor)
+            print()
+        self.cg_location /= self.mass
+
+        print(self.cg_location)
+        
+        # determine total inertia
+
