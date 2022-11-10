@@ -1,0 +1,71 @@
+{
+    "mass" : 0.3529007958458,
+    "components" : {
+        "main" : {
+            "ID" : 1,
+            "type" : "symmetric_airfoil",
+            "side" : "both",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 4.95968499764999,
+            "sweep" : [[0.0, 0.0],
+                       [1.0, 40.5]],
+            "dihedral" : [[0.0, 0.0],
+                          [1.0, 10.0]],
+            "chord" : [
+                [0.0, 2.75],
+                [0.07560964056743188, 2.75],
+                [0.1613005665438547, 1.1458333333333333],
+                [1.0, 0.9166666666666666]
+            ],
+            "thickness" : 0.12,
+            "camber" : 0.02
+        },
+        "BiggerWingletBase": {
+            "ID": 2,
+            "type" : "symmetric_airfoil",
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 1
+            },
+            "semispan": 0.2475,
+            "sweep": [[0.0, 40.5],
+                      [1.0, 46.35]],
+            "dihedral": [[0.0, 10.0],
+                         [1.0, 90.0]],
+            "thickness": [[0.0, 0.12],
+                        [1.0, 0.12]],
+            "camber": [[0.0, 0.02],
+                        [1.0, 0.0]],
+            "chord": [[0.0, 0.9166666666666666],
+                      [1.0, 0.74716666667]]
+        },
+        "BiggerWinglet": {
+            "ID": 3,
+            "type" : "symmetric_airfoil",
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 2
+            },
+            "semispan": 0.5775,
+            "sweep": [[0.0, 46.35],
+                      [1.0, 60.0]],
+            "dihedral": [[0.0, 90.0],
+                         [1.0, 90.0]],
+            "thickness": [[0.0, 0.12],
+                        [1.0, 0.12]],
+            "camber": [[0.0, 0.0],
+                        [1.0, 0.0]],
+            "chord": [[0.0, 0.74716666667],
+                      [1.0, 0.3435]]
+        }
+    }
+}

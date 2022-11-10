@@ -36,6 +36,42 @@ class Component:
     def get_density(self):
         return self.density
 
+  
+    def shift_properties_to_location(self,input_location):
+        """Method which determines the mass properties of the given component
+        about a given location.
+        
+        Parameters
+        ----------
+        input_location : array
+            The location about which to determine the mass properties. Must be
+            formatted as input_location = [[x],[y],[z]].
+        """
+
+        # if input_location is a list, turn into numpy array
+        if isinstance(input_location, list):
+            input_location = np.array(input_location)
+        
+        # determine new location
+        s = input_location - self.cg_location
+        # print(self.cg_location)
+
+        # calculate mass shift from parallel axis theorem
+        inner_product = np.matmul(s.T,s)[0,0]
+        outer_product = np.matmul(s,s.T)
+        I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
+
+        # calculate inertia tensor about new location
+        Inew = self.inertia_tensor + I_shift
+
+        # return dictionary of values
+        output_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "inertia_tensor" : Inew
+        }
+        return output_dict
+
 
 
 class PseudoPrismoid(Component):
@@ -183,9 +219,8 @@ class PseudoPrismoid(Component):
 
         one = self._b * ( np.tan(self._Lambda)**2. + 1. ) * self._kf * self._u0
         two = self._kd * self._u1 * np.tan(self._Lambda)
-        num = 6. * self._b * (4. * one + two) + 7. * self._ke * self._u2
+        num = 12. * self._b * (2. * one + two) + 7. * self._ke * self._u2
         Izzo = self.mass * num / 120. / self._ka / self._u0
-        # this is wrong
 
         num1 = 4. * self._b * self._kf * self._u0 * np.tan(self._Lambda)
         num = num1 + self._kd * self._u1
@@ -203,9 +238,9 @@ class PseudoPrismoid(Component):
 
         # calculate mass shift from parallel axis theorem
         s = self.cg_location
-        inn_prod = np.matmul(s.T,s)[0,0]
-        out_prod = np.matmul(s,s.T)
-        I_shift = self.mass*( inn_prod * np.eye(3) - out_prod )
+        inner_product = np.matmul(s.T,s)[0,0]
+        outer_product = np.matmul(s,s.T)
+        I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
 
         # calculate inertia tensor about the cg
         Icg = Io - I_shift
@@ -261,7 +296,7 @@ class PseudoPrismoid(Component):
         # print(self.cg_location)
         self.cg_location = np.matmul(Rx,self.cg_location)
         # print(self.cg_location)
-        self.inertia_tensor = np.matmul(Rx.T,np.matmul(Icg,Rx))
+        self.inertia_tensor = np.matmul(Rx,np.matmul(Icg,Rx.T))
 
         # shift cg by root location given
         self.cg_location += self._root_location
@@ -361,15 +396,15 @@ class DiamondAirfoil(PseudoPrismoid):
         cr2, ct2 = cr**2., ct**2.
         crct = cr * ct
         ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
-        u0 = 1. / 4.
+        u0 = 1. / 2.
         self.volume = self._b / 12. * ka * u0
 
 
     def _get_upsilon_values(self):
 
         # calculate upsilon values
-        self._u0 = 1. /  4.
-        self._u1 = ( 4. * self._xmt     + 1. ) / 12.
-        self._u2 = ( 8. * self._xmt**2. + 3. ) / 28.
-        self._u3 = 1. / 32.
+        self._u0 = 1. /  2.
+        self._u1 = ( 4. * self._xmt     + 1. ) / 6.
+        self._u2 = ( 8. * self._xmt**2. + 3. ) / 14.
+        self._u3 = 1. / 4.
 

@@ -315,14 +315,85 @@ class Wing:
         for i in self._components:
             self.cg_location += self._components[i].mass * \
                 self._components[i].cg_location
-            print(self._components[i].mass)
-            # print(self._components[i]._root_location)
-            print(self._components[i].cg_location)
-            print(self._components[i].inertia_tensor)
-            print()
+            # ##################
+            # print("Mass = {:> 10.8f} slugs".format(self._components[i].mass))
+            # # print(self._components[i]._root_location)
+            # print("Center of mass: (feet)")
+            # print("\tX = {:> 10.8f}".format(self._components[i].cg_location[0,0]))
+            # print("\tY = {:> 10.8f}".format(self._components[i].cg_location[1,0]))
+            # print("\tZ = {:> 10.8f}".format(self._components[i].cg_location[2,0]))
+            # I = self._components[i].inertia_tensor * 1.0
+            # I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
+            # [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
+            # print("Moment of inertia:( slugs * square feet)")
+            # print("\tLxx = {:> 10.8f}\tLxy = {:> 10.8f}\tLxz = {:> 10.8f}".format(Ixx,Ixy,Ixz))
+            # print("\tLyx = {:> 10.8f}\tLyy = {:> 10.8f}\tLyz = {:> 10.8f}".format(Iyx,Iyy,Iyz))
+            # print("\tLzx = {:> 10.8f}\tLzy = {:> 10.8f}\tLzz = {:> 10.8f}".format(Izx,Izy,Izz))
+            # print()
+            # ##################
         self.cg_location /= self.mass
 
-        print(self.cg_location)
+        # print(self.cg_location)
         
         # determine total inertia
+        self.inertia_tensor = np.zeros((3,3))
+        location = self.cg_location
+        # location = [[0.0],[0.0],[0.0]]
+        for i in self._components:
+            self.inertia_tensor += \
+                self._components[i].shift_properties_to_location(\
+                location)["inertia_tensor"]
+        
+        # # print(self.inertia_tensor)
+        # I = self.inertia_tensor * 1.0
+        # I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
+        # [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
+        # print("Moment of inertia:( slugs * square feet)")
+        # print("\tIxx = {:> 10.8f}\tIxy = {:> 10.8f}\tIxz = {:> 10.8f}".format(Ixx,Ixy,Ixz))
+        # print("\tIyx = {:> 10.8f}\tIyy = {:> 10.8f}\tIyz = {:> 10.8f}".format(Iyx,Iyy,Iyz))
+        # print("\tIzx = {:> 10.8f}\tIzy = {:> 10.8f}\tIzz = {:> 10.8f}".format(Izx,Izy,Izz))
+        # print()
 
+        # return dictionary of values
+        output_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "inertia_tensor" : self.inertia_tensor
+        }
+        return output_dict
+
+
+    def shift_properties_to_location(self,input_location):
+        """Method which determines the mass properties of the given component
+        about a given location.
+        
+        Parameters
+        ----------
+        input_location : array
+            The location about which to determine the mass properties. Must be
+            formatted as input_location = [[x],[y],[z]].
+        """
+
+        # if input_location is a list, turn into numpy array
+        if isinstance(input_location, list):
+            input_location = np.array(input_location)
+        
+        # determine new location
+        s = input_location - self.cg_location
+        # print(self.cg_location)
+
+        # calculate mass shift from parallel axis theorem
+        inner_product = np.matmul(s.T,s)[0,0]
+        outer_product = np.matmul(s,s.T)
+        I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
+
+        # calculate inertia tensor about new location
+        Inew = self.inertia_tensor + I_shift
+
+        # return dictionary of values
+        output_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "inertia_tensor" : Inew
+        }
+        return output_dict
