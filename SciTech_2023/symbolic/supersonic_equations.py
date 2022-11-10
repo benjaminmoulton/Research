@@ -48,7 +48,7 @@ if __name__ == "__main__":
     print("creating bounds...")
     c_eq = (ct-cr) * yp + cr
     tmax_eq = (tt-tr) * yp + tr
-    t_eq = sy.Piecewise((xp/(2*r), xp < r), ((1-xp)/(2*(1-r)), xp >= r), (0, True))
+    t_eq = sy.Piecewise((xp/r, xp < r), ((1-xp)/(1-r), xp >= r), (0, True))
     x = c_eq * ( sy.Rational(1,4) - xp )
     y = b * yp
     # z = t_eq * tmax_eq * c_eq * ( zp - sy.Rational(1,2) )
