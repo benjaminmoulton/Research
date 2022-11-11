@@ -15,7 +15,21 @@ sceneDict['scene']['aircraft'][one] = sceneDict['scene']['aircraft'].pop("CRM")
 sceneDict['scene']['aircraft'][one]['file'] = dict(craftDict)
 CRM_OML = mx.Scene(sceneDict)
 # CRM_OML.display_wireframe(show_vortices=False)
-CRM_OML.export_dxf(aircraft=one,number_guide_curves=8)
+# CRM_OML.export_dxf(aircraft=one,number_guide_curves=8)
+
+for i in CRM_OML._airplanes:
+    plane = CRM_OML._airplanes[i]
+    for j in plane.wing_segments:
+        segment = plane.wing_segments[j]
+        max_cambers = np.zeros((segment._num_airfoils,))
+        max_thicknesses = np.zeros((segment._num_airfoils,))
+        for k in range(segment._num_airfoils):
+            max_cambers[k] = segment._airfoils[k].get_max_camber()
+            max_thicknesses[k] = segment._airfoils[k].get_max_thickness()
+        print(max_thicknesses)
+        print(max_cambers)
+        print()
+quit()
 
 for aircraft in CRM_OML._airplanes:
     print(CRM_OML._airplanes[aircraft].wing_segments)

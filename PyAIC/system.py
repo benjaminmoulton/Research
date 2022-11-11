@@ -91,13 +91,16 @@ class AircraftSystem:
         # reorganize attach_ids in order of run
         run_order = np.argsort(attach_ids).tolist()
         name_order = np.array(name)[run_order].tolist()
+        attach_id_order = np.array(attach_ids)[run_order].tolist()
 
         # initialize components, save zero component
         self.components = {}
         self.components[0] = Component({})
 
 
-        for component in name_order:
+        for i in range(len(name_order)):
+
+            component = name_order[i]
 
             # define component input dictionary
             input_dict = components[component]
@@ -110,6 +113,18 @@ class AircraftSystem:
             elif given_total_density:
                 input_dict["density"] = self.density
                 if "mass" in input_dict: input_dict.pop("mass")
+            
+            # shift to root or tip values if attached to a wing
+            input_dict["connect_to"] = input_dict.get("connect_to",{})
+            attach_loc = input_dict["connect_to"].get("location","tip")
+            loc = self.components[attach_id_order[i]].locations[attach_loc]
+            input_dict["connect_to"]["dx"] = \
+                input_dict["connect_to"].get("dx",0.0) + loc[0,0]
+            input_dict["connect_to"]["y_offset"] = \
+                input_dict["connect_to"].get("y_offset",0.0) + loc[1,0]
+            input_dict["connect_to"]["dz"] = \
+                input_dict["connect_to"].get("dz",0.0) + loc[2,0]
+
 
             # initialize wings
             if input_dict["type"] in wing_types:
@@ -122,11 +137,11 @@ class AircraftSystem:
         
         # rewrite densities if given total mass
         if given_total_mass:
-
             # calculate total density, apply to each
             self.density = self.mass / self.volume
             for comp_id in self.components:
                 self.components[comp_id].density = self.density * 1.
+                self.components[comp_id].update_densities()
 
 
     def report_as_SolidWorks_report(self,info,positive_tensor=True):
@@ -213,5 +228,7 @@ class AircraftSystem:
 if __name__ == "__main__":
     # AS = AircraftSystem("test_input.json")
     # AS.get_mass_properties()
-    AS = AircraftSystem("horizon.json")
+    # AS = AircraftSystem("horizon.json")
+    # AS.get_mass_properties(report=True)
+    AS = AircraftSystem("CRM.json")
     AS.get_mass_properties(report=True)

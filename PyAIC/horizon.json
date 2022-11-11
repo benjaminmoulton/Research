@@ -1,5 +1,5 @@
 {
-    "mass" : 0.3529007958458,
+    "mass" : 0.3529008912,
     "components" : {
         "main" : {
             "ID" : 1,
@@ -33,7 +33,7 @@
             "side": "both",
             "is_main": false,
             "connect_to": {
-                "ID": 3
+                "ID": 1
             },
             "semispan": 0.2475,
             "sweep": [[0.0, 40.5],
@@ -53,7 +53,7 @@
             "side": "both",
             "is_main": false,
             "connect_to": {
-                "ID": 1
+                "ID": 2
             },
             "semispan": 0.5775,
             "sweep": [[0.0, 46.35],

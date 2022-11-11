@@ -232,6 +232,7 @@ class Wing:
 
             # add to root location
             root_location = root_location + shift
+            self._component_inputs[i]["tip_location"] = root_location.tolist()
             
             # update indices
             if i < span_fracs.shape[0]-2:
@@ -259,16 +260,31 @@ class Wing:
 
                 self._component_inputs[j] = self._component_inputs[i].copy()
                 self._component_inputs[j]["side"] = "left"
-                arr = np.array(self._component_inputs[j]["root_location"])
-                arr[1] *= -1.0
-                self._component_inputs[j]["root_location"] = arr.tolist()
+                r_arr = np.array(self._component_inputs[j]["root_location"])
+                r_arr[1] *= -1.0
+                self._component_inputs[j]["root_location"] = r_arr.tolist()
+                t_arr = np.array(self._component_inputs[j]["tip_location"])
+                t_arr[1] *= -1.0
+                self._component_inputs[j]["tip_location"] = t_arr.tolist()
         
         # add in shift from input
         in_shift = np.array([self._connect_dx,self._connect_dy,self._connect_dz])
         for i in range(len(self._component_inputs)):
-            arr = np.array(self._component_inputs[i]["root_location"])
-            arr += in_shift * 1.0
-            self._component_inputs[i]["root_location"] = arr.tolist()
+            r_arr = np.array(self._component_inputs[i]["root_location"])
+            r_arr += in_shift * 1.0
+            self._component_inputs[i]["root_location"] = r_arr.tolist()
+            t_arr = np.array(self._component_inputs[i]["tip_location"])
+            t_arr += in_shift * 1.0
+            self._component_inputs[i]["tip_location"] = t_arr.tolist()
+        
+        # save wing root and tip locations
+        self.locations = {}
+        self.locations["root"] = np.array(\
+            self._component_inputs[0]["root_location"])[:,np.newaxis]
+        if self._side == "both": h = span_fracs.shape[0]-1
+        else: h = -1
+        self.locations["tip"] = np.array(\
+            self._component_inputs[h]["tip_location"])[:,np.newaxis]
 
 
     def _initialize_components(self):
@@ -297,6 +313,11 @@ class Wing:
 
         # save density if given mass
         self.density = self.mass / self.volume
+        
+        self.update_densities()
+
+
+    def update_densities(self):
         
         # update individual densities
         for i in self._components:

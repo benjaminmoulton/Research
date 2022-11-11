@@ -22,6 +22,7 @@ class Component:
             "root" : np.zeros((3,1)),
             "tip"  : np.zeros((3,1))
         }
+        self._components = []
 
         # retrieve info
         self._retrieve_info(input_dict)
@@ -35,6 +36,10 @@ class Component:
 
         # store input values
         self.type = input_dict.get("type","box")
+
+
+    def update_densities(self):
+        return 0
 
 
     def get_density(self):
@@ -145,9 +150,10 @@ class PseudoPrismoid(Component):
         self._Lambda = np.deg2rad(input_dict.get("sweep",0.0))
         self._Gamma = np.deg2rad(input_dict.get("dihedral",0.0))
         root_location = input_dict.get("root_location",[0.0,0.0,0.0])
+        tip_location  = input_dict.get( "tip_location",[0.0,0.0,0.0])
         self.locations = {
             "root" : np.array(root_location)[:,np.newaxis],
-            "tip"  : np.zeros((3,1))
+            "tip"  : np.array( tip_location)[:,np.newaxis]
         }
 
 
