@@ -28,6 +28,9 @@ class Wing:
 
         # initialize components
         self._initialize_components()
+
+        # calculate volume
+        self._get_volume()
         
         # if given total mass, determine density
         if not self._given_density_not_mass:
@@ -282,13 +285,17 @@ class Wing:
                 self._components[i] = PseudoPrismoid(self._component_inputs[i])
 
 
-    def _get_density_for_components(self):
-
-        # sum volume, save density if given mass
+    def _get_volume(self):
+        
+        # sum total volume
         self.volume = 0.0
         for i in self._components:
             self.volume += self._components[i].volume
 
+
+    def _get_density_for_components(self):
+
+        # save density if given mass
         self.density = self.mass / self.volume
         
         # update individual densities

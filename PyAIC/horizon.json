@@ -33,7 +33,7 @@
             "side": "both",
             "is_main": false,
             "connect_to": {
-                "ID": 1
+                "ID": 3
             },
             "semispan": 0.2475,
             "sweep": [[0.0, 40.5],
@@ -53,7 +53,7 @@
             "side": "both",
             "is_main": false,
             "connect_to": {
-                "ID": 2
+                "ID": 1
             },
             "semispan": 0.5775,
             "sweep": [[0.0, 46.35],

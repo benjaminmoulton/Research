@@ -3,7 +3,7 @@ import json
 import matplotlib.pyplot as plt
 
 from wing import Wing
-from component import Component, PseudoPrismoid, SymmetricAirfoil
+from component import Component
 
 class AircraftSystem:
     """A class calculating and containing the mass properties of an aircraft.
@@ -25,7 +25,7 @@ class AircraftSystem:
         self._get_input_vars(input_vars)
 
         # retrieve info
-        self._retrieve_info()
+        self._initialize_wings()
 
 
     def _get_input_vars(self,input_vars):
@@ -58,14 +58,19 @@ class AircraftSystem:
         return input_dict
 
 
-    def _retrieve_info(self):
-        """A function which retrieves the information and stores it globally.
-        """
-        
-        # store variables from file input dictionary
+    def _initialize_wings(self):
 
         # store component input values
         components = self.input_dict.get("components",{})
+
+        # check if mass in dictionary
+        given_total_mass    = "mass"    in self.input_dict
+        given_total_density = "density" in self.input_dict
+
+        if given_total_mass:
+            self.mass = self.input_dict.get("mass")
+        elif given_total_density:
+            self.density = self.input_dict.get("density")
 
         wing_types = ["pseudo_prismoid","symmetric_airfoil","diamond_airfoil"]
 
@@ -82,21 +87,46 @@ class AircraftSystem:
         repeated_ids = unique_ids[counts > 1]
         if len(unique_ids) != len(ids):
             raise TypeError("Repeated ID values: {}".format(repeated_ids))
-        
-        # throw error if attach order is circular
                
         # reorganize attach_ids in order of run
+        run_order = np.argsort(attach_ids).tolist()
+        name_order = np.array(name)[run_order].tolist()
 
-        quit()
-
+        # initialize components, save zero component
         self.components = {}
-        for component in components:
+        self.components[0] = Component({})
 
-            # initialize wings
+
+        for component in name_order:
+
+            # define component input dictionary
             input_dict = components[component]
             id_number = input_dict.get("ID")
+
+            # overwrite mass and or densities if given
+            if given_total_mass:
+                input_dict["density"] = 1.0
+                if "mass" in input_dict: input_dict.pop("mass")
+            elif given_total_density:
+                input_dict["density"] = self.density
+                if "mass" in input_dict: input_dict.pop("mass")
+
+            # initialize wings
             if input_dict["type"] in wing_types:
                 self.components[id_number] = Wing(input_dict)
+        
+        # calculate total volume
+        self.volume = 0.0
+        for comp_id in self.components:
+            self.volume += self.components[comp_id].volume
+        
+        # rewrite densities if given total mass
+        if given_total_mass:
+
+            # calculate total density, apply to each
+            self.density = self.mass / self.volume
+            for comp_id in self.components:
+                self.components[comp_id].density = self.density * 1.
 
 
     def report_as_SolidWorks_report(self,info,positive_tensor=True):

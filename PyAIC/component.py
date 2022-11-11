@@ -17,7 +17,11 @@ class Component:
         self.mass = 0.0
         self.volume = 0.0
         self.inertia_tensor = np.zeros((3,3))
-        self.cg_location = np.zeros((3,))
+        self.cg_location = np.zeros((3,1))
+        self.locations = {
+            "root" : np.zeros((3,1)),
+            "tip"  : np.zeros((3,1))
+        }
 
         # retrieve info
         self._retrieve_info(input_dict)
@@ -72,6 +76,16 @@ class Component:
         }
         return output_dict
 
+
+    def get_mass_properties(self):
+        """Method which returns mass, cg, I about cg rotated to total cframe"""
+
+        output_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "inertia_tensor" : self.inertia_tensor
+        }
+        return output_dict
 
 
 class PseudoPrismoid(Component):
@@ -130,8 +144,11 @@ class PseudoPrismoid(Component):
         self._xmt = geometry.get("max_thickness_location",0.1)
         self._Lambda = np.deg2rad(input_dict.get("sweep",0.0))
         self._Gamma = np.deg2rad(input_dict.get("dihedral",0.0))
-        self._root_location = input_dict.get("root_location",[0.0,0.0,0.0])
-        self._root_location = np.array(self._root_location)[:,np.newaxis]
+        root_location = input_dict.get("root_location",[0.0,0.0,0.0])
+        self.locations = {
+            "root" : np.array(root_location)[:,np.newaxis],
+            "tip"  : np.zeros((3,1))
+        }
 
 
     def _get_kappa_values(self):
@@ -299,7 +316,7 @@ class PseudoPrismoid(Component):
         self.inertia_tensor = np.matmul(Rx,np.matmul(Icg,Rx.T))
 
         # shift cg by root location given
-        self.cg_location += self._root_location
+        self.cg_location += self.locations["root"]
 
         output_dict = {
             "mass" : self.mass,
