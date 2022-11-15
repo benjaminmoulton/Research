@@ -37,9 +37,11 @@ class AircraftSystem:
         # dictionary
         if input_vars_type == dict:
             self.input_dict = input_vars
+            self.file_name = "Aircraft"
         
         # json file
         elif input_vars_type == str and input_vars.split(".")[-1] == "json":
+            self.file_name = input_vars
             self.input_dict = self._get_json(input_vars)
 
         # raise error
@@ -67,18 +69,23 @@ class AircraftSystem:
         given_total_mass    = "mass"    in self.input_dict
         given_total_density = "density" in self.input_dict
 
+        # check if we are given english units
+        self.given_english_units = self.input_dict.get("units","English") == "English"
+
         if given_total_mass:
             self.mass = self.input_dict.get("mass")
         elif given_total_density:
             self.density = self.input_dict.get("density")
 
-        wing_types = ["pseudo_prismoid","symmetric_airfoil","diamond_airfoil"]
+        wing_types = ["prismoid","pseudo_prismoid","symmetric_airfoil",
+        "diamond_airfoil"]
 
         # initialize get each id number
         ids = []; attach_ids = []; name = []
         for component in components:
             input_dict = components[component]
             ids.append(input_dict.get("ID"))
+            input_dict["connect_to"] = input_dict.get("connect_to",{})
             attach_ids.append(input_dict["connect_to"].get("ID",0))
             name.append(component)
         
@@ -158,14 +165,22 @@ class AircraftSystem:
             Whether to report in positive tensor formulation. Defaults to true.
         """
 
+        print("Mass properties of",self.file_name)
+        print()
+
+        # fix units if not given english units
+        if not self.given_english_units:
+            info["mass"] /= 14.59390
+            info["cg_location"] /= 0.3048
+            info["inertia_tensor"] /= 14.59390 * (0.3048)**2.
 
         print("Mass = {:> 10.8f} slugs".format(info["mass"]))
         print()
 
         print("Center of mass: (feet)")
-        print("\tX = {:> 10.8f}".format(info["cg_location"][0,0]))
-        print("\tY = {:> 10.8f}".format(info["cg_location"][1,0]))
-        print("\tZ = {:> 10.8f}".format(info["cg_location"][2,0]))
+        print("\tX = {:> 14.8f}".format(info["cg_location"][0,0]))
+        print("\tY = {:> 14.8f}".format(info["cg_location"][1,0]))
+        print("\tZ = {:> 14.8f}".format(info["cg_location"][2,0]))
         print()
         I = info["inertia_tensor"] * 1.0
         if positive_tensor:
@@ -176,12 +191,13 @@ class AircraftSystem:
             print("\t\tPositive Tensor Formulation")
         else:
             print("\t\tNegative Tensor Formulation")
-        print("\tIxx = {:> 10.8f}\tIxy = {:> 10.8f}\tIxz = {:> 10.8f}".format(\
+        print("\tIxx = {:> 19.8f}\tIxy = {:> 19.8f}\tIxz = {:> 19.8f}".format(\
             Ixx,Ixy,Ixz))
-        print("\tIyx = {:> 10.8f}\tIyy = {:> 10.8f}\tIyz = {:> 10.8f}".format(\
+        print("\tIyx = {:> 19.8f}\tIyy = {:> 19.8f}\tIyz = {:> 19.8f}".format(\
             Iyx,Iyy,Iyz))
-        print("\tIzx = {:> 10.8f}\tIzy = {:> 10.8f}\tIzz = {:> 10.8f}".format(\
+        print("\tIzx = {:> 19.8f}\tIzy = {:> 19.8f}\tIzz = {:> 19.8f}".format(\
             Izx,Izy,Izz))
+        print()
         print()
 
 
@@ -228,7 +244,7 @@ class AircraftSystem:
 if __name__ == "__main__":
     # AS = AircraftSystem("test_input.json")
     # AS.get_mass_properties()
-    # AS = AircraftSystem("horizon.json")
-    # AS.get_mass_properties(report=True)
+    AS = AircraftSystem("horizon.json")
+    AS.get_mass_properties(report=True)
     AS = AircraftSystem("CRM.json")
     AS.get_mass_properties(report=True)

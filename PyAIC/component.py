@@ -93,7 +93,7 @@ class Component:
         return output_dict
 
 
-class PseudoPrismoid(Component):
+class Prismoid(Component):
     """A default class for calculating and containing the mass properties of a
     Psuedo Prismoid.
 
@@ -113,9 +113,8 @@ class PseudoPrismoid(Component):
         # initialize the volume
         cr,ct = self._cr,self._ct
         tr,tt = self._tr,self._tt
-        cr2, ct2 = cr**2., ct**2.
-        crct = cr * ct
-        ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+        trcr, ttct = tr * cr, tt * ct
+        ka = trcr * (2.*cr + ct) + ttct *(cr + 2.*ct)
         u0 = 1.0
         self.volume = self._b / 12. * ka * u0
 
@@ -167,37 +166,33 @@ class PseudoPrismoid(Component):
         crct = cr * ct
         cr3, ct3 = cr**3., ct**3.
         cr2ct, crct2 = cr2 * ct, cr * ct2
-        cr4, ct4 = cr**4., ct**4.
-        cr3ct, cr2ct2, crct3 = cr3 * ct, cr2 * ct2, cr * ct3
+        trcr, ttct = tr * cr, tt * ct
 
         # calculate kappa values
-        self._ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+        self._ka = trcr * (2.*cr + ct) + ttct *(cr + 2.*ct)
+
+        one = 3.*cr2 + 2.*crct +    ct2
+        two =    cr2 + 2.*crct + 3.*ct2
+        self._kb = trcr * one + ttct * two
         
-        one = 4.*cr3 + 3.*cr2ct + 2.*crct2 +    ct3
-        two =    cr3 + 2.*cr2ct + 3.*crct2 + 4.*ct3
-        self._kb = tr * one + tt * two
+        self._kc = trcr * (   cr + ct) + ttct *(cr + 3.*ct)
 
         one = 3.*cr2 + 4.*crct + 3.*ct2
         two =    cr2 + 3.*crct + 6.*ct2
-        self._kc = tr * one + 2. * tt * two
+        self._kd = trcr * one + 2. * ttct * two
 
-        one = (cr + ct) * (2.*cr2 + crct + 2.*ct2)
-        two = cr3 + 3.*cr2ct + 6.*crct2 + 10.*ct3
-        self._kd = tr * one + tt * two
+        one = 4.*cr3 + 3.*cr2ct + 2.*crct2 +    ct3
+        two =    cr3 + 2.*cr2ct + 3.*crct2 + 4.*ct3
+        self._ke = trcr * one + ttct * two
 
-        one = 5.*cr4 + 4.*cr3ct + 3.*cr2ct2 + 2.*crct3 +    ct4
-        two =    cr4 + 2.*cr3ct + 3.*cr2ct2 + 4.*crct3 + 5.*ct4
-        self._ke = tr * one + tt * two
+        self._kf = trcr * (2.*cr + 3.*ct) + ttct *(3.*cr + 12.*ct)
 
-        one = cr2 + 2.*crct +  2.*ct2
-        two = cr2 + 4.*crct + 10.*ct2
-        self._kf = tr * one + tt * two
-
-        one = 35.*cr4 + 20.*cr3ct + 10.*cr2ct2 +  4.*crct3 +     ct4
-        two = 15.*cr4 + 20.*cr3ct + 18.*cr2ct2 + 12.*crct3 +  5.*ct4
-        thr =  5.*cr4 + 12.*cr3ct + 18.*cr2ct2 + 20.*crct3 + 15.*ct4
-        fou =     cr4 +  4.*cr3ct + 10.*cr2ct2 + 20.*crct3 + 35.*ct4
-        self._kg = tr**3. *one + tr**2.*tt *two + tr*tt**2. *thr + tt**3. *fou
+        one = 4.*cr +    ct
+        two = 3.*cr + 2.*ct
+        thr = 2.*cr + 3.*ct
+        fou =    cr + 4.*ct
+        oner = trcr**3.*one
+        self._kg = oner + trcr**2.*ttct*two + trcr*ttct**2.*thr + ttct**3.*fou
 
 
     def _get_upsilon_values(self):
@@ -330,10 +325,89 @@ class PseudoPrismoid(Component):
             "inertia_tensor" : self.inertia_tensor
         }
         return output_dict
+
+
+
+class PseudoPrismoid(Prismoid):
+    """A default class for calculating and containing the mass properties of a
+    Psuedo Prismoid.
+
+    Parameters
+    ----------
+    input_vars : dict , optional
+        Must be a python dictionary
+    """
+    def __init__(self,input_dict={}):
+
+        # invoke init of parent
+        Prismoid.__init__(self,input_dict)
+
+        # retrieve additional info
+        self._retrieve_info(input_dict)
+
+        # initialize the volume
+        cr,ct = self._cr,self._ct
+        tr,tt = self._tr,self._tt
+        cr2, ct2 = cr**2., ct**2.
+        crct = cr * ct
+        ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+        u0 = 1.0
+        self.volume = self._b / 12. * ka * u0
+
+
+    def _get_kappa_values(self):
+
+        # initialize certian values for ease of calculation
+        cr,ct = self._cr,self._ct
+        tr,tt = self._tr,self._tt
+        # times values
+        cr2, ct2 = cr**2., ct**2.
+        crct = cr * ct
+        cr3, ct3 = cr**3., ct**3.
+        cr2ct, crct2 = cr2 * ct, cr * ct2
+        cr4, ct4 = cr**4., ct**4.
+        cr3ct, cr2ct2, crct3 = cr3 * ct, cr2 * ct2, cr * ct3
+
+        # calculate kappa values
+        self._ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
         
+        one = 4.*cr3 + 3.*cr2ct + 2.*crct2 +    ct3
+        two =    cr3 + 2.*cr2ct + 3.*crct2 + 4.*ct3
+        self._kb = tr * one + tt * two
+
+        one = 3.*cr2 + 4.*crct + 3.*ct2
+        two =    cr2 + 3.*crct + 6.*ct2
+        self._kc = tr * one + 2. * tt * two
+
+        one = (cr + ct) * (2.*cr2 + crct + 2.*ct2)
+        two = cr3 + 3.*cr2ct + 6.*crct2 + 10.*ct3
+        self._kd = tr * one + tt * two
+
+        one = 5.*cr4 + 4.*cr3ct + 3.*cr2ct2 + 2.*crct3 +    ct4
+        two =    cr4 + 2.*cr3ct + 3.*cr2ct2 + 4.*crct3 + 5.*ct4
+        self._ke = tr * one + tt * two
+
+        one = cr2 + 2.*crct +  2.*ct2
+        two = cr2 + 4.*crct + 10.*ct2
+        self._kf = tr * one + tt * two
+
+        one = 35.*cr4 + 20.*cr3ct + 10.*cr2ct2 +  4.*crct3 +     ct4
+        two = 15.*cr4 + 20.*cr3ct + 18.*cr2ct2 + 12.*crct3 +  5.*ct4
+        thr =  5.*cr4 + 12.*cr3ct + 18.*cr2ct2 + 20.*crct3 + 15.*ct4
+        fou =     cr4 +  4.*cr3ct + 10.*cr2ct2 + 20.*crct3 + 35.*ct4
+        self._kg = tr**3. *one + tr**2.*tt *two + tr*tt**2. *thr + tt**3. *fou
 
 
-class SymmetricAirfoil(PseudoPrismoid):
+    def _get_upsilon_values(self):
+
+        # calculate upsilon values
+        self._u0 = 1.0
+        self._u1 = 1.0
+        self._u2 = 1.0
+        self._u3 = 1.0
+
+
+class SymmetricAirfoil(Prismoid):
     """A default class for calculating and containing the mass properties of a
     Symmetric Airfoil.
 
@@ -399,7 +473,7 @@ class SymmetricAirfoil(PseudoPrismoid):
 
 
 
-class DiamondAirfoil(PseudoPrismoid):
+class DiamondAirfoil(Prismoid):
     """A default class for calculating and containing the mass properties of a
     Diamond Airfoil.
 
