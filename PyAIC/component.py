@@ -17,6 +17,7 @@ class Component:
         self.mass = 0.0
         self.volume = 0.0
         self.inertia_tensor = np.zeros((3,3))
+        self.angular_momentum = np.zeros((3,1))
         self.cg_location = np.zeros((3,1))
         self.locations = {
             "root" : np.zeros((3,1)),
@@ -25,27 +26,32 @@ class Component:
         self._components = []
 
         # retrieve info
-        self._retrieve_info(input_dict)
+        self._read_in_info(input_dict)
 
 
-    def _retrieve_info(self,input_dict):
+    def _read_in_info(self,input_dict):
         """A function which retrieves the information and stores it globally.
         """
         
         # store variables from file input dictionary
-
-        # store input values
-        self.type = input_dict.get("type","box")
+        # store mass / density variables
+        if "density" in input_dict:
+            self.density = input_dict.get("density")
+            self._given_density_not_mass = True
+        elif "mass" in input_dict:
+            self.mass = input_dict.get("mass")
+            self._given_density_not_mass = False
+        else: # raise error if neither given
+            self.mass = 0.0
+            self._given_density_not_mass = False
+            # raise ValueError("No mass / density property given")
+        self.banana = "True"
 
 
     def update_densities(self):
         return 0
 
 
-    def get_density(self):
-        return self.density
-
-  
     def shift_properties_to_location(self,input_location):
         """Method which determines the mass properties of the given component
         about a given location.
@@ -75,8 +81,8 @@ class Component:
 
         # return dictionary of values
         output_dict = {
-            "mass" : self.mass,
-            "cg_location" : self.cg_location,
+            "mass" : self.mass * 1.0,
+            "cg_location" : self.cg_location * 1.0,
             "inertia_tensor" : Inew
         }
         return output_dict
@@ -91,6 +97,234 @@ class Component:
             "inertia_tensor" : self.inertia_tensor
         }
         return output_dict
+
+
+class Cuboid(Component):
+    """A default class for calculating and containing the mass properties of a
+    Cuboid.
+
+    Parameters
+    ----------
+    input_vars : dict , optional
+        Must be a python dictionary
+    """
+    def __init__(self,input_dict={}):
+
+        # invoke init of parent
+        Component.__init__(self,input_dict)
+
+        # retrieve additional info
+        self._retrieve_info(input_dict)
+
+        # calculate volume
+        self.volume1 = self.lx1*self.ly1*self.lz1
+        self.volume2 = self.lx2*self.ly2*self.lz2
+        self.volume  = self.volume2 - self.volume1
+
+
+    def _retrieve_info(self,input_dict):
+        """A function which retrieves the information and stores it globally.
+        """
+        
+        # store variables from file input dictionary
+        # store cg location
+        connect_to = input_dict.get("connect_to",{})
+        x_cg = connect_to.get("dx",0.0)
+        y_cg = connect_to.get("dy",0.0)
+        z_cg = connect_to.get("dz",0.0)
+        self.cg_location = np.array([[x_cg],[y_cg],[z_cg]])
+
+        # store lengths and hollow lengths
+        self.lx2 = input_dict.get("x_length",1.0)
+        self.ly2 = input_dict.get("y_length",1.0)
+        self.lz2 = input_dict.get("z_length",1.0)
+        self.lx1 = input_dict.get("x_hollow_length",0.0)
+        self.ly1 = input_dict.get("y_hollow_length",0.0)
+        self.lz1 = input_dict.get("z_hollow_length",0.0)
+
+
+    def get_mass_properties(self):
+        """Method which returns mass, cg, I about cg rotated to total cframe"""
+
+        # calculate mass
+        if self._given_density_not_mass:
+            self.mass = self.density * self.volume
+        
+        # store values for ease of calculation
+        lx1sq, ly1sq, lz1sq = self.lx1**2., self.ly1**2., self.lz1**2.
+        lx2sq, ly2sq, lz2sq = self.lx2**2., self.ly2**2., self.lz2**2.
+        v1, v2 = self.volume1, self.volume2
+
+        # calculate inertia
+        Ixxo = self.mass / 12. * (v2*(ly2sq+lz2sq) - v1*(ly1sq+lz1sq))/(v2-v1)
+        Iyyo = self.mass / 12. * (v2*(lx2sq+lz2sq) - v1*(lx1sq+lz1sq))/(v2-v1)
+        Izzo = self.mass / 12. * (v2*(lx2sq+lz2sq) - v1*(lx1sq+lz1sq))/(v2-v1)
+        
+        Ixyo = 0.0
+        Ixzo = 0.0
+        Iyzo = 0.0
+
+        # create inertia tensor
+        self.inertia_tensor = np.array([
+            [ Ixxo,-Ixyo,-Ixzo],
+            [-Ixyo, Iyyo,-Ixzo],
+            [-Ixzo,-Ixzo, Izzo]
+        ])
+
+        output_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "inertia_tensor" : self.inertia_tensor
+        }
+        return output_dict
+
+
+
+class Cylinder(Component):
+    """A default class for calculating and containing the mass properties of a
+    Cylinder.
+
+    Parameters
+    ----------
+    input_vars : dict , optional
+        Must be a python dictionary
+    """
+    def __init__(self,input_dict={}):
+
+        # invoke init of parent
+        Component.__init__(self,input_dict)
+
+        # retrieve additional info
+        self._retrieve_info(input_dict)
+
+        # calculate volume
+        self.volume  = np.pi * self.l  * ( self.r2**2. - self.r1**2. )
+
+
+    def _retrieve_info(self,input_dict):
+        """A function which retrieves the information and stores it globally.
+        """
+        
+        # store variables from file input dictionary
+        # store cg location
+        connect_to = input_dict.get("connect_to",{})
+        x_cg = connect_to.get("dx",0.0)
+        y_cg = connect_to.get("dy",0.0)
+        z_cg = connect_to.get("dz",0.0)
+        self.cg_location = np.array([[x_cg],[y_cg],[z_cg]])
+
+        # store lengths and hollow lengths
+        self.l = input_dict.get("length",1.0)
+        self.r2 = input_dict.get("radius",1.0)
+        self.r1 = input_dict.get("hollow_radius",0.0)
+
+
+    def get_mass_properties(self):
+        """Method which returns mass, cg, I about cg rotated to total cframe"""
+
+        # calculate mass
+        if self._given_density_not_mass:
+            self.mass = self.density * self.volume
+        
+        # store values for ease of calculation
+        h, r1, r2 = self.l, self.r1, self.r2
+
+        # calculate inertia
+        Ixxo = self.mass /  2. *        (r2**2. + r1**2.)
+        Iyyo = self.mass / 12. * ( 3. * (r2**2. + r1**2.) + h**2. )
+        Izzo = self.mass / 12. * ( 3. * (r2**2. + r1**2.) + h**2. )
+        
+        Ixyo = 0.0
+        Ixzo = 0.0
+        Iyzo = 0.0
+
+        # create inertia tensor
+        self.inertia_tensor = np.array([
+            [ Ixxo,-Ixyo,-Ixzo],
+            [-Ixyo, Iyyo,-Ixzo],
+            [-Ixzo,-Ixzo, Izzo]
+        ])
+
+        output_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "inertia_tensor" : self.inertia_tensor
+        }
+        return output_dict
+
+
+
+class Sphere(Component):
+    """A default class for calculating and containing the mass properties of a
+    Sphere.
+
+    Parameters
+    ----------
+    input_vars : dict , optional
+        Must be a python dictionary
+    """
+    def __init__(self,input_dict={}):
+
+        # invoke init of parent
+        Component.__init__(self,input_dict)
+
+        # retrieve additional info
+        self._retrieve_info(input_dict)
+
+        # calculate volume
+        self.volume  = 4. / 3. * np.pi * ( self.r2**3. - self.r1**3. )
+
+
+    def _retrieve_info(self,input_dict):
+        """A function which retrieves the information and stores it globally.
+        """
+        
+        # store variables from file input dictionary
+        # store cg location
+        connect_to = input_dict.get("connect_to",{})
+        x_cg = connect_to.get("dx",0.0)
+        y_cg = connect_to.get("dy",0.0)
+        z_cg = connect_to.get("dz",0.0)
+        self.cg_location = np.array([[x_cg],[y_cg],[z_cg]])
+
+        # store lengths and hollow lengths
+        self.r2 = input_dict.get("radius",1.0)
+        self.r1 = input_dict.get("hollow_radius",0.0)
+
+
+    def get_mass_properties(self):
+        """Method which returns mass, cg, I about cg rotated to total cframe"""
+
+        # calculate mass
+        if self._given_density_not_mass:
+            self.mass = self.density * self.volume
+        
+        # store values for ease of calculation
+        r1, r2 = self.r1, self.r2
+
+        # calculate inertia
+        Ixxo = 2. / 5. * self.mass * (r2**5. - r1**5.) / (r2**3. - r1**3.)
+        Iyyo = 2. / 5. * self.mass * (r2**5. - r1**5.) / (r2**3. - r1**3.)
+        Izzo = 2. / 5. * self.mass * (r2**5. - r1**5.) / (r2**3. - r1**3.)
+        
+        Ixyo = 0.0
+        Ixzo = 0.0
+        Iyzo = 0.0
+
+        # create inertia tensor
+        self.inertia_tensor = np.array([
+            [ Ixxo,-Ixyo,-Ixzo],
+            [-Ixyo, Iyyo,-Ixzo],
+            [-Ixzo,-Ixzo, Izzo]
+        ])
+
+        output_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "inertia_tensor" : self.inertia_tensor
+        }
+        return output_dict
+
 
 
 class Prismoid(Component):
@@ -129,15 +363,6 @@ class Prismoid(Component):
         self._side = input_dict.get("side","right")
         if self._side == "right": self._delta = 1.0
         else: self._delta = -1.0
-        # store mass / density variables
-        if "density" in input_dict:
-            self.density = input_dict.get("density")
-            self._given_density_not_mass = True
-        elif "mass" in input_dict:
-            self.mass = input_dict.get("mass")
-            self._given_density_not_mass = False
-        else: # raise error if neither given
-            raise ValueError("No mass / density property given")
         
         # store other variables
         geometry = input_dict.get("geometry",{})
@@ -214,7 +439,6 @@ class Prismoid(Component):
         self._get_upsilon_values()
 
         # calculate mass
-        # self.volume = self._b / 12. * self._ka
         if self._given_density_not_mass:
             self.mass = self.density * self.volume
         
@@ -419,7 +643,7 @@ class SymmetricAirfoil(Prismoid):
     def __init__(self,input_dict={}):
 
         # invoke init of parent
-        PseudoPrismoid.__init__(self,input_dict)
+        Prismoid.__init__(self,input_dict)
 
         # save a coefficients for NACA 4-digit thickness distribution
         self._a0 = 2.969
@@ -485,7 +709,7 @@ class DiamondAirfoil(Prismoid):
     def __init__(self,input_dict={}):
 
         # invoke init of parent
-        PseudoPrismoid.__init__(self,input_dict)
+        Prismoid.__init__(self,input_dict)
 
         # initialize the volume
         cr,ct = self._cr,self._ct

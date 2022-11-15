@@ -66,6 +66,16 @@
                         [1.0, 0.0]],
             "chord": [[0.0, 0.74716666667],
                       [1.0, 0.3435]]
+        },
+        "propeller": {
+            "ID": 4,
+            "type" : "sphere",
+            "connect_to": {
+                "ID": 0,
+                "dx" : 1.0
+            },
+            "radius": 1.0,
+            "hollow_radius": 0.0
         }
     }
 }

@@ -363,6 +363,11 @@ class Wing:
             # print()
             # ##################
         self.cg_location /= self.mass
+        
+        # determine total angular momentum
+        self.angular_momentum = 0.0
+        for i in self._components:
+            self.angular_momentum += self._components[i].angular_momentum
 
         # print(self.cg_location)
         

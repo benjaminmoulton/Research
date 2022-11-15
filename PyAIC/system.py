@@ -3,7 +3,7 @@ import json
 import matplotlib.pyplot as plt
 
 from wing import Wing
-from component import Component
+from component import Component, Cuboid, Cylinder, Sphere
 
 class AircraftSystem:
     """A class calculating and containing the mass properties of an aircraft.
@@ -25,7 +25,7 @@ class AircraftSystem:
         self._get_input_vars(input_vars)
 
         # retrieve info
-        self._initialize_wings()
+        self._initialize_objects()
 
 
     def _get_input_vars(self,input_vars):
@@ -60,7 +60,7 @@ class AircraftSystem:
         return input_dict
 
 
-    def _initialize_wings(self):
+    def _initialize_objects(self):
 
         # store component input values
         components = self.input_dict.get("components",{})
@@ -70,7 +70,8 @@ class AircraftSystem:
         given_total_density = "density" in self.input_dict
 
         # check if we are given english units
-        self.given_english_units = self.input_dict.get("units","English") == "English"
+        self.given_english_units = self.input_dict.get("units","English") == \
+            "English"
 
         if given_total_mass:
             self.mass = self.input_dict.get("mass")
@@ -136,6 +137,12 @@ class AircraftSystem:
             # initialize wings
             if input_dict["type"] in wing_types:
                 self.components[id_number] = Wing(input_dict)
+            elif input_dict["type"] == "cuboid":
+                self.components[id_number] = Cuboid(input_dict)
+            elif input_dict["type"] == "cylinder":
+                self.components[id_number] = Cylinder(input_dict)
+            elif input_dict["type"] == "sphere":
+                self.components[id_number] = Sphere(input_dict)
         
         # calculate total volume
         self.volume = 0.0
@@ -182,6 +189,13 @@ class AircraftSystem:
         print("\tY = {:> 14.8f}".format(info["cg_location"][1,0]))
         print("\tZ = {:> 14.8f}".format(info["cg_location"][2,0]))
         print()
+        
+        print("Angular momentum: (rad/s)")
+        print("\tX = {:> 14.8f}".format(info["angular_momentum"][0,0]))
+        print("\tY = {:> 14.8f}".format(info["angular_momentum"][1,0]))
+        print("\tZ = {:> 14.8f}".format(info["angular_momentum"][2,0]))
+        print()
+        
         I = info["inertia_tensor"] * 1.0
         if positive_tensor:
             I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
@@ -219,6 +233,11 @@ class AircraftSystem:
                 self.components[i].cg_location
         self.cg_location /= self.mass
         
+        # determine total angular momentum
+        self.angular_momentum = 0.0
+        for i in self.components:
+            self.angular_momentum += self.components[i].angular_momentum
+        
         # determine total inertia
         self.inertia_tensor = np.zeros((3,3))
         location = self.cg_location
@@ -231,6 +250,7 @@ class AircraftSystem:
         output_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
         }
 
@@ -246,5 +266,5 @@ if __name__ == "__main__":
     # AS.get_mass_properties()
     AS = AircraftSystem("horizon.json")
     AS.get_mass_properties(report=True)
-    AS = AircraftSystem("CRM.json")
-    AS.get_mass_properties(report=True)
+    # AS = AircraftSystem("CRM.json")
+    # AS.get_mass_properties(report=True)
