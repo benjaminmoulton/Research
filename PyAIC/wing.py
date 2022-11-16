@@ -282,7 +282,11 @@ class Wing:
         self.locations["root"] = np.array(\
             self._component_inputs[0]["root_location"])[:,np.newaxis]
         if self._side == "both": h = span_fracs.shape[0]-1
-        else: h = -1
+        else: 
+            if span_fracs.shape[0]-1 == 1:
+                h = 0
+            else:
+                h = -1
         self.locations["tip"] = np.array(\
             self._component_inputs[h]["tip_location"])[:,np.newaxis]
 

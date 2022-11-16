@@ -631,7 +631,8 @@ class PseudoPrismoid(Prismoid):
         self._u3 = 1.0
 
 
-class SymmetricAirfoil(Prismoid):
+
+class SymmetricAirfoil(PseudoPrismoid):
     """A default class for calculating and containing the mass properties of a
     Symmetric Airfoil.
 
@@ -643,14 +644,15 @@ class SymmetricAirfoil(Prismoid):
     def __init__(self,input_dict={}):
 
         # invoke init of parent
-        Prismoid.__init__(self,input_dict)
+        PseudoPrismoid.__init__(self,input_dict)
 
         # save a coefficients for NACA 4-digit thickness distribution
         self._a0 = 2.969
         self._a1 = -1.260
         self._a2 = -3.516
         self._a3 = 2.843
-        self._a4 = -1.036
+        # self._a4 = -1.036
+        self._a4 = -1.015
 
         # initialize the volume
         cr,ct = self._cr,self._ct
@@ -697,7 +699,7 @@ class SymmetricAirfoil(Prismoid):
 
 
 
-class DiamondAirfoil(Prismoid):
+class DiamondAirfoil(PseudoPrismoid):
     """A default class for calculating and containing the mass properties of a
     Diamond Airfoil.
 
@@ -709,7 +711,7 @@ class DiamondAirfoil(Prismoid):
     def __init__(self,input_dict={}):
 
         # invoke init of parent
-        Prismoid.__init__(self,input_dict)
+        PseudoPrismoid.__init__(self,input_dict)
 
         # initialize the volume
         cr,ct = self._cr,self._ct

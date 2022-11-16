@@ -1,0 +1,26 @@
+{
+    "components" : {
+        "main" : {
+            "ID" : 1,
+            "density" : 1.0,
+            "type" : "symmetric_airfoil",
+            "side" : "right",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 8.0,
+            "sweep" : 0.0,
+            "dihedral" : 9.0,
+            "chord" : [[0.0, 1.0],
+                        [1.0, 1.0]],
+            "thickness" : [[0.0, 0.12],
+                            [1.0, 0.12]],
+            "camber" : 0.02
+        }
+    }
+}
