@@ -419,6 +419,15 @@ class Prismoid(Component):
         oner = trcr**3.*one
         self._kg = oner + trcr**2.*ttct*two + trcr*ttct**2.*thr + ttct**3.*fou
 
+        # fixes for constant multiples outside equation
+        self._ka = self._ka *   1. /    2.
+        self._kb = self._kb *  48. /   80.
+        self._kc = self._kc *  12. /   60.
+        self._kd = self._kd *   1. /    2.
+        self._ke = self._ke * 960. / 1440.
+        self._kf = self._kf *   1. /    2.
+        self._kg = self._kg * 240. / 3360.
+
 
     def _get_upsilon_values(self):
 
@@ -485,45 +494,7 @@ class Prismoid(Component):
         I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
 
         # calculate inertia tensor about the cg
-        Icg = Io - I_shift
-        # rows = [0,1,2,0,0,1]
-        # cols = [0,1,2,1,2,2]
-        # I_cg = Icg[rows,cols]
-        # lbm_slug = 32.17405082
-        # m_wng = 2.66974726 / lbm_slug
-        # cg_wng = np.array([ 
-        #     -0.13712589,
-        #     0.72910392,
-        #     0.00000000000001
-        # ])
-        # I_wng = np.array([
-        #     2.16737992,
-        #     0.15240118,
-        #     2.31726753,
-        #     0.23551551,
-        #     -0.00000002,
-        #     -0.00000100
-        # ]) / lbm_slug
-        # I_wng_abt_cg = np.array([
-        #     0.74816221,
-        #     0.10220056,
-        #     0.84784920,
-        #     -0.03140323,
-        #     -0.00000015,
-        #     -0.00000032
-        # ]) / lbm_slug
-        # for i in range(6):
-        #     print(I_wng[i])
-        #     print(I_cg[i])
-        #     print(I_wng_abt_cg[i])
-        #     print()
-        # # print( Icg[0,0])
-        # # print( Icg[1,1])
-        # # print( Icg[2,2])
-        # # print(-Icg[0,1])
-        # # print(-Icg[0,2])
-        # # print(-Icg[1,2])
-        # # print()
+        self.inertia_tensor = Io - I_shift
 
         # define a rotation matrix
         CG = np.cos(-self._delta*self._Gamma)
@@ -535,10 +506,8 @@ class Prismoid(Component):
         ])
 
         # rotate cg location and inertia for dihedral
-        # print(self.cg_location)
         self.cg_location = np.matmul(Rx,self.cg_location)
-        # print(self.cg_location)
-        self.inertia_tensor = np.matmul(Rx,np.matmul(Icg,Rx.T))
+        self.inertia_tensor = np.matmul(Rx,np.matmul(self.inertia_tensor,Rx.T))
 
         # shift cg by root location given
         self.cg_location += self.locations["root"]
