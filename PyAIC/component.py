@@ -23,6 +23,7 @@ class Component:
             "root" : np.zeros((3,1)),
             "tip"  : np.zeros((3,1))
         }
+        self.name = "empty_name"
         self._components = []
 
         # retrieve info
@@ -128,12 +129,13 @@ class Component:
     def get_mass_properties(self):
         """Method which returns mass, cg, I about cg rotated to total cframe"""
 
-        output_dict = {
+        self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
         }
-        return output_dict
+        return self.properties_dict
 
 
 class Cuboid(Component):
@@ -208,12 +210,13 @@ class Cuboid(Component):
             [-Ixzo,-Ixzo, Izzo]
         ])
 
-        output_dict = {
+        self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
         }
-        return output_dict
+        return self.properties_dict
 
 
 
@@ -282,12 +285,13 @@ class Cylinder(Component):
             [-Ixzo,-Ixzo, Izzo]
         ])
 
-        output_dict = {
+        self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
         }
-        return output_dict
+        return self.properties_dict
 
 
 
@@ -355,12 +359,13 @@ class Sphere(Component):
             [-Ixzo,-Ixzo, Izzo]
         ])
 
-        output_dict = {
+        self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
         }
-        return output_dict
+        return self.properties_dict
 
 
 
@@ -542,12 +547,13 @@ class Prismoid(Component):
         # calculate inertia tensor about the cg
         self.inertia_tensor = Io - I_shift
 
-        output_dict = {
+        self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
         }
-        return output_dict
+        return self.properties_dict
 
 
     def get_cg_location(self):
@@ -653,12 +659,17 @@ class SymmetricAirfoil(PseudoPrismoid):
         PseudoPrismoid.__init__(self,input_dict)
 
         # save a coefficients for NACA 4-digit thickness distribution
-        self._a0 = 2.969
-        self._a1 = -1.260
-        self._a2 = -3.516
-        self._a3 = 2.843
-        # self._a4 = -1.036
-        self._a4 = -1.015
+        avals_def = [2.969, -1.260, -3.516, 2.843, -1.015]
+        avals = input_dict.get("thickness_distribution_coefficients",avals_def)
+        if avals == "closed":
+            avals = [2.969, -1.260, -3.516, 2.843, -1.036]
+        elif avals == "closed_hunsaker":
+            avals = [2.980, -1.320, -3.286, 2.441, -0.815]
+        self._a0 = avals[0] * 1.0
+        self._a1 = avals[1] * 1.0
+        self._a2 = avals[2] * 1.0
+        self._a3 = avals[3] * 1.0
+        self._a4 = avals[4] * 1.0
 
         # initialize the volume
         cr,ct = self._cr,self._ct

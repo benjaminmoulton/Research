@@ -80,6 +80,7 @@ class AircraftSystem:
 
         wing_types = ["prismoid","pseudo_prismoid","symmetric_airfoil",
         "diamond_airfoil"]
+        comp_types = ["cuboid","cylinder","sphere"]
 
         # initialize get each id number
         ids = []; attach_ids = []; name = []
@@ -143,6 +144,10 @@ class AircraftSystem:
                 self.components[id_number] = Cylinder(input_dict)
             elif input_dict["type"] == "sphere":
                 self.components[id_number] = Sphere(input_dict)
+            
+            # save "name"
+            if input_dict["type"] in wing_types + comp_types:
+                self.components[id_number].name = component
         
         # calculate total volume
         self.volume = 0.0
@@ -158,7 +163,7 @@ class AircraftSystem:
                 self.components[comp_id].update_densities()
 
 
-    def report_as_SolidWorks_report(self,info,positive_tensor=True):
+    def report_as_SolidWorks_report(self,info,positive_tensor=True,name=""):
         """Method which reports the mass and inertia properties as given in 
         SolidWorks.
         
@@ -172,7 +177,12 @@ class AircraftSystem:
             Whether to report in positive tensor formulation. Defaults to true.
         """
 
-        print("Mass properties of",self.file_name)
+        if name == "":
+            partin = ""
+        else:
+            partin = name + " in "
+        print("=" * 97)
+        print("Mass properties of",partin + self.file_name)
         print()
 
         # fix units if not given english units
@@ -212,10 +222,10 @@ class AircraftSystem:
         print("\tIzx = {:> 19.8f}\tIzy = {:> 19.8f}\tIzz = {:> 19.8f}".format(\
             Izx,Izy,Izz))
         print()
-        print()
+        print("=" * 97)
 
 
-    def get_mass_properties(self,report=False,positive_tensor=True):
+    def get_mass_properties(self,report=False,individual=False,positive_tensor=True):
 
         # determine properties of each component
         for i in self.components:
@@ -247,7 +257,7 @@ class AircraftSystem:
                 location)["inertia_tensor"]
 
         # return dictionary of values
-        output_dict = {
+        self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
@@ -256,17 +266,27 @@ class AircraftSystem:
 
         # report
         if report:
-            self.report_as_SolidWorks_report(output_dict,positive_tensor)
+            if not individual:
+                self.report_as_SolidWorks_report(self.properties_dict,\
+                    positive_tensor)
+            else:
+                for i in self.components:
+                    if i != 0:
+                        info = self.components[i].properties_dict
+                        name = self.components[i].name
+                        self.report_as_SolidWorks_report(info,positive_tensor,name)
         
-        return output_dict
+        return self.properties_dict
 
 
 if __name__ == "__main__":
     # AS = AircraftSystem("test_input.json")
     # AS.get_mass_properties()
-    AS = AircraftSystem("horizon.json")
-    AS.get_mass_properties(report=True)
+    # AS = AircraftSystem("horizon.json")
+    # AS.get_mass_properties(report=True)#,individual=True)
     # AS = AircraftSystem("CRM.json")
     # AS.get_mass_properties(report=True)
     # AS = AircraftSystem("hunsaker_test.json")
     # AS.get_mass_properties(report=True)
+    AS = AircraftSystem("simple_foam_wings.json")
+    AS.get_mass_properties(report=True,individual=True)

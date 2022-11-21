@@ -67,7 +67,7 @@ class Wing:
 
         # import geometry info
         self._b = input_dict.get("semispan",1.0)
-        self._dihedral = input_dict.get("dihedral",1.0)
+        self._dihedral = input_dict.get("dihedral",0.0)
         self._sweep = input_dict.get("sweep",0.0)
         self._chord = input_dict.get("chord",1.0)
         self._thickness = input_dict.get("thickness",0.10)
@@ -396,12 +396,13 @@ class Wing:
         # print()
 
         # return dictionary of values
-        output_dict = {
+        self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
         }
-        return output_dict
+        return self.properties_dict
 
 
     def shift_properties_to_location(self,input_location):
