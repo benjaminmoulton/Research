@@ -26,15 +26,20 @@ if __name__ == "__main__":
 
     # create bounds
     print("creating bounds...")
+    types = ["naca4digit","naca4digitmodified","diamond"]
+    tau_type = types[1]
     # tau equations divided by tau_max
-    # # naca 4 digit
-    # tau_eq = a0 * sy.sqrt(xh) + a1*(xh) + a2*(xh)**2 + a3*(xh)**3 +a4*(xh)**4
-    # # naca 4 digit modified
-    # LE = a0 * sy.sqrt(xh) + a1*(  xh) + a2*(  xh)**2 + a3*(  xh)**3
-    # TE = d0               + d1*(1-xh) + d2*(1-xh)**2 + d3*(1-xh)**3
-    # tau_eq = sy.Piecewise((LE, xh < xhmt), (TE, xh >= xhmt), (0, True))
+    # naca 4 digit
+    if tau_type == "naca4digit":
+        tau_eq = a0 * sy.sqrt(xh) + a1*(xh) + a2*(xh)**2 + a3*(xh)**3 +a4*(xh)**4
+    # naca 4 digit modified
+    if tau_type == "naca4digitmodified":
+        LE = a0 * sy.sqrt(xh) + a1*(  xh) + a2*(  xh)**2 + a3*(  xh)**3
+        TE = d0               + d1*(1-xh) + d2*(1-xh)**2 + d3*(1-xh)**3
+        tau_eq = sy.Piecewise((LE, xh < xhmt), (TE, xh >= xhmt), (0, True))
     # diamond
-    tau_eq = sy.Piecewise((xh/xhmt, xh < xhmt), ((1-xh)/(1-xhmt), xh >= xhmt), (0, True))
+    if tau_type == "diamond":
+        tau_eq = sy.Piecewise((xh/xhmt, xh < xhmt), ((1-xh)/(1-xhmt), xh >= xhmt), (0, True))
     x = ( sy.Rational(1,4) - xh )
     xh_up = 1; xh_lo = 0
     xh_bnd = (xh,xh_lo,xh_up)
@@ -45,17 +50,23 @@ if __name__ == "__main__":
     u2 = simp( sy.Rational(48,7) * igr(x**2 * tau_eq   , xh_bnd, conds="piecewise") )
     u3 = simp(                     igr(       tau_eq**3, xh_bnd, conds="piecewise") )
 
-    # # solve with bounds on xhmt
-    # q = sym("q")
-    # u0 = sy.solve([xhmt > 0, xhmt < 1, q - u0],q)
-    # u1 = sy.solve([xhmt > 0, xhmt < 1, q - u1],q)
-    # u2 = sy.solve([xhmt > 0, xhmt < 1, q - u2],q)
-    # u3 = sy.solve([xhmt > 0, xhmt < 1, q - u3],q)
-    print(u0)
-    u0 = sy.refine(u0, sy.Q.negative(xhmt - 1))
-    print(u0)
+    piecewise_types = ["naca4digitmodified","diamond"]
+    if tau_type in piecewise_types: # if piecewise equation
+        y = sym("y")
+        y_bnd = (y,0,1)
+        u0 = simp(igr(u0,y_bnd).args[1][0])
+        u1 = simp(igr(u1,y_bnd).args[1][0])
+        u2 = simp(igr(u2,y_bnd).args[1][0])
+        u3 = simp(igr(u3,y_bnd).args[1][0])
 
-    print("u0 =", u0)
-    print("u1 =", u1)
-    print("u2 =", u2)
-    print("u3 =", u3)
+    # print("u0 =", u0)
+    # print("u1 =", u1)
+    # print("u2 =", u2)
+    # print("u3 =", u3)
+    us = [u0,u1,u2,u3]
+    names = ["u0","u1","u2","u3"]
+    for i in range(len(names)):
+        ueq = str(us[i]).replace("xhmt","x")#r"\hat{x}_{mt}")
+        ueq = ueq.replace("**","^").replace("*"," ")
+        print(names[i],"=",ueq)
+        print()

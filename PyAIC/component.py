@@ -47,9 +47,41 @@ class Component:
             # raise ValueError("No mass / density property given")
         self.banana = "True"
 
+        # read in orientation
+        self.orientation = input_dict.get("orientation",np.zeros((3,)))
+        if len(self.orientation) == 3: # phi theta psi
+            # define a rotation matrix
+            rads = np.deg2rad(self.orientation)
+            CF = np.cos(rads[0]); SF = np.sin(rads[0])
+            CT = np.cos(rads[1]); ST = np.sin(rads[1])
+            CS = np.cos(rads[2]); SS = np.sin(rads[2])
+            self.R = np.array([
+                [ CT*CS, SF*ST*CS - CF*SS, CF*ST*CS + SF*SS],
+                [ CT*SS, SF*ST*SS + CF*CS, CF*ST*SS - SF*CS],
+                [   -ST,            SF*CT,            CF*CT]
+            ])
+        else: # quaternion
+            e0 , ex, ey, ez = self.orientation
+            e02,ex2,ey2,ez2 = e0**2.,ex**2.,ey**2.,ez**2.
+            exe0,exey,exez = ex*e0,ex*ey,ex*ez
+            eye0     ,eyez = ey*e0      ,ey*ez
+            eze0,ezey      = ez*e0,ez*ey
+            # define a rotation matrix
+            CG = np.cos(-self._delta*self._Gamma)
+            SG = np.sin(-self._delta*self._Gamma)
+            self.R = np.array([
+                [ ex2+e02-ey2-ez2,  2.*(exey-eze0),  2.*(exez+eye0)],
+                [  2.*(exey+eze0), ey2+e02-ex2-ez2,  2.*(eyez-exe0)],
+                [  2.*(exez-eye0),  2.*(eyez+exe0), ez2+e02-ex2-ey2]
+            ])
+
 
     def update_densities(self):
         return 0
+
+
+    def get_cg_location(self):
+        return self.cg_location
 
 
     def shift_properties_to_location(self,input_location):
@@ -67,9 +99,14 @@ class Component:
         if isinstance(input_location, list):
             input_location = np.array(input_location)
         
+        # rotate inertia, cg location for rotation values
+        inertia_tensor = np.matmul(self.R,np.matmul(self.inertia_tensor,self.R.T))
+
+        # shift cg by root location given to aircraft coordinate system
+        new_cg_location = self.get_cg_location()
+        
         # determine new location
-        s = input_location - self.cg_location
-        # print(self.cg_location)
+        s = input_location - new_cg_location
 
         # calculate mass shift from parallel axis theorem
         inner_product = np.matmul(s.T,s)[0,0]
@@ -77,12 +114,12 @@ class Component:
         I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
 
         # calculate inertia tensor about new location
-        Inew = self.inertia_tensor + I_shift
+        Inew = inertia_tensor + I_shift
 
         # return dictionary of values
         output_dict = {
             "mass" : self.mass * 1.0,
-            "cg_location" : self.cg_location * 1.0,
+            "cg_location" : new_cg_location,
             "inertia_tensor" : Inew
         }
         return output_dict
@@ -380,6 +417,15 @@ class Prismoid(Component):
             "tip"  : np.array( tip_location)[:,np.newaxis]
         }
 
+        # define a rotation matrix
+        CG = np.cos(-self._delta*self._Gamma)
+        SG = np.sin(-self._delta*self._Gamma)
+        self.R = np.array([
+            [1.0, 0.0, 0.0],
+            [0.0,  CG, -SG],
+            [0.0,  SG,  CG]
+        ])
+
 
     def _get_kappa_values(self):
 
@@ -496,28 +542,19 @@ class Prismoid(Component):
         # calculate inertia tensor about the cg
         self.inertia_tensor = Io - I_shift
 
-        # define a rotation matrix
-        CG = np.cos(-self._delta*self._Gamma)
-        SG = np.sin(-self._delta*self._Gamma)
-        Rx = np.array([
-            [1.0, 0.0, 0.0],
-            [0.0,  CG, -SG],
-            [0.0,  SG,  CG]
-        ])
-
-        # rotate cg location and inertia for dihedral
-        self.cg_location = np.matmul(Rx,self.cg_location)
-        self.inertia_tensor = np.matmul(Rx,np.matmul(self.inertia_tensor,Rx.T))
-
-        # shift cg by root location given
-        self.cg_location += self.locations["root"]
-
         output_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
             "inertia_tensor" : self.inertia_tensor
         }
         return output_dict
+
+
+    def get_cg_location(self):
+        cg_location = np.matmul(self.R,self.cg_location)
+
+        # shift cg by root location given
+        return cg_location + self.locations["root"]
 
 
 

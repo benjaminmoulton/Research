@@ -348,8 +348,9 @@ class Wing:
         # determine total cg location
         self.cg_location = np.zeros((3,1))
         for i in self._components:
+            # component_cg = self._components[i].cg_location + self._components[i].locations["root"]
             self.cg_location += self._components[i].mass * \
-                self._components[i].cg_location
+                self._components[i].get_cg_location()
             # ##################
             # print("Mass = {:> 10.8f} slugs".format(self._components[i].mass))
             # # print(self._components[i]._root_location)
