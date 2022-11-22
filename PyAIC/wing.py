@@ -73,6 +73,9 @@ class Wing:
         self._thickness = input_dict.get("thickness",0.10)
         self._camber = input_dict.get("camber",0.02)
 
+        # thickness coefficients
+        self._avals = input_dict.get("thickness_distribution_coefficients","open_trailing_edge")
+
         # check for incorrect format of values
         if isinstance(self._dihedral,(float,int)):
             val = float(self._dihedral)
@@ -225,6 +228,8 @@ class Wing:
             self._component_inputs[i]["sweep"] = geo_dict["sweep"]
             self._component_inputs[i]["dihedral"] = geo_dict["dihedral"]
             self._component_inputs[i]["root_location"] = root_location.tolist()
+            self._component_inputs[i]["thickness_distribution_coefficients"] =\
+                self._avals
             if self._side == "both":
                 self._component_inputs[i]["side"] = "right"
             else:

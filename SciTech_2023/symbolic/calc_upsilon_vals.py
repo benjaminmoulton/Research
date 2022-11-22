@@ -26,8 +26,8 @@ if __name__ == "__main__":
 
     # create bounds
     print("creating bounds...")
-    types = ["naca4digit","naca4digitmodified","diamond"]
-    tau_type = types[1]
+    types = ["naca4digit","naca4digitmodified","diamond","ellipse"]
+    tau_type = types[2]
     # tau equations divided by tau_max
     # naca 4 digit
     if tau_type == "naca4digit":
@@ -40,12 +40,18 @@ if __name__ == "__main__":
     # diamond
     if tau_type == "diamond":
         tau_eq = sy.Piecewise((xh/xhmt, xh < xhmt), ((1-xh)/(1-xhmt), xh >= xhmt), (0, True))
+    # ellipse
+    if tau_type == "ellipse":
+        LE = sy.sqrt( 1 - ((xh-xhmt)/(xhmt))**2 )
+        TE = sy.sqrt( 1 - ((xhmt-xh)/(1-xhmt))**2 )
+        tau_eq = sy.Piecewise((LE, xh < xhmt), (TE, xh >= xhmt), (0, True))
     x = ( sy.Rational(1,4) - xh )
     xh_up = 1; xh_lo = 0
     xh_bnd = (xh,xh_lo,xh_up)
 
     # integrate
     u0 =                     igr(       tau_eq, xh_bnd)
+    print(u0)
     u1 = -4                * igr(x    * tau_eq, xh_bnd)
     u2 = sy.Rational(48,7) * igr(x**2 * tau_eq, xh_bnd)
     tau3 = simp(exp(tau_eq**3))

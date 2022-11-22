@@ -412,7 +412,7 @@ class Prismoid(Component):
         self._cr,self._ct = geometry.get("chord",[1.0,1.0])
         self._tr,self._tt = geometry.get("thickness",[0.1,0.1])
         self._ur,self._ut = geometry.get("camber",[0.01,0.01])
-        self._xmt = geometry.get("max_thickness_location",0.1)
+        self._xmt = geometry.get("max_thickness_location",0.5)
         self._Lambda = np.deg2rad(input_dict.get("sweep",0.0))
         self._Gamma = np.deg2rad(input_dict.get("dihedral",0.0))
         root_location = input_dict.get("root_location",[0.0,0.0,0.0])
@@ -659,12 +659,16 @@ class SymmetricAirfoil(PseudoPrismoid):
         PseudoPrismoid.__init__(self,input_dict)
 
         # save a coefficients for NACA 4-digit thickness distribution
-        avals_def = [2.969, -1.260, -3.516, 2.843, -1.015]
-        avals = input_dict.get("thickness_distribution_coefficients",avals_def)
-        if avals == "closed":
+        avals = input_dict.get("thickness_distribution_coefficients","open_trailing_edge")
+        print(avals)
+        if avals == "open_trailing_edge":
+            avals = [2.969, -1.260, -3.516, 2.843, -1.015]
+        elif avals == "closed_trailing_edge":
             avals = [2.969, -1.260, -3.516, 2.843, -1.036]
         elif avals == "closed_hunsaker":
             avals = [2.980, -1.320, -3.286, 2.441, -0.815]
+        elif not isinstance(avals,(np.ndarray,list)) and not (len(avals)==5):
+            raise ImportError("Incorrect thickness distribution coefficients")
         self._a0 = avals[0] * 1.0
         self._a1 = avals[1] * 1.0
         self._a2 = avals[2] * 1.0

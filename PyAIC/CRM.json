@@ -1,12 +1,221 @@
 {
     "mass" : 220240.0,
 	"units" : "SI",
+	"airfoils" : {
+	    "uCRM-9_w0": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr0_xfoil.txt"
+			    }
+	    },
+	    "uCRM-9_w10": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr10_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w15": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr15_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w20": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr20_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w25": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr25_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w30": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr30_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w35": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr35_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w37": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr37_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w40": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr40_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w45": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr45_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w50": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr50_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w55": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr55_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w60": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr60_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w65": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr65_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w70": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr70_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w75": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr75_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w80": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr80_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w85": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr85_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w90": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr90_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w95": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr95_xfoil.txt"
+		    }
+	    },
+	    "uCRM-9_w100": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/uCRM-9_wr100_xfoil.txt"
+		    }
+	    },
+        "uCRM-9_h1692": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h1692.txt"
+		    }
+	    },
+        "uCRM-9_h20": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h20.txt"
+		    }
+	    },
+        "uCRM-9_h30": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h30.txt"
+		    }
+	    },
+        "uCRM-9_h40": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h40.txt"
+		    }
+	    },
+        "uCRM-9_h50": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h50.txt"
+		    }
+	    },
+        "uCRM-9_h60": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h60.txt"
+		    }
+	    },
+        "uCRM-9_h70": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h70.txt"
+		    }
+	    },
+        "uCRM-9_h80": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h80.txt"
+		    }
+	    },
+        "uCRM-9_h90": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h90.txt"
+		    }
+	    },
+        "uCRM-9_h100": {
+		    "type": "linear",
+		    "geometry" : {
+			    "outline_points" : "/home/ben/Code/Research/SciTech_2023/CRM_inertia/AirfoilDatabase/airfoils/h100.txt"
+		    }
+	    }
+    },
     "components" : {
         "main_wing" : {
             "ID" : 1,
             "type" : "symmetric_airfoil",
             "side" : "both",
             "semispan" : 29.38,
+            "twist" : 	[	[0.00,	 6.7166	],
+							[0.10,	 4.4402	],
+							[0.15,	 3.6063	],
+							[0.20,	 3.0131	],
+							[0.25,	 2.2419	],
+							[0.30,	 1.5252	],
+							[0.35,	 0.9379	],
+							[0.37,	 0.7635	],
+							[0.40,	 0.4285	],
+							[0.45,	-0.2621	],
+							[0.50,	-0.6782	],
+							[0.55,	-0.9436	],
+							[0.60,	-1.2067	],
+							[0.65,	-1.4526	],
+							[0.70,	-1.6350	],
+							[0.75,	-1.8158	],
+							[0.80,	-2.0301	],
+							[0.85,	-2.2772	],
+							[0.90,	-2.5773	],
+							[0.95,	-3.1248	],
+							[1.00,	-3.7500	]],
 			"sweep" :	 [	[0.00,	29.7522	],
 							[0.10,	29.9501	],
 							[0.15,	31.1690	],
