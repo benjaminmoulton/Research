@@ -1,17 +1,55 @@
 {
     "airfoils" : {
+	    "NACA_0008": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "0008"
+            }
+        },
 	    "NACA_0012": {
             "type": "linear",
             "geometry": {
-                "NACA": "2412"
+                "NACA": "0012"
+            }
+        },
+	    "NACA_0016": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "0016"
+            }
+        },
+	    "NACA_4808": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "4808"
+            }
+        },
+	    "NACA_4812": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "4812"
+            }
+        },
+	    "NACA_4816": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "4816"
             }
         },
         "ClarkY": {
 		    "type": "linear",
 		    "geometry" : {
 			    "outline_points" : "ClarkY_tis21p5.txt"
-			    }
+			}
 	    }
+    },
+    "airfoils_failed" : {
+        "Diamond": {
+            "type": "linear",
+            "geometry" : {
+                "outline_points" : "diamond_mtis0p5_tis12.txt"
+            }
+        }
     },
     "components" : {
         "rectangular" : {
@@ -24,7 +62,9 @@
             "chord" : [ [0.0, 1.0],
                         [1.0, 1.0]],
             "thickness" : [ [0.0, 0.12],
-                            [1.0, 0.12]]
+                            [1.0, 0.12]],
+            "airfoils" : [  [0.0, "NACA_0012"],
+                            [1.0, "NACA_0012"]]
         },
         "taper" : {
             "ID" : 2,
@@ -36,7 +76,9 @@
             "chord" : [ [0.0, 1.5],
                         [1.0, 0.5]],
             "thickness" : [ [0.0, 0.12],
-                            [1.0, 0.12]]
+                            [1.0, 0.12]],
+            "airfoils" : [  [0.0, "NACA_0012"],
+                            [1.0, "NACA_0012"]]
         },
         "thickness" : {
             "ID" : 3,
@@ -48,7 +90,9 @@
             "chord" : [ [0.0, 1.0],
                         [1.0, 1.0]],
             "thickness" : [ [0.0, 0.16],
-                            [1.0, 0.18]]
+                            [1.0, 0.18]],
+            "airfoils" : [  [0.0, "NACA_0016"],
+                            [1.0, "NACA_0008"]]
         },
         "camber" : {
             "ID" : 4,
@@ -62,7 +106,9 @@
             "thickness" : [ [0.0, 0.12],
                             [1.0, 0.12]],
             "camber" : [[0.0, 0.04],
-                        [1.0, 0.04]]
+                        [1.0, 0.04]],
+            "airfoils" : [  [0.0, "NACA_4812"],
+                            [1.0, "NACA_4812"]]
         },
         "clark-y" : {
             "ID" : 5,
@@ -75,20 +121,9 @@
             "chord" : [ [0.0, 1.0],
                         [1.0, 1.0]],
             "thickness" : [ [0.0, 0.12],
-                            [1.0, 0.12]]
-        },
-        "diamond" : {
-            "ID" : 6,
-            "density" : 0.25,
-            "type" : "symmetric_airfoil",
-            "thickness_distribution_coefficients": [0.479, -0.948, 14.248, -26.970, 13.234],
-            "side" : "right",
-            "semispan" : 8.0,
-            "sweep" : 0.0,
-            "chord" : [ [0.0, 1.0],
-                        [1.0, 1.0]],
-            "thickness" : [ [0.0, 0.12],
-                            [1.0, 0.12]]
+                            [1.0, 0.12]],
+            "airfoils" : [  [0.0, "ClarkY"],
+                            [1.0, "ClarkY"]]
         },
         "sweep" : {
             "ID" : 7,
@@ -100,7 +135,9 @@
             "chord" : [ [0.0, 1.0],
                         [1.0, 1.0]],
             "thickness" : [ [0.0, 0.12],
-                            [1.0, 0.12]]
+                            [1.0, 0.12]],
+            "airfoils" : [  [0.0, "NACA_0012"],
+                            [1.0, "NACA_0012"]]
         },
         "all_properties" : {
             "ID" : 8,
@@ -114,7 +151,26 @@
             "thickness" : [ [0.0, 0.16],
                             [1.0, 0.08]],
             "camber" : [[0.0, 0.04],
-                        [1.0, 0.04]]
+                        [1.0, 0.04]],
+            "airfoils" : [  [0.0, "NACA_4816"],
+                            [1.0, "NACA_4808"]]
+        }
+    },
+    "components_failed" : {
+        "diamond" : {
+            "ID" : 6,
+            "density" : 0.25,
+            "type" : "symmetric_airfoil",
+            "thickness_distribution_coefficients": [0.479, -0.948, 14.248, -26.970, 13.234],
+            "side" : "right",
+            "semispan" : 8.0,
+            "sweep" : 0.0,
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 1.0]],
+            "thickness" : [ [0.0, 0.12],
+                            [1.0, 0.12]],
+            "airfoils" : [  [0.0, "Diamond"],
+                            [1.0, "Diamond"]]
         }
     }
 }

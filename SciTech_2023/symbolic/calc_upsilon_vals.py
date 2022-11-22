@@ -45,18 +45,30 @@ if __name__ == "__main__":
     xh_bnd = (xh,xh_lo,xh_up)
 
     # integrate
-    u0 = simp(                     igr(       tau_eq   , xh_bnd, conds="piecewise") )
-    u1 = simp( -4                * igr(x    * tau_eq   , xh_bnd, conds="piecewise") )
-    u2 = simp( sy.Rational(48,7) * igr(x**2 * tau_eq   , xh_bnd, conds="piecewise") )
-    u3 = simp(                     igr(       tau_eq**3, xh_bnd, conds="piecewise") )
+    u0 =                     igr(       tau_eq, xh_bnd)
+    u1 = -4                * igr(x    * tau_eq, xh_bnd)
+    u2 = sy.Rational(48,7) * igr(x**2 * tau_eq, xh_bnd)
+    tau3 = simp(exp(tau_eq**3))
+    # tau3 = str(tau3)
+    # for substring in tau3.split("+"):
+    #     for subsubstring in substring.split("-"):
+    #         print(subsubstring)
+    # print(igr(         tau3, xh_bnd))
+    # quit()
+    u3 =                     igr(         tau3, xh_bnd)
 
     piecewise_types = ["naca4digitmodified","diamond"]
     if tau_type in piecewise_types: # if piecewise equation
+        print("'integrating' in y to force piecewise...")
         y = sym("y")
         y_bnd = (y,0,1)
+        print("\tu0...")
         u0 = simp(igr(u0,y_bnd).args[1][0])
+        print("\tu1...")
         u1 = simp(igr(u1,y_bnd).args[1][0])
+        print("\tu2...")
         u2 = simp(igr(u2,y_bnd).args[1][0])
+        print("\tu3...")
         u3 = simp(igr(u3,y_bnd).args[1][0])
 
     # print("u0 =", u0)

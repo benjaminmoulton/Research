@@ -2,7 +2,7 @@
     "scene": {
         "aircraft": {
             "twist": {
-                "file": "twist.json",
+                "file": "fenix.json",
                 "state": {
                     "velocity": 200.0
                 }
