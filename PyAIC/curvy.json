@@ -1,0 +1,116 @@
+{
+    "mass" : 0.3529008912,
+    "airfoils" : {
+	    "NACA_2412": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "2412"
+            }
+        },
+        "NACA_0012": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "0012"
+            }
+        }
+    },
+    "components" : {
+        "main" : {
+            "ID" : 1,
+            "type" : "symmetric_airfoil",
+            "side" : "both",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 5.0,
+            "sweep" : [[0.0, 30.0],
+                       [1.0, 30.0]],
+            "dihedral" : [[0.0, 0.0],
+                          [1.0, 60.0]],
+            "chord" : [ [0.0, 2.5],
+                        [0.5, 1.25],
+                        [1.0, 1.0]],
+            "thickness" : 0.12,
+            "camber" : 0.02,
+			"airfoil" : [	[0.0,	"NACA_2412"],
+							[1.0,	"NACA_2412"]]
+        },
+        "main2" : {
+            "ID" : 2,
+            "type" : "symmetric_airfoil",
+            "side" : "both",
+            "connect_to" : {
+                "ID" : 1,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 2.0,
+            "sweep" : [[0.0, 0.0],
+                       [1.0, 30.0]],
+            "dihedral" : [[0.0, 60.0],
+                          [1.0, 110.0]],
+            "chord" : [ [0.0, 1.0],
+                        [0.5, 1.25],
+                        [1.0, 1.5]],
+            "thickness" : 0.12,
+            "camber" : 0.02,
+			"airfoil" : [	[0.0,	"NACA_0012"],
+							[1.0,	"NACA_0012"]]
+        },
+        "hstab" : {
+            "ID" : 3,
+            "type" : "symmetric_airfoil",
+            "side" : "both",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  -3.0,
+                "dy" :  0.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 2.0,
+            "sweep" : [[0.0, 0.0],
+                       [1.0, 45.0]],
+            "dihedral" : [[0.0, 10.0],
+                          [1.0, 10.0]],
+            "chord" : [ [0.0, 1.5],
+                        [1.0, 1.0]],
+            "thickness" : 0.12,
+            "camber" : 0.02,
+			"airfoil" : [	[0.0,	"NACA_0012"],
+							[1.0,	"NACA_0012"]]
+        },
+        "vstab" : {
+            "ID" : 4,
+            "type" : "symmetric_airfoil",
+            "side" : "both",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  -3.0,
+                "dy" :  0.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 1.2,
+            "sweep" : [[0.0, 0.0],
+                       [1.0, 45.0]],
+            "dihedral" : 90.0,
+            "chord" : [ [0.0, 1.5],
+                        [1.0, 1.0]],
+            "thickness" : 0.12,
+            "camber" : 0.02,
+			"airfoil" : [	[0.0,	"NACA_0012"],
+							[1.0,	"NACA_0012"]]
+        }
+    }
+}

@@ -1,6 +1,7 @@
 import numpy as np
 import json
 import matplotlib.pyplot as plt
+import copy
 
 from component import Component, Prismoid, PseudoPrismoid, SymmetricAirfoil, DiamondAirfoil
 
@@ -45,6 +46,8 @@ class Wing:
         self._wing_type = input_dict.get("type","symmetric_airfoil")
 
         self._side = input_dict.get("side","both")
+
+        self.ID = input_dict.get("ID")
 
         # store mass / density variables
         if "density" in input_dict:
@@ -130,42 +133,35 @@ class Wing:
 
         ### "straighten"
         # determine initial and difference angles for calculation
-        s_init = np.deg2rad(geo_dict["sweep"][0])
-        s_diff = np.deg2rad(geo_dict["sweep"][1] - geo_dict["sweep"][0])
-        d_init = np.deg2rad(geo_dict["dihedral"][0])
-        d_diff = np.deg2rad(geo_dict["dihedral"][1] - geo_dict["dihedral"][0])
+        s_0 = np.deg2rad(geo_dict["sweep"][0])
+        s_1 = np.deg2rad(geo_dict["sweep"][1])
+        d_0 = np.deg2rad(geo_dict["dihedral"][0])
+        d_1 = np.deg2rad(geo_dict["dihedral"][1])
 
         # calculate shift distance
-        if d_diff != 0.0:
-            z_shift = -geo_dict["span"] / d_diff * \
-                ( np.cos(d_init) - np.cos(d_diff + d_init) )
-            y_shift = geo_dict["span"] / d_diff * \
-                ( np.sin(d_diff + d_init) - np.sin(d_init) )
-        elif d_init != 0.0:
-            y_shift = geo_dict["span"] * np.cos(d_init)
-            z_shift = geo_dict["span"] * np.sin(d_init)
+        if d_1-d_0 != 0.0:
+            z_shift = -geo_dict["span"] / (d_1-d_0) * \
+                ( np.cos(d_0) - np.cos(d_1) )
+            y_shift = geo_dict["span"] / (d_1-d_0) * \
+                ( np.sin(d_1) - np.sin(d_0) )
         else:
-            y_shift = geo_dict["span"]
-            z_shift = 0.0
-        if s_diff != 0.0:
-            x_shift = geo_dict["span"] / s_diff * \
-                np.log(np.abs(np.cos(s_init) / np.cos(s_diff + s_init)))
-        elif s_init != 0.0:
-            x_shift = geo_dict["span"] * np.tan(s_init)
+            y_shift = geo_dict["span"] * np.cos(d_0)
+            z_shift = -geo_dict["span"] * np.sin(d_0)
+        if s_1-s_0 != 0.0:
+            x_shift = geo_dict["span"] / (s_1-s_0) * \
+                (np.log(np.abs(np.cos(s_1))) - np.log(np.abs(np.cos(s_0))))
         else:
-            x_shift = 0.0
+            x_shift = -geo_dict["span"] * np.tan(s_0)
 
         
         # calculate corresponding constant angles
-        # if d_diff != 0.0:
-        # if s_diff != 0.0:
         geo_dict["span"] = np.sqrt(z_shift**2. + y_shift**2.)
-        geo_dict["dihedral"] = np.rad2deg(np.arctan(z_shift / y_shift))
-        geo_dict["sweep"] = np.rad2deg(np.arctan2(x_shift,geo_dict["span"]))
+        geo_dict["dihedral"] = np.rad2deg(np.arctan2(-z_shift, y_shift))
+        geo_dict["sweep"] = np.rad2deg(np.arctan2(-x_shift,geo_dict["span"]))
 
         # determine shift from root quarter chord to tip quarter chord
-        if self._side == "left": y_shift *= -1.
-        shift = np.array([-x_shift,y_shift,z_shift])
+        if self._side == "left": y_shift = y_shift * -1.
+        shift = np.array([x_shift,y_shift,z_shift])
         
         return geo_dict,shift
 
@@ -284,7 +280,8 @@ class Wing:
             for i in range(span_fracs.shape[0]-1):
                 j = i + span_fracs.shape[0]-1
 
-                self._component_inputs[j] = self._component_inputs[i].copy()
+                self._component_inputs[j] = copy.deepcopy(\
+                    self._component_inputs[i])
                 self._component_inputs[j]["side"] = "left"
                 r_arr = np.array(self._component_inputs[j]["root_location"])
                 r_arr[1] *= -1.0
@@ -294,27 +291,23 @@ class Wing:
                 self._component_inputs[j]["tip_location"] = t_arr.tolist()
         
         # add in shift from input
-        in_shift = np.array([self._connect_dx,self._connect_dy,self._connect_dz])
+        in_shift = np.copy(np.array([self._connect_dx,self._connect_dy,\
+            self._connect_dz]))
         for i in range(len(self._component_inputs)):
-            r_arr = np.array(self._component_inputs[i]["root_location"])
+            r_arr = np.copy(np.array(self._component_inputs[i]["root_location"]))
             r_arr += in_shift * 1.0
             self._component_inputs[i]["root_location"] = r_arr.tolist()
-            t_arr = np.array(self._component_inputs[i]["tip_location"])
+            t_arr = np.copy(np.array(self._component_inputs[i]["tip_location"]))
             t_arr += in_shift * 1.0
             self._component_inputs[i]["tip_location"] = t_arr.tolist()
         
         # save wing root and tip locations
         self.locations = {}
-        self.locations["root"] = np.array(\
-            self._component_inputs[0]["root_location"])[:,np.newaxis]
-        if self._side == "both": h = span_fracs.shape[0]-1
-        else: 
-            if span_fracs.shape[0]-1 == 1:
-                h = 0
-            else:
-                h = -1
-        self.locations["tip"] = np.array(\
-            self._component_inputs[h]["tip_location"])[:,np.newaxis]
+        self.locations["root"] = np.copy(np.array(\
+            self._component_inputs[0]["root_location"]))[:,np.newaxis]
+        h = span_fracs.shape[0]-2
+        self.locations["tip"] = np.copy(np.array(\
+            self._component_inputs[h]["tip_location"]))[:,np.newaxis]
 
 
     def _initialize_components(self):
