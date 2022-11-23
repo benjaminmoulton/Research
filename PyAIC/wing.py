@@ -72,9 +72,11 @@ class Wing:
         self._chord = input_dict.get("chord",1.0)
         self._thickness = input_dict.get("thickness",0.10)
         self._camber = input_dict.get("camber",0.02)
+        self._airfoil = input_dict.get("airfoil","NACA_0008")
 
         # thickness coefficients
-        self._avals = input_dict.get("thickness_distribution_coefficients","open_trailing_edge")
+        self._avals = input_dict.get("thickness_distribution_coefficients",\
+            "open_trailing_edge")
 
         # check for incorrect format of values
         if isinstance(self._dihedral,(float,int)):
@@ -116,6 +118,12 @@ class Wing:
             self._camber = np.array(self._camber)
         else:
             raise ValueError("camber input not correctly formatted")
+
+        if isinstance(self._airfoil,(str)):
+            val = self._airfoil
+            self._airfoil = [[0.0,val],[1.0,val]]
+        elif not isinstance(self._airfoil,list):
+            raise ValueError("airfoil input not correctly formatted")
 
 
     def _straighten_c_4(self,geo_dict):
@@ -165,15 +173,16 @@ class Wing:
     def _organize_inputs(self):
 
         # determine span fraction values
+        af_span = [af[0] for af in self._airfoil]
         span_fracs = np.unique(np.concatenate((self._dihedral[:,0], \
             self._sweep[:,0],self._chord[:,0],self._thickness[:,0], \
-            self._camber[:,0])))
+            self._camber[:,0],af_span)))
         
         # initialize a components dictionary
         self._component_inputs = {}
 
         # initialize counters
-        i_d = i_s = i_c = i_t = i_m = 0
+        i_d = i_s = i_c = i_t = i_m = i_a = 0
 
         # root location
         root_location = np.zeros((3,))
@@ -206,12 +215,21 @@ class Wing:
             mr = np.interp(span_fracs[i  ],camber[:,0],camber[:,1])
             mt = np.interp(span_fracs[i+1],camber[:,0],camber[:,1])
 
+            airfoil = self._airfoil[i_a:i_a+2]
+            af0 = [af[0] for af in airfoil]
+            af1 = [af[1] for af in airfoil]
+            if span_fracs[i] >= af0[0] and span_fracs[i] < af0[1]: ar = af1[0]
+            else:ar = af1[1]
+            if span_fracs[i+1] <= af0[1] and span_fracs[i+1] > af0[0]: at = af1[1]
+            else:at = af1[0]
+
             # create component dictionary
             geo_dict = {}
             geo_dict["span"] = b
             geo_dict["chord"] = [cr,ct]
             geo_dict["thickness"] = [tr,tt]
             geo_dict["camber"] = [mr,mt]
+            geo_dict["airfoil"] = [ar,at]
             geo_dict["sweep"] = [sr,st]
             geo_dict["dihedral"] = [dr,dt]
 
@@ -257,6 +275,9 @@ class Wing:
 
                 if self._camber[i_m+1,0] <= i1b: i_m += 1
                 if self._camber[i_m+1,0] == self._camber[i_m,0]:  i_m += 1
+
+                if self._airfoil[i_a+1][0] <= i1b: i_a += 1
+                if self._airfoil[i_a+1][0] == self._airfoil[i_a][0]:  i_a += 1
         
         # if both wings
         if self._side == "both":

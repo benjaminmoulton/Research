@@ -660,7 +660,6 @@ class SymmetricAirfoil(PseudoPrismoid):
 
         # save a coefficients for NACA 4-digit thickness distribution
         avals = input_dict.get("thickness_distribution_coefficients","open_trailing_edge")
-        print(avals)
         if avals == "open_trailing_edge":
             avals = [2.969, -1.260, -3.516, 2.843, -1.015]
         elif avals == "closed_trailing_edge":

@@ -4,15 +4,13 @@ import json
 
 from wing import Wing
 
-def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straighten_c_4=False,tag=""):
+def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False,tag=""):
     # read in json file
     json_string = open(filename).read()
     airplane_dict = json.loads(json_string)
 
     # rename wings dictionary
     airplane_dict["wings"] = airplane_dict.pop("components")
-    key0 = list(airplane_dict["wings"].keys())[0]
-    airplane_dict["wings"][key0]["is_main"] = True
     
     # force airfoils to be symmetric airfoils of specified thickness
     if force_symmetric:
@@ -27,7 +25,7 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straighten_c_4=Fal
         
             # read in a coefficients
             avals = airplane_dict["wings"][wing].get(\
-                "thickness_distribution_coefficients","open_trailing_edge")
+                "thickness_distribution_coefficients","closed_trailing_edge")
             if avals == "open_trailing_edge":
                 avals = [2.969, -1.260, -3.516, 2.843, -1.015]
             elif avals == "closed_trailing_edge":
@@ -57,7 +55,7 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straighten_c_4=Fal
             # run through airfoils, create symmetric airfoil, replace in airfoils
             af0 = list(airplane_dict["airfoils"].keys())[0]
             airfoil = airplane_dict["wings"][wing].get("airfoil",af0)
-            if isinstance(thickness,(float,int)):
+            if isinstance(airfoil,str):
                 airfoil = [[0.0,airfoil],[1.0,airfoil]]
             for i in range(len(airfoil)):
                 # determine local thickness
@@ -68,9 +66,9 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straighten_c_4=Fal
                 afi[:,1] *= tk
 
                 # replace airfoil in airfoils
-                airplane_dict["airfoils"][airfoil[i][1]].pop("NACA","0008")
-                airplane_dict["airfoils"][airfoil[i][1]]["outline_points"] = \
-                    afi.tolist()
+                airplane_dict["airfoils"][airfoil[i][1]]["geometry"].pop("NACA","0008")
+                airplane_dict["airfoils"][airfoil[i][1]]["geometry"]["outline_points"] = \
+                    afi
 
     # remove twist from each wing
     if untwist:
@@ -78,16 +76,52 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straighten_c_4=Fal
             airplane_dict["wings"][wing].pop("twist",0)
     
     # straighten quarter chord
-    if straighten_c_4:
+    if straight_c_4:
         wing_keys = list(airplane_dict["wings"].keys())
+        id_counter = 1
         for wing in wing_keys:
             old_wing = airplane_dict["wings"].pop(wing)
 
             # add mass if not in dictionary
             old_wing["mass"] = 1.0
             class_wing = Wing(old_wing)
-    
-    quit()
+
+            # run through sub-wings
+            counter = 0
+            for subwing in class_wing._component_inputs:
+                subwing_dict = class_wing._component_inputs[subwing]
+                subwing_name = str(subwing) + "_" + str(counter)
+
+                # connect_to
+                dict1 = { 
+                    "connect_to" : {
+                        "dx" : subwing_dict["root_location"][0],
+                        "dy" : subwing_dict["root_location"][1],
+                        "dz" : subwing_dict["root_location"][2]
+                    }
+                }
+
+                # geometry
+                geom_dict = subwing_dict["geometry"]
+                dict2 = {
+                    "ID" : id_counter,
+                    "semispan" : geom_dict["span"],
+                    "chord" : [ [0.0,geom_dict["chord"][0]],
+                                [1.0,geom_dict["chord"][1]]],
+                    "thickness" : [ [0.0,geom_dict["thickness"][0]],
+                                    [1.0,geom_dict["thickness"][1]]],
+                    "airfoil" : [   [0.0,geom_dict["airfoil"][0]],
+                                    [1.0,geom_dict["airfoil"][1]]]
+                }
+
+                airplane_dict["wings"][subwing_name] = {**subwing_dict,**dict1,**dict2}
+
+                id_counter += 1
+                counter += 1
+
+    # make one wing main
+    key0 = list(airplane_dict["wings"].keys())[0]
+    airplane_dict["wings"][key0]["is_main"] = True
 
     # add weight to dictionary
     airplane_dict["weight"] = 1.0
@@ -120,6 +154,6 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straighten_c_4=Fal
 if __name__ == "__main__":
     # pyaic_to_mux("simple_foam_wings.json")
     # pyaic_to_mux("CRM.json",tag="CRM_OML") # OML
-    # pyaic_to_mux("CRM.json",force_symmetric=True,tag="CRM_symm")
+    pyaic_to_mux("CRM.json",force_symmetric=True,tag="CRM_symm")
     # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,tag="CRM_notwist")
-    pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,straighten_c_4=True,tag="CRM_strait")
+    # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,straight_c_4=True,tag="CRM_straight")
