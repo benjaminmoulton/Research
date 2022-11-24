@@ -432,7 +432,7 @@ class Prismoid(Component):
         ])
 
 
-    def _get_kappa_values(self):
+    def _make_kappa_values(self):
 
         # initialize certian values for ease of calculation
         cr,ct = self._cr,self._ct
@@ -480,7 +480,7 @@ class Prismoid(Component):
         self._kg = self._kg * 240. / 3360.
 
 
-    def _get_upsilon_values(self):
+    def _make_upsilon_values(self):
 
         # calculate upsilon values
         self._u0 = 1.0
@@ -493,10 +493,10 @@ class Prismoid(Component):
         """Method which returns mass, cg, I about cg rotated to total cframe"""
 
         # calculate kappa values
-        self._get_kappa_values()
+        self._make_kappa_values()
 
         # calculate upsilon values
-        self._get_upsilon_values()
+        self._make_upsilon_values()
 
         # calculate mass
         if self._given_density_not_mass:
@@ -591,7 +591,7 @@ class PseudoPrismoid(Prismoid):
         self.volume = self._b / 12. * ka * u0
 
 
-    def _get_kappa_values(self):
+    def _make_kappa_values(self):
 
         # initialize certian values for ease of calculation
         cr,ct = self._cr,self._ct
@@ -634,7 +634,7 @@ class PseudoPrismoid(Prismoid):
         self._kg = tr**3. *one + tr**2.*tt *two + tr*tt**2. *thr + tt**3. *fou
 
 
-    def _get_upsilon_values(self):
+    def _make_upsilon_values(self):
 
         # calculate upsilon values
         self._u0 = 1.0
@@ -689,7 +689,7 @@ class SymmetricAirfoil(PseudoPrismoid):
         self.volume = self._b / 12. * ka * u0
 
 
-    def _get_upsilon_values(self):
+    def _make_upsilon_values(self):
 
         # initialize certain values for ease of calculation
         a0 = self._a0
@@ -743,7 +743,7 @@ class DiamondAirfoil(PseudoPrismoid):
         self.volume = self._b / 12. * ka * u0
 
 
-    def _get_upsilon_values(self):
+    def _make_upsilon_values(self):
 
         # calculate upsilon values
         self._u0 = 1. /  2.

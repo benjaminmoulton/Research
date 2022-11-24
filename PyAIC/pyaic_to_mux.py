@@ -77,9 +77,11 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False
                 # plt.show()
 
                 # replace airfoil in airfoils
-                airplane_dict["airfoils"][airfoil[i][1]]["geometry"].pop("NACA","0008")
-                airplane_dict["airfoils"][airfoil[i][1]]["geometry"]["outline_points"] = \
-                    afi
+                # airplane_dict["airfoils"][airfoil[i][1]]["geometry"].pop("NACA","0008")
+                airplane_dict["airfoils"][airfoil[i][1]]["geometry"].pop("outline_points",0)
+                airplane_dict["airfoils"][airfoil[i][1]]["geometry"]["NACA"] = "0012"
+                # airplane_dict["airfoils"][airfoil[i][1]]["geometry"]["outline_points"] = \
+                #     afi
 
     # remove twist from each wing
     if untwist:
@@ -153,13 +155,13 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False
     # add weight to dictionary
     airplane_dict["weight"] = 1.0
 
-    new_dict = json.loads(open(filename).read())
-    new_dict["wings"] = new_dict.pop("components")
-    key0 = list(new_dict["wings"].keys())[0]
-    new_dict["wings"][key0]["is_main"] = True
-    for wing in new_dict["wings"]:
-        new_dict["wings"][wing].pop("twist",0)
-    new_dict["weight"] = 1.0
+    # new_dict = json.loads(open(filename).read())
+    # new_dict["wings"] = new_dict.pop("components")
+    # key0 = list(new_dict["wings"].keys())[0]
+    # new_dict["wings"][key0]["is_main"] = True
+    # for wing in new_dict["wings"]:
+    #     new_dict["wings"][wing].pop("twist",0)
+    # new_dict["weight"] = 1.0
 
     # make scene dict
     if tag == "":
@@ -176,16 +178,16 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False
                         "alpha" : 0.0,
                         "beta" : 0.0
                     }
-                },
-                "perfect" : {
-                    "file" : new_dict,
-                    "state" : {
-                            "position": [0.0,0.0,0.0],
-                        "velocity" : 100.0,
-                        "alpha" : 0.0,
-                        "beta" : 0.0
-                    }
-                }
+                }#,
+                # "perfect" : {
+                #     "file" : new_dict,
+                #     "state" : {
+                #             "position": [0.0,0.0,0.0],
+                #         "velocity" : 100.0,
+                #         "alpha" : 0.0,
+                #         "beta" : 0.0
+                #     }
+                # }
             }
         }
     }
@@ -195,8 +197,8 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False
 
     print("\tinitializing MachUpX model...")
     my_scene = mx.Scene(scene_dict)
-    print("\tplotting wireframe...")
-    my_scene.display_wireframe(show_vortices=False)
+    # print("\tplotting wireframe...")
+    # my_scene.display_wireframe(show_vortices=False)
     print("\texporting DXF files...")
     my_scene.export_dxf(number_guide_curves=6)
 
@@ -205,8 +207,8 @@ if __name__ == "__main__":
     # pyaic_to_mux("curvy.json",force_symmetric=True,straight_c_4=True,tag="curvy_straight")
     # pyaic_to_mux("simple_foam_wings.json")
     # pyaic_to_mux("CRM.json",tag="CRM_OML") # OML
-    # pyaic_to_mux("CRM.json",force_symmetric=True,tag="CRM_symm")
+    pyaic_to_mux("CRM.json",force_symmetric=True,tag="CRM_symm_NACA")
     # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,tag="CRM_notwist")
-    pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,straight_c_4=True,tag="CRM_straight")
+    # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,straight_c_4=True,tag="CRM_straight")
     # pyaic_to_mux("horizon.json",force_symmetric=True,tag="horizon_symm")
     # pyaic_to_mux("horizon.json",force_symmetric=True,straight_c_4=True,tag="horizon_straight")

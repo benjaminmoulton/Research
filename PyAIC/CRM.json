@@ -1,5 +1,7 @@
 {
     "mass" : 220240.0,
+	"mass_in_slugs" : 15091.2336,
+	"density_symm [kg/m^3]" : 1557.224531931101,
 	"units" : "SI",
 	"airfoils" : {
 	    "uCRM-9_w0": {

@@ -10,12 +10,13 @@ f = open('CRM_MUX_scene.json', 'r')
 sceneDict = json.load(f)
 f.close()
 
-one = "CRM_OML"
+one = "CRM_symm_NACA_2"
 sceneDict['scene']['aircraft'][one] = sceneDict['scene']['aircraft'].pop("CRM")
 sceneDict['scene']['aircraft'][one]['file'] = dict(craftDict)
 CRM_OML = mx.Scene(sceneDict)
 # CRM_OML.display_wireframe(show_vortices=False)
-# CRM_OML.export_dxf(aircraft=one,number_guide_curves=8)
+CRM_OML.export_dxf(aircraft=one,number_guide_curves=8)
+quit()
 
 for i in CRM_OML._airplanes:
     plane = CRM_OML._airplanes[i]
