@@ -181,6 +181,7 @@ class Wing:
         i_d = i_s = i_c = i_t = i_m = i_a = 0
 
         # root location
+        self._num_spans = span_fracs.shape[0]
         root_location = np.zeros((3,))
         root_location[1] = self._connect_y_offset * 1.0
 
