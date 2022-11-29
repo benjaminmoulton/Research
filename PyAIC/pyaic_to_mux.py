@@ -236,7 +236,7 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False
     # print("\tplotting wireframe...")
     # my_scene.display_wireframe(show_vortices=False,show_legend=True)
     print("\texporting DXF files...")
-    my_scene.export_dxf(number_guide_curves=6)
+    my_scene.export_dxf(number_guide_curves=12)
 
 
 if __name__ == "__main__":
