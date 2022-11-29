@@ -279,14 +279,68 @@ class AircraftSystem:
         return self.properties_dict
 
 
+    def get_mass_properties_about_point(self,point,report=False,individual=False,positive_tensor=True):
+
+        # determine properties of each component
+        for i in self.components:
+            self.components[i].get_mass_properties()
+        
+        # determine total mass
+        self.mass = 0.0
+        for i in self.components:
+            self.mass += self.components[i].mass
+        
+        # determine total cg location
+        self.cg_location = np.zeros((3,1))
+        for i in self.components:
+            self.cg_location += self.components[i].mass * \
+                self.components[i].cg_location
+        self.cg_location /= self.mass
+        
+        # determine total angular momentum
+        self.angular_momentum = 0.0
+        for i in self.components:
+            self.angular_momentum += self.components[i].angular_momentum
+        
+        # determine total inertia
+        self.inertia_tensor = np.zeros((3,3))
+        location = point
+        for i in self.components:
+            self.inertia_tensor += \
+                self.components[i].shift_properties_to_location(\
+                location)["inertia_tensor"]
+
+        # return dictionary of values
+        self.properties_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
+            "inertia_tensor" : self.inertia_tensor
+        }
+
+        # report
+        if report:
+            if not individual:
+                self.report_as_SolidWorks_report(self.properties_dict,\
+                    positive_tensor)
+            else:
+                for i in self.components:
+                    if i != 0:
+                        info = self.components[i].properties_dict
+                        name = self.components[i].name
+                        self.report_as_SolidWorks_report(info,positive_tensor,name)
+        
+        return self.properties_dict
+
+
 if __name__ == "__main__":
     # AS = AircraftSystem("test_input.json")
     # AS.get_mass_properties()
     # AS = AircraftSystem("hunsaker_test.json")
     # AS.get_mass_properties(report=True)
-    # AS = AircraftSystem("simple_foam_wings.json")
-    # AS.get_mass_properties(report=True,individual=True)
+    AS = AircraftSystem("simple_foam_wings.json")
+    AS.get_mass_properties(report=True,individual=True)
     # AS = AircraftSystem("CRM.json")
     # AS.get_mass_properties(report=True)
-    AS = AircraftSystem("horizon.json")
-    AS.get_mass_properties(report=True)#,individual=True)
+    # AS = AircraftSystem("horizon.json")
+    # AS.get_mass_properties(report=True)#,individual=True)

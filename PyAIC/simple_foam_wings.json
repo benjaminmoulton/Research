@@ -52,6 +52,33 @@
         }
     },
     "components" : {
+        "all_properties" : {
+            "ID" : 8,
+            "density" : 0.25,
+            "type" : "symmetric_airfoil",
+            "side" : "both",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  -5.0,
+                "dy" :  0.0,
+                "dz" :  -5.0,
+                "y_offset" : 5.0
+            },
+            "semispan" : 8.0,
+            "sweep" : 14.0,
+            "dihedral" : 10.0,
+            "chord" : [ [0.0, 1.5],
+                        [1.0, 0.5]],
+            "thickness" : [ [0.0, 0.16],
+                            [1.0, 0.08]],
+            "camber" : [[0.0, 0.04],
+                        [1.0, 0.04]],
+            "airfoil" : [  [0.0, "NACA_4816"],
+                            [1.0, "NACA_4808"]]
+        }
+    },
+    "components_used_in_paper" : {
         "rectangular" : {
             "ID" : 1,
             "density" : 0.25,
