@@ -142,46 +142,44 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False
 
                 airplane_dict["wings"][subwing_name] = new_wing_dict
                 
-                # print(json.dumps(new_wing_dict,indent=4))
-                # print()
-                if filename.split(".")[0] == "CRM":
-                    pre = "& "
-                    ratio = 1.0 / 0.3048
-                else:
-                    pre = ""
-                    ratio = 1.0
-                if counter <= class_wing._num_spans-2:
-                    q = 0
-                    cr = geom_dict["chord"][q] * ratio
-                    tr = geom_dict["thickness"][q] * 100.0
-                    mr = geom_dict["camber"][q] * 100.0
-                    xr = root_loc[0] * ratio
-                    yr = root_loc[1] * ratio
-                    zr = root_loc[2] * ratio
-                    Gr = subwing_dict["dihedral"]
-                    Lr = subwing_dict["sweep"]
-                    print(pre+"{:>4} & {:>9.5f} & {:>9.5f} & {:>9.5f} & ".format(counter+1,cr,tr,mr),end="")
-                    print("{:>10.5f} & {:>10.5f} & {:>10.5f} & ".format(xr,yr,zr),end="")
-                    print("{:>10.5f} & {:>10.5f} \\\\".format(Gr,Lr))#,end="")
-                if counter == class_wing._num_spans-2:
-                    q = 1
-                    cr = geom_dict["chord"][q] * ratio
-                    tr = geom_dict["thickness"][q] * 100.0
-                    mr = geom_dict["camber"][q] * 100.0
-                    xr = tip_loc[0] * ratio
-                    yr = tip_loc[1] * ratio
-                    zr = tip_loc[2] * ratio
-                    Gr = subwing_dict["dihedral"]
-                    Lr = subwing_dict["sweep"]
-                    print(pre+"{:>4} & {:>9.5f} & {:>9.5f} & {:>9.5f} & ".format("tip",cr,tr,mr),end="")
-                    print("{:>10} & {:>10} & {:>10} & ".format("-","-","-"),end="")
-                    print("{:>10} & {:>10} \\\\".format("-","-"))#,end="")
-                    print()
+                # if filename.split(".")[0] == "CRM":
+                #     pre = "& "
+                #     ratio = 1.0 / 0.3048
+                # else:
+                #     pre = ""
+                #     ratio = 1.0
+                # if counter <= class_wing._num_spans-2:
+                #     q = 0
+                #     cr = geom_dict["chord"][q] * ratio
+                #     tr = geom_dict["thickness"][q] * 100.0
+                #     mr = geom_dict["camber"][q] * 100.0
+                #     xr = root_loc[0] * ratio
+                #     yr = root_loc[1] * ratio
+                #     zr = root_loc[2] * ratio
+                #     Gr = subwing_dict["dihedral"]
+                #     Lr = subwing_dict["sweep"]
+                #     print(pre+"{:>4} & {:>9.5f} & {:>9.5f} & {:>9.5f} & ".format(counter+1,cr,tr,mr),end="")
+                #     print("{:>10.5f} & {:>10.5f} & {:>10.5f} & ".format(xr,yr,zr),end="")
+                #     print("{:>10.5f} & {:>10.5f} \\\\".format(Gr,Lr))#,end="")
+                # if counter == class_wing._num_spans-2:
+                #     q = 1
+                #     cr = geom_dict["chord"][q] * ratio
+                #     tr = geom_dict["thickness"][q] * 100.0
+                #     mr = geom_dict["camber"][q] * 100.0
+                #     xr = tip_loc[0] * ratio
+                #     yr = tip_loc[1] * ratio
+                #     zr = tip_loc[2] * ratio
+                #     Gr = subwing_dict["dihedral"]
+                #     Lr = subwing_dict["sweep"]
+                #     print(pre+"{:>4} & {:>9.5f} & {:>9.5f} & {:>9.5f} & ".format("tip",cr,tr,mr),end="")
+                #     print("{:>10} & {:>10} & {:>10} & ".format("-","-","-"),end="")
+                #     print("{:>10} & {:>10} \\\\".format("-","-"))#,end="")
+                #     print()
 
                 id_counter += 1
                 counter += 1
             
-            print("----------------------")
+            # print("----------------------")
     # quit()
     # make one wing main
     key0 = list(airplane_dict["wings"].keys())[0]
@@ -248,5 +246,6 @@ if __name__ == "__main__":
     # pyaic_to_mux("CRM.json",force_symmetric=True,English_units=False,tag="CRM_symm")
     # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,English_units=False,tag="CRM_notwist")
     # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,straight_c_4=True,English_units=False,tag="CRM_straight")
+    pyaic_to_mux("horizon.json",tag="horizon_OML")
     pyaic_to_mux("horizon.json",force_symmetric=True,tag="horizon_symm")
     pyaic_to_mux("horizon.json",force_symmetric=True,straight_c_4=True,tag="horizon_straight")
