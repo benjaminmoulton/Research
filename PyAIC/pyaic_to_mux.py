@@ -246,7 +246,9 @@ if __name__ == "__main__":
     # pyaic_to_mux("CRM.json",English_units=False,tag="CRM_OML") # OML # redo this one...
     # pyaic_to_mux("CRM.json",force_symmetric=True,English_units=False,tag="CRM_symm")
     # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,English_units=False,tag="CRM_notwist")
-    pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,straight_c_4=True,English_units=False,tag="CRM_straight")
+    # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,straight_c_4=True,English_units=False,tag="CRM_straight")
     # pyaic_to_mux("horizon.json",tag="horizon_OML")
     # pyaic_to_mux("horizon.json",force_symmetric=True,tag="horizon_symm")
     # pyaic_to_mux("horizon.json",force_symmetric=True,straight_c_4=True,tag="horizon_straight")
+    # pyaic_to_mux("propeller.json",tag="propeller_OML")
+    pyaic_to_mux("propeller.json",force_symmetric=True,tag="propeller_symm")

@@ -3,7 +3,7 @@ import json
 import matplotlib.pyplot as plt
 
 from wing import Wing
-from component import Component, Cuboid, Cylinder, Sphere
+from component import Component, Cuboid, Cylinder, Sphere, Rotor
 
 class AircraftSystem:
     """A class calculating and containing the mass properties of an aircraft.
@@ -80,7 +80,7 @@ class AircraftSystem:
 
         wing_types = ["prismoid","pseudo_prismoid","symmetric_airfoil",
         "diamond_airfoil"]
-        comp_types = ["cuboid","cylinder","sphere"]
+        comp_types = ["cuboid","cylinder","sphere","rotor"]
 
         # initialize get each id number
         ids = []; attach_ids = []; name = []
@@ -144,6 +144,8 @@ class AircraftSystem:
                 self.components[id_number] = Cylinder(input_dict)
             elif input_dict["type"] == "sphere":
                 self.components[id_number] = Sphere(input_dict)
+            elif input_dict["type"] == "rotor":
+                self.components[id_number] = Rotor(input_dict)
             
             # save "name"
             if input_dict["type"] in wing_types + comp_types:
@@ -342,5 +344,7 @@ if __name__ == "__main__":
     # AS.get_mass_properties(report=True,individual=True)
     # AS = AircraftSystem("CRM.json")
     # AS.get_mass_properties(report=True)
-    AS = AircraftSystem("horizon.json")
+    # AS = AircraftSystem("horizon.json")
+    # AS.get_mass_properties(report=True)#,individual=True)
+    AS = AircraftSystem("propeller.json")
     AS.get_mass_properties(report=True)#,individual=True)

@@ -751,3 +751,244 @@ class DiamondAirfoil(PseudoPrismoid):
         self._u2 = ( 8. * self._xmt**2. + 3. ) / 14.
         self._u3 = 1. / 4.
 
+
+class Rotor(Component):
+    """A default class for calculating and containing the mass properties of a
+    Rotor.
+
+    Parameters
+    ----------
+    input_vars : dict , optional
+        Must be a python dictionary
+    """
+    def __init__(self,input_dict={}):
+
+        # invoke init of parent
+        Component.__init__(self,input_dict)
+
+        # retrieve additional info
+        self._retrieve_info(input_dict)
+
+        # initialize the volume
+        Nb = self._Nb
+        cr,ct = self._cr,self._ct
+        tr,tt = self._tr,self._tt
+        rr,rt = self._rr,self._rt
+        cr2, ct2 = cr**2., ct**2.
+        crct = cr * ct
+        ka = tr * (3.*cr2 + 2.*crct + ct2) + tt *(cr2 + 2.*crct + 3.*ct2)
+        a0 = self._a0
+        a1 = self._a1
+        a2 = self._a2
+        a3 = self._a3
+        a4 = self._a4
+        u0 = 1./ 60.*( 40.*a0+ 30.*a1+ 20.*a2+ 15.*a3+ 12.*a4)
+        self.volume = 1. / 12. * Nb * ka * u0 * (rt-rr)
+
+
+    def _retrieve_info(self,input_dict):
+        """A function which retrieves the information and stores it globally.
+        """
+        
+        # store variables from file input dictionary
+        connect_to = input_dict.get("connect_to",{})
+        x_cg = connect_to.get("dx",0.0)
+        y_cg = connect_to.get("dy",0.0)
+        z_cg = connect_to.get("dz",0.0)
+        self.cg_location = np.array([[x_cg],[y_cg],[z_cg]])
+
+        # rotor geometry
+        self._Nb = input_dict.get("number_blades",2)
+        self._hh = input_dict.get("height_hub", 0.0)
+        self._rh = input_dict.get("diameter_hub", 1.0) / 2.0
+        self._rr = input_dict.get("rotor_hub", 2.0) / 2.0
+        chord = input_dict.get("chord",[[0.0,1.0],[1.0,1.0]])
+        self._cr,self._ct = chord[0,0], chord[1,0]
+        thickness = input_dict.get("thickness",[[0.0,0.12],[1.0,0.12]])
+        self._tr,self._tt = thickness[0,0], thickness[1,0]
+
+
+        # save a coefficients for NACA 4-digit thickness distribution
+        avals = input_dict.get("thickness_distribution_coefficients","open_trailing_edge")
+        if avals == "open_trailing_edge":
+            avals = [2.969, -1.260, -3.516, 2.843, -1.015]
+        elif avals == "closed_trailing_edge":
+            avals = [2.969, -1.260, -3.516, 2.843, -1.036]
+        elif avals == "closed_hunsaker":
+            avals = [2.980, -1.320, -3.286, 2.441, -0.815]
+        elif not isinstance(avals,(np.ndarray,list)) and not (len(avals)==5):
+            raise ImportError("Incorrect thickness distribution coefficients")
+        self._a0 = avals[0] * 1.0
+        self._a1 = avals[1] * 1.0
+        self._a2 = avals[2] * 1.0
+        self._a3 = avals[3] * 1.0
+        self._a4 = avals[4] * 1.0
+
+
+    def _make_gamma_values(self):
+
+        # initialize certian values for ease of calculation
+        cr,ct = self._cr,self._ct
+        tr,tt = self._tr,self._tt
+        rr,rt = self._rr,self._rt
+        # times values
+        cr2, ct2 = cr**2., ct**2.
+        cr3, ct3 = cr2*cr, ct2*ct
+        cr4, ct4 = cr3*cr, ct3*ct
+        cr5, ct5 = cr4*cr, ct4*ct
+        cr6, ct6 = cr5*cr, ct5*ct
+        cr5ct, cr4ct2, cr3ct3 = cr5*ct, cr4*ct2, cr3*ct3
+        cr2ct4, crct5, crct = cr2*ct4, cr*ct5, cr*ct
+        tr2, tt2 = tr**2., tt**2.
+        tr3, tt3 = tr2*tr, tt2*tt
+        tr2tt, trtt2 = tr2*tt, tr*tt2
+        ln = np.log(rr/rt)
+
+        # calculate gamma values
+        self._ya = -280. * ct6 * tt3
+
+        one =       cr6    * (35.*tr3 +  15.*tr2tt +    5.*trtt2 +       tt3)
+        two =  6. * cr5ct  * ( 5.*tr3 +   5.*tr2tt +    3.*trtt2 +       tt3)
+        thr =  5. * cr4ct2 * ( 5.*tr3 +   9.*tr2tt +    9.*trtt2 +    5.*tt3)
+        fou = 20. * cr3ct3 * (    tr3 +   3.*tr2tt +    5.*trtt2 +    5.*tt3)
+        fiv = 15. * cr2ct4 * (    tr3 +   5.*tr2tt +   15.*trtt2 +   35.*tt3)
+        six =  2. *  crct5 * ( 5.*tr3 +  45.*tr2tt +  315.*trtt2 - 3123.*tt3)
+        sev =          ct6 * ( 5.*tr3 + 105.*tr2tt - 3123.*trtt2 + 4329.*tt3)
+        end = ln * (1680.*crct5*tt3 + 840.*ct6*(trtt2 - 3.*tt3)) ###
+        self._yb = -(one + two + thr + fou + fiv + six + sev) - end
+
+        one =       cr6    * (90.*tr3 +  40.*tr2tt +   14.*trtt2 +    3.*tt3)
+        two =  2. * cr5ct  * (40.*tr3 +  42.*tr2tt +   27.*trtt2 +   10.*tt3)
+        thr =  5. * cr4ct2 * (14.*tr3 +  27.*tr2tt +   30.*trtt2 +   20.*tt3)
+        fou = 20. * cr3ct3 * ( 3.*tr3 +  10.*tr2tt +   20.*trtt2 +   30.*tt3)
+        fiv =  5. * cr2ct4 * (10.*tr3 +  60.*tr2tt +  270.*trtt2 - 1089.*tt3)
+        six =  2. *  crct5 * (20.*tr3 + 270.*tr2tt - 3267.*trtt2 +  996.*tt3)
+        sev =  3. *    ct6 * (10.*tr3 - 363.*tr2tt +  332.*trtt2 +  840.*tt3)
+        e_a = 5.*cr2ct4*tt3 + 2.*crct5*(3.*trtt2 - 4.*tt3)
+        end = ln * ( e_a + ct6*(tr2tt - 4.*trtt2))
+        self._yc = 4.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
+
+        one =       cr6    * (120.*tr3 +  56.*tr2tt +   21.*trtt2 +   5.*tt3)
+        two =  2. * cr5ct  * ( 56.*tr3 +  63.*tr2tt +   45.*trtt2 +  20.*tt3)
+        thr = 15. * cr4ct2 * (  7.*tr3 +  15.*tr2tt +   20.*trtt2 +  20.*tt3)
+        fou = 20. * cr3ct3 * (  5.*tr3 +  20.*tr2tt +   60.*trtt2 - 117.*tt3)
+        fiv =  5. * cr2ct4 * ( 20.*tr3 + 180.*tr2tt - 1053.*trtt2 -  21.*tt3)
+        six =  6. *  crct5 * ( 20.*tr3 - 351.*tr2tt -   21.*trtt2 + 280.*tt3)
+        sev =  3. *    ct6 * (-39.*tr3 -   7.*tr2tt +  280.*trtt2 + 280.*tt3)
+        e_a = 20.*cr3ct3*tt3 + 5.*cr2ct4*(9.*trtt2 - 7.*tt3)
+        end = ln * ( e_a + 6.*crct5*(3.*tr2tt - 7.*trtt2) + ct6*(tr3-7.*tr2tt))
+        self._yd = -14.*(one + two + thr + fou + fiv + six + sev) - 840.*end
+
+        one =       cr6    * ( 168.*tr3 +  84.*tr2tt +  35.*trtt2 +  10.*tt3)
+        two =  6. * cr5ct  * (  28.*tr3 +  35.*tr2tt +  30.*trtt2 +  20.*tt3)
+        thr =  5. * cr4ct2 * (  35.*tr3 +  90.*tr2tt + 180.*trtt2 - 174.*tt3)
+        fou = 20. * cr3ct3 * (  10.*tr3 +  60.*tr2tt - 174.*trtt2 -  33.*tt3)
+        fiv = 15. * cr2ct4 * (  20.*tr3 - 174.*tr2tt -  99.*trtt2 +  70.*tt3)
+        six =  2. *  crct5 * (-174.*tr3 - 297.*tr2tt + 630.*trtt2 + 280.*tt3)
+        sev =          ct6 * ( -33.*tr3 + 210.*tr2tt + 280.*trtt2 + 420.*tt3)
+        e_a = 10.*cr4ct2*tt3 + 20.*cr3ct3*(2.*trtt2 - tt3) 
+        e_b = 15.*cr2ct4*(2.*tr2tt - 3.*trtt2) + 2.*crct5*(2.*tr3 - 9.*tr2tt)
+        end = ln * ( e_a + e_b - ct6*tr3 )
+        self._ye = 28.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
+
+        one =        cr6    * (126.*tr3 +  70.*tr2tt + 35.*trtt2 +  15.*tt3)
+        two =  10. * cr5ct  * ( 14.*tr3 +  21.*tr2tt + 27.*trtt2 -  12.*tt3)
+        thr =  25. * cr4ct2 * (  7.*tr3 +  27.*tr2tt - 36.*trtt2 -  12.*tt3)
+        fou = 300. * cr3ct3 * (     tr3 -   4.*tr2tt -  4.*trtt2 +      tt3)
+        fiv = -25. * cr2ct4 * ( 12.*tr3 +  36.*tr2tt - 27.*trtt2 -   7.*tt3)
+        six = -10. *  crct5 * ( 12.*tr3 -  27.*tr2tt - 21.*trtt2 -  14.*tt3)
+        sev =           ct6 * ( 15.*tr3 +  35.*tr2tt + 70.*trtt2 + 126.*tt3)
+        e_a = -2.*cr5ct*tt3 - 5.*cr4ct2*(3.*trtt2 - tt3) 
+        e_b = -20.*cr3ct3*(tr2tt - trtt2) - 5.*cr2ct4*(tr3 - 3.*tr2tt)
+        end = ln * ( e_a + e_b  + 2.*crct5*tr3 )
+        self._yf = -70.*(one + two + thr + fou + fiv + six + sev) + 4200.*end
+
+        one =       cr6    * ( 420.*tr3 + 280.*tr2tt + 210.*trtt2 -   33.*tt3)
+        two =  2. * cr5ct  * ( 280.*tr3 + 630.*tr2tt - 297.*trtt2 -  174.*tt3)
+        thr = 15. * cr4ct2 * (  70.*tr3 -  99.*tr2tt - 174.*trtt2 +   20.*tt3)
+        fou = 20. * cr3ct3 * ( -33.*tr3 - 174.*tr2tt +  60.*trtt2 +   10.*tt3)
+        fiv =  5. * cr2ct4 * (-174.*tr3 + 180.*tr2tt +  90.*trtt2 +   35.*tt3)
+        six =  6. *  crct5 * (  20.*tr3 +  30.*tr2tt +  35.*trtt2 +   28.*tt3)
+        sev =          ct6 * (  10.*tr3 +  35.*tr2tt +  84.*trtt2 +  168.*tt3)
+        e_a = cr6*tt3 - 2.*cr5ct*(2.*tt3 - 9.*trtt2)
+        e_b = -15.*cr4ct2*(2.*trtt2 - 3.*tr2tt) - 20.*cr3ct3*(2.*tr2tt - tr3)
+        end = ln * ( e_a + e_b - 10.*cr2ct4*tr3 )
+        self._yg = 28.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
+
+        self._yh = 0
+
+        self._yi = 0
+
+        self._yj = 0
+
+        self._yk = -280. * cr6 * tr3
+
+        self._yl = 0
+
+        self._ym = 0
+
+        self._yn = 0
+
+        self._yo = 0
+
+
+    def _make_upsilon_values(self):
+
+        # initialize certain values for ease of calculation
+        a0 = self._a0
+        a1 = self._a1
+        a2 = self._a2
+        a3 = self._a3
+        a4 = self._a4
+
+        # calculate upsilon values
+        self._u0 = 1./ 60.*( 40.*a0+ 30.*a1+ 20.*a2+ 15.*a3+ 12.*a4)
+
+
+    def get_mass_properties(self):
+        """Method which returns mass, cg, I about cg rotated to total cframe"""
+
+        # calculate kappa values
+        self._make_gamma_values()
+
+        # calculate upsilon values
+        self._make_upsilon_values()
+
+        # calculate mass
+        if self._given_density_not_mass:
+            self.mass = self.density * self.volume
+
+        # calculate moments and products of inertia about the wing root c/4
+        Ixxo = 1.0
+        
+        Iyyo = 1.0
+        
+        Izzo = 1.0
+        
+        Ixyo = 0.0
+        Ixzo = 0.0
+        Iyzo = 0.0
+
+        # create inertia tensor
+        Io = np.array([
+            [ Ixxo,-Ixyo,-Ixzo],
+            [-Ixyo, Iyyo,-Ixzo],
+            [-Ixzo,-Ixzo, Izzo]
+        ])
+
+        # calculate mass shift from parallel axis theorem
+        s = self.cg_location
+        inner_product = np.matmul(s.T,s)[0,0]
+        outer_product = np.matmul(s,s.T)
+        I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
+
+        # calculate inertia tensor about the cg
+        self.inertia_tensor = Io - I_shift
+
+        self.properties_dict = {
+            "mass" : self.mass,
+            "cg_location" : self.cg_location,
+            "angular_momentum" : self.angular_momentum,
+            "inertia_tensor" : self.inertia_tensor
+        }
+        return self.properties_dict
