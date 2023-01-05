@@ -45,8 +45,7 @@ class Component:
         else: # raise error if neither given
             self.mass = 0.0
             self._given_density_not_mass = False
-            # raise ValueError("No mass / density property given")
-        self.banana = "True"
+            raise ValueError("No mass / density property given")
 
         # read in orientation
         self.orientation = input_dict.get("orientation",np.zeros((3,)))
@@ -206,8 +205,8 @@ class Cuboid(Component):
         # create inertia tensor
         self.inertia_tensor = np.array([
             [ Ixxo,-Ixyo,-Ixzo],
-            [-Ixyo, Iyyo,-Ixzo],
-            [-Ixzo,-Ixzo, Izzo]
+            [-Ixyo, Iyyo,-Iyzo],
+            [-Ixzo,-Iyzo, Izzo]
         ])
 
         self.properties_dict = {
@@ -534,8 +533,8 @@ class Prismoid(Component):
         # create inertia tensor
         Io = np.array([
             [ Ixxo,-Ixyo,-Ixzo],
-            [-Ixyo, Iyyo,-Ixzo],
-            [-Ixzo,-Ixzo, Izzo]
+            [-Ixyo, Iyyo,-Iyzo],
+            [-Ixzo,-Iyzo, Izzo]
         ])
 
         # calculate mass shift from parallel axis theorem
@@ -799,13 +798,13 @@ class Rotor(Component):
 
         # rotor geometry
         self._Nb = input_dict.get("number_blades",2)
-        self._hh = input_dict.get("height_hub", 0.0)
-        self._rh = input_dict.get("diameter_hub", 1.0) / 2.0
-        self._rr = input_dict.get("rotor_hub", 2.0) / 2.0
+        self._rr = input_dict.get("diameter_hub", 1.0) / 2.0
+        self._rt = input_dict.get("diameter_rotor", 2.0) / 2.0
+        self._wx = input_dict.get("rotation_rate",0.0)
         chord = input_dict.get("chord",[[0.0,1.0],[1.0,1.0]])
-        self._cr,self._ct = chord[0,0], chord[1,0]
+        self._cr,self._ct = chord[0][1], chord[1][1]
         thickness = input_dict.get("thickness",[[0.0,0.12],[1.0,0.12]])
-        self._tr,self._tt = thickness[0,0], thickness[1,0]
+        self._tr,self._tt = thickness[0][1], thickness[1][1]
 
 
         # save a coefficients for NACA 4-digit thickness distribution
@@ -915,21 +914,48 @@ class Rotor(Component):
         end = ln * ( e_a + e_b - 10.*cr2ct4*tr3 )
         self._yg = 28.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
 
-        self._yh = 0
+        one =  3. * cr6    * ( 280.*tr3 +  280.*tr2tt -   7.*trtt2 -  39.*tt3)
+        two =  6. * cr5ct  * ( 280.*tr3 -   21.*tr2tt - 351.*trtt2 +  20.*tt3)
+        thr =  5. * cr4ct2 * ( -21.*tr3 - 1053.*tr2tt + 180.*trtt2 +  20.*tt3)
+        fou = 20. * cr3ct3 * (-117.*tr3 +   60.*tr2tt +  20.*trtt2 +   5.*tt3)
+        fiv = 15. * cr2ct4 * (  20.*tr3 +   20.*tr2tt +  15.*trtt2 +   7.*tt3)
+        six =  2. *  crct5 * (  20.*tr3 +   45.*tr2tt +  63.*trtt2 +  56.*tt3)
+        sev =          ct6 * (   5.*tr3 +   21.*tr2tt +  56.*trtt2 + 120.*tt3)
+        e_a = - cr6*(tt3-7.*trtt2) - 6.*cr5ct*(3.*trtt2 - 7.*tr2tt)
+        e_b = - 5.*cr4ct2*(9.*tr2tt - 7.*tr3) - 20.*cr3ct3*tr3
+        end = ln * ( e_a + e_b )
+        self._yh = -14.*(one + two + thr + fou + fiv + six + sev) - 840.*end
 
-        self._yi = 0
+        one =  3. * cr6    * (  840.*tr3 +  332.*tr2tt - 363.*trtt2 + 10.*tt3)
+        two =  2. * cr5ct  * (  996.*tr3 - 3267.*tr2tt + 270.*trtt2 + 20.*tt3)
+        thr =  5. * cr4ct2 * (-1089.*tr3 +  270.*tr2tt +  60.*trtt2 + 10.*tt3)
+        fou = 20. * cr3ct3 * (   30.*tr3 +   20.*tr2tt +  10.*trtt2 +  3.*tt3)
+        fiv =  5. * cr2ct4 * (   20.*tr3 +   30.*tr2tt +  27.*trtt2 + 14.*tt3)
+        six =  2. *  crct5 * (   10.*tr3 +   27.*tr2tt +  42.*trtt2 + 40.*tt3)
+        sev =          ct6 * (    3.*tr3 +   14.*tr2tt +  40.*trtt2 + 90.*tt3)
+        e_a = - cr6*(trtt2 - 4.*tr2tt) - 2.*cr5ct*(3.*tr2tt - 4.*tr3)
+        end = ln * ( e_a - 5.*cr4ct2*tr3 )
+        self._yi = 4.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
 
-        self._yj = 0
+        one =       cr6    * ( 4329.*tr3 - 3123.*tr2tt + 105.*trtt2 +  5.*tt3)
+        two =  2. * cr5ct  * (-3123.*tr3 +  315.*tr2tt +  45.*trtt2 +  5.*tt3)
+        thr = 15. * cr4ct2 * (   35.*tr3 +   15.*tr2tt +   5.*trtt2 +     tt3)
+        fou = 20. * cr3ct3 * (    5.*tr3 +    5.*tr2tt +   3.*trtt2 +     tt3)
+        fiv =  5. * cr2ct4 * (    5.*tr3 +    9.*tr2tt +   9.*trtt2 +  5.*tt3)
+        six =  6. *  crct5 * (       tr3 +    3.*tr2tt +   5.*trtt2 +  5.*tt3)
+        sev =          ct6 * (       tr3 +    5.*tr2tt +  15.*trtt2 + 35.*tt3)
+        end = ln * (- 2.*cr5ct*tr3 - cr6*(tr2tt - 3.*tr3))
+        self._yj = -(one + two + thr + fou + fiv + six + sev) - 840.*end
 
         self._yk = -280. * cr6 * tr3
 
-        self._yl = 0
+        self._yl = -tr*(10.*cr2 + 4.*crct + ct2) - tt*(2.*cr2 + 2.*crct + ct2)
 
-        self._ym = 0
+        self._ym = tr*(6.*cr2 - ct2) - tt*(2.*crct + 3.*ct2)
 
-        self._yn = 0
+        self._yn = tr*(3.*cr2 + 2.*crct) + tt*(cr2 - 6.*ct2)
 
-        self._yo = 0
+        self._yo = tr*(cr2 + 2.*crct + 2.*ct2) + tt*(cr2 + 4.*crct + 10.*ct2)
 
 
     def _make_upsilon_values(self):
@@ -958,32 +984,58 @@ class Rotor(Component):
         if self._given_density_not_mass:
             self.mass = self.density * self.volume
 
+        # create values for later use
+        rr  , rt   = self._rr, self._rt
+        rr2 , rt2  = rr *rr, rt *rt
+        rr3 , rt3  = rr2*rr, rt2*rt
+        rr4 , rt4  = rr3*rr, rt3*rt
+        rr5 , rt5  = rr4*rr, rt4*rt
+        rr6 , rt6  = rr5*rr, rt5*rt
+        rr7 , rt7  = rr6*rr, rt6*rt
+        rr8 , rt8  = rr7*rr, rt7*rt
+        rr9 , rt9  = rr8*rr, rt8*rt
+        rr10, rt10 = rr9*rr, rt9*rt
+
+        # calculate values for inertia use
+        T000 = self.volume * 1.0
+
+        fro = self._Nb**3. * self._u0**3.
+        one = self._ya*rr10    + self._yb*rr9*rt  + self._yc*rr8*rt2
+        two = self._yd*rr7*rt3 + self._ye*rr6*rt4 + self._yf*rr5*rt5
+        thr = self._yg*rr4*rt6 + self._yh*rr3*rt7 + self._yi*rr2*rt8
+        fou = self._yj*rr *rt9 + self._yk*rt10 
+        den = 13440. * np.pi**2. * rr * rt * (rr-rt)**9.
+        T200 = fro * (one + two + thr + fou) / den
+
+        fro = 1. / 120. * self._Nb * self._u0
+        T020 = fro*(rr3*self._yl+rr2*rt*self._ym+rr*rt2*self._yn+rt3*self._yo)
+        # print("T200 =", T200)
+        # print("T020 =", T020)
+
         # calculate moments and products of inertia about the wing root c/4
-        Ixxo = 1.0
+        Ixxr = self.mass * 2. * T020 / T000
+
+        Iyyr = self.mass * (T200 + T020) / T000
         
-        Iyyo = 1.0
+        Izzr = Iyyr * 1.
         
-        Izzo = 1.0
-        
-        Ixyo = 0.0
-        Ixzo = 0.0
-        Iyzo = 0.0
+        Ixyr = 0.0
+        Ixzr = 0.0
+        Iyzr = 0.0
 
         # create inertia tensor
-        Io = np.array([
-            [ Ixxo,-Ixyo,-Ixzo],
-            [-Ixyo, Iyyo,-Ixzo],
-            [-Ixzo,-Ixzo, Izzo]
+        self.inertia_tensor = np.array([
+            [ Ixxr,-Ixyr,-Ixzr],
+            [-Ixyr, Iyyr,-Iyzr],
+            [-Ixzr,-Iyzr, Izzr]
         ])
 
-        # calculate mass shift from parallel axis theorem
-        s = self.cg_location
-        inner_product = np.matmul(s.T,s)[0,0]
-        outer_product = np.matmul(s,s.T)
-        I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
-
-        # calculate inertia tensor about the cg
-        self.inertia_tensor = Io - I_shift
+        # calculate angular momentum
+        self.angular_momentum = np.array([
+            [Ixxr * self._wx],
+            [0.0],
+            [0.0]
+        ])
 
         self.properties_dict = {
             "mass" : self.mass,

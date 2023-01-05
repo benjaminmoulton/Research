@@ -1,0 +1,76 @@
+{
+    "airfoils" : {
+	    "NACA_2412": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "2412"
+            }
+        },
+	    "NACA_2408": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "2408"
+            }
+        }
+    },
+    "components" : {
+        "propeller_twisted" : {
+            "ID" : 1,
+            "type" : "symmetric_airfoil",
+            "side" : "left",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" :  -1.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 4.5,
+            "sweep" : 0.0,
+            "dihedral" : 0.0,
+            "chord" : [
+                [0.0, 1.0],
+                [1.0, 0.2]
+            ],
+            "twist" : [
+                [0.0, -70.0],
+                [1.0, -90.0]
+            ],
+            "thickness" : [	[0.0,	0.12],
+                            [1.0,	0.08]],
+            "camber" : 0.02,
+			"airfoil" : [	[0.0,	"NACA_2412"],
+							[1.0,	"NACA_2408"]]
+        },
+        "propeller_untwisted" : {
+            "ID" : 2,
+            "type" : "symmetric_airfoil",
+            "side" : "left",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" :  -1.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "semispan" : 4.5,
+            "sweep" : 0.0,
+            "dihedral" : 0.0,
+            "chord" : [
+                [0.0, 1.0],
+                [1.0, 0.2]
+            ],
+            "twist" : [
+                [0.0, -90.0],
+                [1.0, -90.0]
+            ],
+            "thickness" : [	[0.0,	0.12],
+                            [1.0,	0.08]],
+            "camber" : 0.02,
+			"airfoil" : [	[0.0,	"NACA_2412"],
+							[1.0,	"NACA_2408"]]
+        }
+    }
+}

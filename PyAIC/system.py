@@ -104,7 +104,7 @@ class AircraftSystem:
 
         # initialize components, save zero component
         self.components = {}
-        self.components[0] = Component({})
+        self.components[0] = Component({"mass":0.0})
 
 
         for i in range(len(name_order)):
@@ -202,7 +202,7 @@ class AircraftSystem:
         print("\tZ = {:> 14.8f}".format(info["cg_location"][2,0]))
         print()
         
-        print("Angular momentum: (rad/s)")
+        print("Angular momentum: (slugs * square feet / seconds)")
         print("\tX = {:> 14.8f}".format(info["angular_momentum"][0,0]))
         print("\tY = {:> 14.8f}".format(info["angular_momentum"][1,0]))
         print("\tZ = {:> 14.8f}".format(info["angular_momentum"][2,0]))
@@ -212,7 +212,24 @@ class AircraftSystem:
         if positive_tensor:
             I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
         [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
-        print("Moment of inertia:( slugs * square feet)")
+        print("Moment of inertia about the CG:( slugs * square feet)")
+        if positive_tensor:
+            print("\t\tPositive Tensor Formulation")
+        else:
+            print("\t\tNegative Tensor Formulation")
+        print("\tIxx = {:> 19.8f}\tIxy = {:> 19.8f}\tIxz = {:> 19.8f}".format(\
+            Ixx,Ixy,Ixz))
+        print("\tIyx = {:> 19.8f}\tIyy = {:> 19.8f}\tIyz = {:> 19.8f}".format(\
+            Iyx,Iyy,Iyz))
+        print("\tIzx = {:> 19.8f}\tIzy = {:> 19.8f}\tIzz = {:> 19.8f}".format(\
+            Izx,Izy,Izz))
+        print()
+        
+        I = info["origin_inertia_tensor"] * 1.0
+        if positive_tensor:
+            I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
+        [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
+        print("Moment of inertia about the origin:( slugs * square feet)")
         if positive_tensor:
             print("\t\tPositive Tensor Formulation")
         else:
@@ -257,12 +274,21 @@ class AircraftSystem:
             self.inertia_tensor += \
                 self.components[i].shift_properties_to_location(\
                 location)["inertia_tensor"]
+        
+        # determine origin inertia
+        self.origin_inertia_tensor = np.zeros((3,3))
+        location = np.zeros((3,1))
+        for i in self.components:
+            self.origin_inertia_tensor += \
+                self.components[i].shift_properties_to_location(\
+                location)["inertia_tensor"]
 
         # return dictionary of values
         self.properties_dict = {
             "mass" : self.mass,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
+            "origin_inertia_tensor" : self.origin_inertia_tensor,
             "inertia_tensor" : self.inertia_tensor
         }
 

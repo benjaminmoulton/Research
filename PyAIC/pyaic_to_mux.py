@@ -250,5 +250,5 @@ if __name__ == "__main__":
     # pyaic_to_mux("horizon.json",tag="horizon_OML")
     # pyaic_to_mux("horizon.json",force_symmetric=True,tag="horizon_symm")
     # pyaic_to_mux("horizon.json",force_symmetric=True,straight_c_4=True,tag="horizon_straight")
-    # pyaic_to_mux("propeller.json",tag="propeller_OML")
-    pyaic_to_mux("propeller.json",force_symmetric=True,tag="propeller_symm")
+    # pyaic_to_mux("propeller_for_mux.json",tag="propeller_OML")
+    pyaic_to_mux("propeller_for_mux.json",force_symmetric=True,tag="propeller_symm")
