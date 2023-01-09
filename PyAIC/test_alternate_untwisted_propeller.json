@@ -1,0 +1,142 @@
+{
+    "airfoils" : {
+	    "NACA_2412": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "2412"
+            }
+        },
+	    "NACA_2408": {
+            "type": "linear",
+            "geometry": {
+                "NACA": "2408"
+            }
+        }
+    },
+    "components" : {
+        "blade_1" : {
+            "ID" : 4,
+            "type" : "symmetric_airfoil",
+            "side" : "left",
+            "density" : 2.40746173,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" : -0.5,
+                "dz" : 6.12323399573677E-17
+            },
+            "dihedral" : 0.0,
+            "semispan" : 4.75,
+            "chord" : [
+                [0.0, 0.87333],
+                [1.0, 0.29111]
+            ],
+            "thickness" : [	[0.0,	0.16],
+                            [1.0,	0.06]]
+        },
+        "blade_2" : {
+            "ID" : 5,
+            "type" : "symmetric_airfoil",
+            "side" : "left",
+            "density" : 2.40746173,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" : -0.154508497187474,
+                "dz" : -0.475528258147577
+            },
+            "dihedral" : 72.0,
+            "semispan" : 4.75,
+            "chord" : [
+                [0.0, 0.87333],
+                [1.0, 0.29111]
+            ],
+            "thickness" : [	[0.0,	0.16],
+                            [1.0,	0.06]]
+        },
+        "blade_3" : {
+            "ID" : 6,
+            "type" : "symmetric_airfoil",
+            "side" : "left",
+            "density" : 2.40746173,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" : 0.404508497187474,
+                "dz" : -0.293892626146237
+            },
+            "dihedral" : 144.0,
+            "semispan" : 4.75,
+            "chord" : [
+                [0.0, 0.87333],
+                [1.0, 0.29111]
+            ],
+            "thickness" : [	[0.0,	0.16],
+                            [1.0,	0.06]]
+        },
+        "blade_4" : {
+            "ID" : 7,
+            "type" : "symmetric_airfoil",
+            "side" : "left",
+            "density" : 2.40746173,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" : 0.404508497187474,
+                "dz" : 0.293892626146236
+            },
+            "dihedral" : 216.0,
+            "semispan" : 4.75,
+            "chord" : [
+                [0.0, 0.87333],
+                [1.0, 0.29111]
+            ],
+            "thickness" : [	[0.0,	0.16],
+                            [1.0,	0.06]]
+        },
+        "blade_5" : {
+            "ID" : 8,
+            "type" : "symmetric_airfoil",
+            "side" : "left",
+            "density" : 2.40746173,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" : -0.154508497187474,
+                "dz" : 0.475528258147577
+            },
+            "dihedral" : 288.0,
+            "semispan" : 4.75,
+            "chord" : [
+                [0.0, 0.87333],
+                [1.0, 0.29111]
+            ],
+            "thickness" : [	[0.0,	0.16],
+                            [1.0,	0.06]]
+        },
+        "prop_hub" : {
+            "ID" : 3,
+            "type" : "cylinder",  
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0
+            },
+            "orientation" : [0.0, 0.0, 0.0],
+            "massj" : 0.0,
+            "density" : 2.54863928,
+            "radius" : 0.5,
+            "hollow_radius" : 0.0,
+            "length" : 0.85773558333,
+            "lengthk" : 0.85774,
+            "length_in_in_for_SW" : 10.292827
+        }  
+    }
+}

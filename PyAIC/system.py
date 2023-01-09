@@ -183,7 +183,7 @@ class AircraftSystem:
             partin = ""
         else:
             partin = name + " in "
-        print("=" * 97)
+        print("=" * 100)
         print("Mass properties of",partin + self.file_name)
         print()
 
@@ -194,6 +194,9 @@ class AircraftSystem:
             info["inertia_tensor"] /= 14.59390 * (0.3048)**2.
 
         print("Mass = {:> 10.8f} slugs".format(info["mass"]))
+        print()
+
+        print("Volume = {:> 10.8f} cubic feet".format(info["volume"]))
         print()
 
         print("Center of mass: (feet)")
@@ -241,7 +244,7 @@ class AircraftSystem:
         print("\tIzx = {:> 19.8f}\tIzy = {:> 19.8f}\tIzz = {:> 19.8f}".format(\
             Izx,Izy,Izz))
         print()
-        print("=" * 97)
+        print("=" * 100)
 
 
     def get_mass_properties(self,report=False,individual=False,positive_tensor=True):
@@ -286,6 +289,7 @@ class AircraftSystem:
         # return dictionary of values
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "origin_inertia_tensor" : self.origin_inertia_tensor,
@@ -301,6 +305,9 @@ class AircraftSystem:
                 for i in self.components:
                     if i != 0:
                         info = self.components[i].properties_dict
+                        info["origin_inertia_tensor"] = \
+                            self.components[i].shift_properties_to_location(\
+                            np.zeros((3,1)))["inertia_tensor"]
                         name = self.components[i].name
                         self.report_as_SolidWorks_report(info,positive_tensor,name)
         
@@ -341,6 +348,7 @@ class AircraftSystem:
         # return dictionary of values
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
@@ -355,6 +363,9 @@ class AircraftSystem:
                 for i in self.components:
                     if i != 0:
                         info = self.components[i].properties_dict
+                        info["origin_inertia_tensor"] = \
+                            self.components[i].shift_properties_to_location(\
+                            np.zeros((3,1)))["inertia_tensor"]
                         name = self.components[i].name
                         self.report_as_SolidWorks_report(info,positive_tensor,name)
         
@@ -370,7 +381,11 @@ if __name__ == "__main__":
     # AS.get_mass_properties(report=True,individual=True)
     # AS = AircraftSystem("CRM.json")
     # AS.get_mass_properties(report=True)
-    # AS = AircraftSystem("horizon.json")
-    # AS.get_mass_properties(report=True)#,individual=True)
-    AS = AircraftSystem("propeller.json")
+    AS = AircraftSystem("horizon.json")
     AS.get_mass_properties(report=True)#,individual=True)
+    # AS = AircraftSystem("propeller.json")
+    # AS.get_mass_properties(report=True)#,individual=True)
+    # AS = AircraftSystem("test_untwisted_propeller.json")
+    # AS.get_mass_properties(report=True)#,individual=True)
+    # AS = AircraftSystem("test_alternate_untwisted_propeller.json")
+    # AS.get_mass_properties(report=True)#,individual=True)

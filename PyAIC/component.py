@@ -74,6 +74,7 @@ class Component:
                 [  2.*(exey+eze0), ey2+e02-ex2-ez2,  2.*(eyez-exe0)],
                 [  2.*(exez-eye0),  2.*(eyez+exe0), ez2+e02-ex2-ey2]
             ])
+        self.R0 = self.R * 1.0 # initialize orientation for later use
 
 
     def update_densities(self):
@@ -130,6 +131,7 @@ class Component:
 
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
@@ -211,6 +213,7 @@ class Cuboid(Component):
 
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
@@ -286,6 +289,7 @@ class Cylinder(Component):
 
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
@@ -360,6 +364,7 @@ class Sphere(Component):
 
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
@@ -424,11 +429,11 @@ class Prismoid(Component):
         # define a rotation matrix
         CG = np.cos(-self._delta*self._Gamma)
         SG = np.sin(-self._delta*self._Gamma)
-        self.R = np.array([
+        self.R = np.matmul( self.R0, np.array([
             [1.0, 0.0, 0.0],
             [0.0,  CG, -SG],
             [0.0,  SG,  CG]
-        ])
+        ]) )
 
 
     def _make_kappa_values(self):
@@ -548,6 +553,7 @@ class Prismoid(Component):
 
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
@@ -1039,6 +1045,7 @@ class Rotor(Component):
 
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor

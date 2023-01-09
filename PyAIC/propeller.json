@@ -17,8 +17,10 @@
         "propeller" : {
             "ID" : 3,
             "type" : "rotor",
-            "mass" :  1.75576224,
+            "mass_not_3" :  1.91023006,
+            "mass_3_blades" : 1.14613776,
             "densityj" : 2.57377496,
+            "density" : 2.54864,
             "connect_to" : {
                 "ID" : 0,
                 "location" : "tip",
@@ -26,17 +28,17 @@
                 "dy" :  1.0,
                 "dz" :  1.0
             },
-            "orientation" : [0.0, 90.0, 0.0],
+            "orientation" : [10.0, 10.0, 10.0],
             "number_blades" : 5,
-            "diameter_hub" : 2.0,
-            "diameter_rotor" : 11.0,
+            "diameter_hub" : 1.0,
+            "diameter_rotor" : 10.5,
             "rotation_rate" : 272.271363311,
             "chord" : [
-                [0.0, 1.0],
-                [1.0, 0.2]
+                [0.0, 0.87333],
+                [1.0, 0.29111]
             ],
-            "thickness" : [	[0.0,	0.12],
-                            [1.0,	0.08]]
+            "thickness" : [	[0.0,	0.16],
+                            [1.0,	0.06]]
         },
         "prop_hub" : {
             "ID" : 4,
@@ -44,17 +46,25 @@
             "connect_to" : {
                 "ID" : 0,
                 "location" : "tip",
-                "dx" :  0.0,
-                "dy" :  0.0,
-                "dz" :  0.0,
-                "y_offset" : 0.0
+                "dx" :  1.0,
+                "dy" :  1.0,
+                "dz" :  1.0
             },
+            "orientation" : [10.0, 10.0, 10.0],
             "massj" : 0.0,
-            "density" : 2.54863928,
-            "radius" : 1.0,
+            "densityk" : 2.54863928,
+            "density" : 2.54864,
+            "radius" : 0.5,
             "hollow_radius" : 0.0,
-            "length" : 2.0
-        }  
+            "lengthk" : 0.85773558333,
+            "length" : 0.85774,
+            "length_in_in_for_SW" : 10.292827
+        },
+        "empty_wing" : {
+            "ID" : 5,
+            "type" : "symmetric_airfoil",
+            "mass" : 1.0
+        }
     },
     "unused" : {
         "propeller2" : {

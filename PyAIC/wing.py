@@ -418,6 +418,7 @@ class Wing:
         # return dictionary of values
         self.properties_dict = {
             "mass" : self.mass,
+            "volume" : self.volume,
             "cg_location" : self.cg_location,
             "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : self.inertia_tensor
