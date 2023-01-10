@@ -165,7 +165,7 @@ class AircraftSystem:
                 self.components[comp_id].update_densities()
 
 
-    def report_as_SolidWorks_report(self,info,positive_tensor=True,name=""):
+    def report_as_SolidWorks_report(self,info,positive_tensor=True,use_Lanham=False,name=""):
         """Method which reports the mass and inertia properties as given in 
         SolidWorks.
         
@@ -183,29 +183,36 @@ class AircraftSystem:
             partin = ""
         else:
             partin = name + " in "
-        print("=" * 100)
-        print("Mass properties of",partin + self.file_name)
+        if use_Lanham:
+            symbol = "-*"
+            intro = "Lanham "
+        else:
+            symbol = "=="
+            intro = ""
+        print((symbol * 50)[:-3])
+        print(intro+"Mass properties of",partin + self.file_name)
         print()
 
         # fix units if not given english units
         if not self.given_english_units:
             info["mass"] /= 14.59390
             info["cg_location"] /= 0.3048
+            info["volume"] /= (0.3048**3.)
             info["inertia_tensor"] /= 14.59390 * (0.3048)**2.
 
-        print("Mass = {:> 10.8f} slugs".format(info["mass"]))
+        print(intro+"Mass = {:> 10.8f} slugs".format(info["mass"]))
         print()
 
-        print("Volume = {:> 10.8f} cubic feet".format(info["volume"]))
+        print(intro+"Volume = {:> 10.8f} cubic feet".format(info["volume"]))
         print()
 
-        print("Center of mass: (feet)")
+        print(intro+"Center of mass: (feet)")
         print("\tX = {:> 14.8f}".format(info["cg_location"][0,0]))
         print("\tY = {:> 14.8f}".format(info["cg_location"][1,0]))
         print("\tZ = {:> 14.8f}".format(info["cg_location"][2,0]))
         print()
         
-        print("Angular momentum: (slugs * square feet / seconds)")
+        print(intro+"Angular momentum: (slugs * square feet / seconds)")
         print("\tX = {:> 14.8f}".format(info["angular_momentum"][0,0]))
         print("\tY = {:> 14.8f}".format(info["angular_momentum"][1,0]))
         print("\tZ = {:> 14.8f}".format(info["angular_momentum"][2,0]))
@@ -215,7 +222,7 @@ class AircraftSystem:
         if positive_tensor:
             I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
         [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
-        print("Moment of inertia about the CG:( slugs * square feet)")
+        print(intro+"Moment of inertia about the CG:( slugs * square feet)")
         if positive_tensor:
             print("\t\tPositive Tensor Formulation")
         else:
@@ -232,7 +239,7 @@ class AircraftSystem:
         if positive_tensor:
             I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
         [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
-        print("Moment of inertia about the origin:( slugs * square feet)")
+        print(intro+"Moment of inertia about the origin:( slugs * square feet)")
         if positive_tensor:
             print("\t\tPositive Tensor Formulation")
         else:
@@ -244,10 +251,10 @@ class AircraftSystem:
         print("\tIzx = {:> 19.8f}\tIzy = {:> 19.8f}\tIzz = {:> 19.8f}".format(\
             Izx,Izy,Izz))
         print()
-        print("=" * 100)
+        print((symbol * 50)[:-3])
 
 
-    def get_mass_properties(self,report=False,individual=False,positive_tensor=True):
+    def get_mass_properties(self,report=False,individual=False,use_Lanham=False,positive_tensor=True):
 
         # determine properties of each component
         for i in self.components:
@@ -256,7 +263,17 @@ class AircraftSystem:
         # determine total mass
         self.mass = 0.0
         for i in self.components:
-            self.mass += self.components[i].mass
+            self.mass += self.components[i].get_mass()
+        
+        # determine lanham mass
+        self.mass_lanham = 0.0
+        for i in self.components:
+            self.mass_lanham += self.components[i].get_mass(True)
+        
+        # determine lanham volume
+        self.volume_lanham = 0.0
+        for i in self.components:
+            self.volume_lanham += self.components[i].get_volume(True)
         
         # determine total cg location
         self.cg_location = np.zeros((3,1))
@@ -264,6 +281,13 @@ class AircraftSystem:
             self.cg_location += self.components[i].mass * \
                 self.components[i].cg_location
         self.cg_location /= self.mass
+        
+        # determine lanham cg location
+        self.cg_location_lanham = np.zeros((3,1))
+        for i in self.components:
+            self.cg_location_lanham += self.components[i].get_mass(True) * \
+                self.components[i].get_cg_location(True)
+        self.cg_location_lanham /= self.mass_lanham
         
         # determine total angular momentum
         self.angular_momentum = 0.0
@@ -278,6 +302,14 @@ class AircraftSystem:
                 self.components[i].shift_properties_to_location(\
                 location)["inertia_tensor"]
         
+        # determine lanham inertia
+        self.inertia_tensor_lanham = np.zeros((3,3))
+        location = self.cg_location_lanham
+        for i in self.components:
+            self.inertia_tensor_lanham += \
+                self.components[i].shift_properties_to_location(\
+                location,True)["inertia_tensor"]
+        
         # determine origin inertia
         self.origin_inertia_tensor = np.zeros((3,3))
         location = np.zeros((3,1))
@@ -285,6 +317,14 @@ class AircraftSystem:
             self.origin_inertia_tensor += \
                 self.components[i].shift_properties_to_location(\
                 location)["inertia_tensor"]
+        
+        # determine lanham origin inertia
+        self.origin_inertia_tensor_lanham = np.zeros((3,3))
+        location = np.zeros((3,1))
+        for i in self.components:
+            self.origin_inertia_tensor_lanham += \
+                self.components[i].shift_properties_to_location(\
+                location,True)["inertia_tensor"]
 
         # return dictionary of values
         self.properties_dict = {
@@ -296,11 +336,24 @@ class AircraftSystem:
             "inertia_tensor" : self.inertia_tensor
         }
 
+        # Lanham dictionary of values
+        lanham = {
+            "mass" : self.mass_lanham,
+            "volume" : self.volume_lanham,
+            "cg_location" : self.cg_location_lanham,
+            "angular_momentum" : self.angular_momentum,
+            "origin_inertia_tensor" : self.origin_inertia_tensor_lanham,
+            "inertia_tensor" : self.inertia_tensor_lanham
+        }
+
         # report
         if report:
             if not individual:
                 self.report_as_SolidWorks_report(self.properties_dict,\
                     positive_tensor)
+                if use_Lanham:
+                    self.report_as_SolidWorks_report(lanham,positive_tensor,\
+                        use_Lanham)
             else:
                 for i in self.components:
                     if i != 0:
@@ -309,9 +362,19 @@ class AircraftSystem:
                             self.components[i].shift_properties_to_location(\
                             np.zeros((3,1)))["inertia_tensor"]
                         name = self.components[i].name
-                        self.report_as_SolidWorks_report(info,positive_tensor,name)
+                        self.report_as_SolidWorks_report(info,positive_tensor,False,name)
+                        if use_Lanham:
+                            info = self.components[i].shift_properties_to_location(\
+                                self.cg_location_lanham,True)
+                            info["origin_inertia_tensor"] = \
+                                self.components[i].shift_properties_to_location(\
+                                np.zeros((3,1)),True)["inertia_tensor"]
+                            self.report_as_SolidWorks_report(info,positive_tensor,use_Lanham,name)
         
-        return self.properties_dict
+        if use_Lanham:
+            return self.properties_dict, lanham
+        else:
+            return self.properties_dict
 
 
     def get_mass_properties_about_point(self,point,report=False,individual=False,positive_tensor=True):
@@ -382,7 +445,7 @@ if __name__ == "__main__":
     # AS = AircraftSystem("CRM.json")
     # AS.get_mass_properties(report=True)
     AS = AircraftSystem("horizon.json")
-    AS.get_mass_properties(report=True)#,individual=True)
+    AS.get_mass_properties(report=True,use_Lanham=True)#,individual=True)
     # AS = AircraftSystem("propeller.json")
     # AS.get_mass_properties(report=True)#,individual=True)
     # AS = AircraftSystem("test_untwisted_propeller.json")

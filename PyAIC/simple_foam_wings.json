@@ -51,7 +51,7 @@
             }
         }
     },
-    "components" : {
+    "components_testing_with_dr_h" : {
         "all_properties" : {
             "ID" : 8,
             "density" : 0.25,
@@ -78,7 +78,7 @@
                             [1.0, "NACA_4808"]]
         }
     },
-    "components_used_in_paper" : {
+    "components" : {
         "rectangular" : {
             "ID" : 1,
             "density" : 0.25,

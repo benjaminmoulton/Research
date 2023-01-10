@@ -22,6 +22,7 @@ class Wing:
     def __init__(self,input_dict={}):
 
         # retrieve info
+        self.can_use_Lanham = True
         self._retrieve_info(input_dict)
 
         # organize input info
@@ -363,57 +364,52 @@ class Wing:
         # determine total mass
         self.mass = 0.0
         for i in self._components:
-            self.mass += self._components[i].mass
+            self.mass += self._components[i].get_mass()
+        
+        # determine Lanham mass
+        self.mass_lanham = 0.0
+        for i in self._components:
+            self.mass_lanham += self._components[i].get_mass(True)
+        
+        # determine Lanham mass
+        self.volume_lanham = 0.0
+        for i in self._components:
+            self.volume_lanham += self._components[i].get_volume(True)
         
         # determine total cg location
         self.cg_location = np.zeros((3,1))
         for i in self._components:
-            # component_cg = self._components[i].cg_location + self._components[i].locations["root"]
             self.cg_location += self._components[i].mass * \
                 self._components[i].get_cg_location()
-            # ##################
-            # print("Mass = {:> 10.8f} slugs".format(self._components[i].mass))
-            # # print(self._components[i]._root_location)
-            # print("Center of mass: (feet)")
-            # print("\tX = {:> 10.8f}".format(self._components[i].cg_location[0,0]))
-            # print("\tY = {:> 10.8f}".format(self._components[i].cg_location[1,0]))
-            # print("\tZ = {:> 10.8f}".format(self._components[i].cg_location[2,0]))
-            # I = self._components[i].inertia_tensor * 1.0
-            # I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
-            # [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
-            # print("Moment of inertia:( slugs * square feet)")
-            # print("\tLxx = {:> 10.8f}\tLxy = {:> 10.8f}\tLxz = {:> 10.8f}".format(Ixx,Ixy,Ixz))
-            # print("\tLyx = {:> 10.8f}\tLyy = {:> 10.8f}\tLyz = {:> 10.8f}".format(Iyx,Iyy,Iyz))
-            # print("\tLzx = {:> 10.8f}\tLzy = {:> 10.8f}\tLzz = {:> 10.8f}".format(Izx,Izy,Izz))
-            # print()
-            # ##################
         self.cg_location /= self.mass
+        
+        # determine Lanham cg location
+        self.cg_location_lanham = np.zeros((3,1))
+        for i in self._components:
+            self.cg_location_lanham += self._components[i].get_mass(True) * \
+                self._components[i].get_cg_location(True)
+        self.cg_location_lanham /= self.mass_lanham
         
         # determine total angular momentum
         self.angular_momentum = 0.0
         for i in self._components:
             self.angular_momentum += self._components[i].angular_momentum
-
-        # print(self.cg_location)
         
         # determine total inertia
         self.inertia_tensor = np.zeros((3,3))
         location = self.cg_location
-        # location = [[0.0],[0.0],[0.0]]
         for i in self._components:
             self.inertia_tensor += \
                 self._components[i].shift_properties_to_location(\
                 location)["inertia_tensor"]
         
-        # # print(self.inertia_tensor)
-        # I = self.inertia_tensor * 1.0
-        # I[[0,0,1,1,2,2],[1,2,0,2,0,1]] *= -1.0
-        # [[Ixx,Ixy,Ixz],[Iyx,Iyy,Iyz],[Izx,Izy,Izz]] = I
-        # print("Moment of inertia:( slugs * square feet)")
-        # print("\tIxx = {:> 10.8f}\tIxy = {:> 10.8f}\tIxz = {:> 10.8f}".format(Ixx,Ixy,Ixz))
-        # print("\tIyx = {:> 10.8f}\tIyy = {:> 10.8f}\tIyz = {:> 10.8f}".format(Iyx,Iyy,Iyz))
-        # print("\tIzx = {:> 10.8f}\tIzy = {:> 10.8f}\tIzz = {:> 10.8f}".format(Izx,Izy,Izz))
-        # print()
+        # determine Lanham inertia
+        self.inertia_tensor_lanham = np.zeros((3,3))
+        location = self.cg_location_lanham
+        for i in self._components:
+            self.inertia_tensor_lanham += \
+                self._components[i].shift_properties_to_location(\
+                location,True)["inertia_tensor"]
 
         # return dictionary of values
         self.properties_dict = {
@@ -426,7 +422,43 @@ class Wing:
         return self.properties_dict
 
 
-    def shift_properties_to_location(self,input_location):
+    def get_mass(self,use_Lanham_approximations=False):
+        """Method which returns the mass whether calculated using the method
+        presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.mass_lanham
+        else:
+            return self.mass
+
+    
+    def get_volume(self,use_Lanham_approximations=False):
+        """Method which returns the volume whether calculated using the
+        method presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.volume_lanham
+        else:
+            return self.volume
+
+    
+    def get_cg_location(self,use_Lanham_approximations=False):
+        """Method which returns the cg location whether calculated using the
+        method presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.cg_location_lanham
+        else:
+            return self.cg_location
+
+    
+    def get_inertia_tensor(self,use_Lanham_approximations=False):
+        """Method which returns the inertia tensor whether calculated using the
+        method presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.inertia_tensor_lanham
+        else:
+            return self.inertia_tensor
+
+
+    def shift_properties_to_location(self,input_location,use_Lanham=False):
         """Method which determines the mass properties of the given component
         about a given location.
         
@@ -441,22 +473,40 @@ class Wing:
         if isinstance(input_location, list):
             input_location = np.array(input_location)
         
+        # bring in mass, volume
+        if use_Lanham and self.can_use_Lanham:
+            mass = self.mass_lanham * 1.0
+            volume = self.volume_lanham * 1.0
+        else:
+            mass = self.mass * 1.0
+            volume = self.volume * 1.0
+        
+        # rotate inertia, cg location for rotation values
+        if use_Lanham and self.can_use_Lanham:
+            inertia_tensor = self.inertia_tensor_lanham * 1.0
+        else:
+            inertia_tensor = self.inertia_tensor * 1.0
+
+        # shift cg by root location given to aircraft coordinate system
+        new_cg_location = self.get_cg_location(use_Lanham)
+        
         # determine new location
-        s = input_location - self.cg_location
-        # print(self.cg_location)
+        s = input_location - new_cg_location
 
         # calculate mass shift from parallel axis theorem
         inner_product = np.matmul(s.T,s)[0,0]
         outer_product = np.matmul(s,s.T)
-        I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
+        I_shift = mass*( inner_product * np.eye(3) - outer_product )
 
         # calculate inertia tensor about new location
-        Inew = self.inertia_tensor + I_shift
+        Inew = inertia_tensor + I_shift
 
         # return dictionary of values
         output_dict = {
-            "mass" : self.mass,
-            "cg_location" : self.cg_location,
+            "mass" : mass,
+            "volume" : volume,
+            "cg_location" : new_cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : Inew
         }
         return output_dict

@@ -24,6 +24,7 @@ class Component:
             "tip"  : np.zeros((3,1))
         }
         self.name = "empty_name"
+        self.can_use_Lanham = False
         self._components = []
 
         # retrieve info
@@ -81,11 +82,7 @@ class Component:
         return 0
 
 
-    def get_cg_location(self):
-        return self.cg_location
-
-
-    def shift_properties_to_location(self,input_location):
+    def shift_properties_to_location(self,input_location,use_Lanham=False):
         """Method which determines the mass properties of the given component
         about a given location.
         
@@ -100,11 +97,22 @@ class Component:
         if isinstance(input_location, list):
             input_location = np.array(input_location)
         
+        # bring in mass, volume
+        if use_Lanham and self.can_use_Lanham:
+            mass = self.mass_lanham * 1.0
+            volume = self.volume_lanham * 1.0
+        else:
+            mass = self.mass * 1.0
+            volume = self.volume * 1.0
+        
         # rotate inertia, cg location for rotation values
-        inertia_tensor = np.matmul(self.R,np.matmul(self.inertia_tensor,self.R.T))
+        if use_Lanham and self.can_use_Lanham:
+            inertia_tensor = np.matmul(self.R0,np.matmul(self.inertia_tensor_lanham,self.R0.T))
+        else:
+            inertia_tensor = np.matmul(self.R,np.matmul(self.inertia_tensor,self.R.T))
 
         # shift cg by root location given to aircraft coordinate system
-        new_cg_location = self.get_cg_location()
+        new_cg_location = self.get_cg_location(use_Lanham)
         
         # determine new location
         s = input_location - new_cg_location
@@ -112,15 +120,17 @@ class Component:
         # calculate mass shift from parallel axis theorem
         inner_product = np.matmul(s.T,s)[0,0]
         outer_product = np.matmul(s,s.T)
-        I_shift = self.mass*( inner_product * np.eye(3) - outer_product )
+        I_shift = mass*( inner_product * np.eye(3) - outer_product )
 
         # calculate inertia tensor about new location
         Inew = inertia_tensor + I_shift
 
         # return dictionary of values
         output_dict = {
-            "mass" : self.mass * 1.0,
+            "mass" : mass,
+            "volume" : volume,
             "cg_location" : new_cg_location,
+            "angular_momentum" : self.angular_momentum,
             "inertia_tensor" : Inew
         }
         return output_dict
@@ -137,6 +147,43 @@ class Component:
             "inertia_tensor" : self.inertia_tensor
         }
         return self.properties_dict
+
+
+    def get_mass(self,use_Lanham_approximations=False):
+        """Method which returns the mass whether calculated using the method
+        presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.mass_lanham
+        else:
+            return self.mass
+
+    
+    def get_volume(self,use_Lanham_approximations=False):
+        """Method which returns the volume whether calculated using the
+        method presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.volume_lanham
+        else:
+            return self.volume
+
+    
+    def get_cg_location(self,use_Lanham_approximations=False):
+        """Method which returns the cg location whether calculated using the
+        method presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.cg_location_lanham
+        else:
+            return self.cg_location
+
+    
+    def get_inertia_tensor(self,use_Lanham_approximations=False):
+        """Method which returns the inertia tensor whether calculated using the
+        method presented or the Lanham method."""
+        if use_Lanham_approximations and self.can_use_Lanham:
+            return self.inertia_tensor_lanham
+        else:
+            return self.inertia_tensor
+
 
 
 class Cuboid(Component):
@@ -388,6 +435,7 @@ class Prismoid(Component):
         Component.__init__(self,input_dict)
 
         # retrieve additional info
+        self.can_use_Lanham = True
         self._retrieve_info(input_dict)
 
         # initialize the volume
@@ -493,6 +541,64 @@ class Prismoid(Component):
         self._u3 = 1.0
 
 
+    def _get_lanham_mass_properties(self):
+
+        # determine properties for later use
+        b = self._b
+        c, ct = self._cr, self._ct
+        tr, tt = self._cr*self._tr, self._ct*self._tt
+        LL = np.arctan( np.tan(self._Lambda) + 0.25 / b * ( c - ct ) )
+        LT = np.arctan( np.tan(self._Lambda) - 0.75 / b * ( c - ct ) )
+        tLL, tLT = np.tan(LL), np.tan(LT)
+        ca = self._cr
+        cb = np.tan(self._Lambda) + 0.25 * ( c - ct )
+        cc = cb + ct
+
+        # save mass
+        m = self.mass
+        self.mass_lanham = m
+
+        # calculate volume
+        V = b * ( tr*(c + b/2.*(tLT-tLL)) - (tr-tt)*(c/2. + b/3.*(tLT-tLL)) )
+        self.volume_lanham = V
+
+        # calculate cg location
+        xcg = 2 * b * (-ca**2. + cb**2. + cc*cb + cc**2.) / (-ca + cb + cc)
+        ycg = b**2./V*(tr*(c/2.+b/3.*(tLT-tLL)) -(tr-tt)*(c/3.+b/4.*(tLT-tLL)))
+        self.cg_location_lanham = np.array([
+            [xcg],
+            [self._delta * ycg],
+            [0.0]
+        ])
+        # print(xcg,1/(-ca + cb + cc))
+
+        # calculate inertia tensor
+        Ixx = m * b**3. / V * ( (tr-tt) * (c / 4. + b / 5. * (tLT-tLL)) \
+            + tr * (c / 3. + b / 4. * (tLT-tLL)) )
+        
+        Iyy = m * b / V * ( tr * (c**3. / 3. + b * c * tLT*(c/2. + b/3. * tLT)\
+            + b**3. / 12. * (tLT**3. - tLL**3.)) \
+                - (tr-tt) * (c**3. / 6. + b * c * tLT * (c /3. + b /4. * tLT) \
+                    + b**3. / 15 * (tLT**3. - tLL**3.)) )
+        
+        Izz = Ixx + Iyy
+
+        one = c**2.*b**2./4. + c*b**3./3.*tLT + b**4./ 8.*(tLT**2. - tLL**2.)
+        two = c**2.*b**2./6. + c*b**3./4.*tLT + b**4./10.*(tLT**2. - tLL**2.)
+        thr = m / V * tr      * np.sin(self._Gamma) * one
+        fou = m / V * (tr-tt) * np.sin(self._Gamma) * two
+        Ixz = thr - fou
+
+        Ixy = 0.0
+        Iyz = 0.0
+
+        self.inertia_tensor_lanham = np.array([
+            [Ixx,Ixy,Ixz],
+            [Ixy,Iyy,Iyz],
+            [Ixz,Iyz,Izz]
+        ])
+
+
     def get_mass_properties(self):
         """Method which returns mass, cg, I about cg rotated to total cframe"""
 
@@ -505,6 +611,9 @@ class Prismoid(Component):
         # calculate mass
         if self._given_density_not_mass:
             self.mass = self.density * self.volume
+        
+        # calculate lanham properties
+        self._get_lanham_mass_properties()
         
         # calculate center of gravity values
         num1 = 3. * self._kb * self._u1
@@ -561,8 +670,13 @@ class Prismoid(Component):
         return self.properties_dict
 
 
-    def get_cg_location(self):
-        cg_location = np.matmul(self.R,self.cg_location)
+    def get_cg_location(self,use_Lanham_approximations=False):
+        """Method which returns the cg location whether calculated using the
+        method presented or the Lanham method."""
+        if use_Lanham_approximations:
+            cg_location = np.matmul(self.R,self.cg_location_lanham)
+        else:
+            cg_location = np.matmul(self.R,self.cg_location)
 
         # shift cg by root location given
         return cg_location + self.locations["root"]
@@ -755,6 +869,7 @@ class DiamondAirfoil(PseudoPrismoid):
         self._u1 = ( 4. * self._xmt     + 1. ) / 6.
         self._u2 = ( 8. * self._xmt**2. + 3. ) / 14.
         self._u3 = 1. / 4.
+
 
 
 class Rotor(Component):

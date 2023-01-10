@@ -1,15 +1,15 @@
 {
     "airfoils" : {
-	    "NACA_2412": {
+	    "NACA_2416": {
             "type": "linear",
             "geometry": {
-                "NACA": "2412"
+                "NACA": "2416"
             }
         },
-	    "NACA_2408": {
+	    "NACA_2406": {
             "type": "linear",
             "geometry": {
-                "NACA": "2408"
+                "NACA": "2406"
             }
         }
     },
@@ -17,18 +17,15 @@
         "propeller" : {
             "ID" : 3,
             "type" : "rotor",
-            "mass_not_3" :  1.91023006,
-            "mass_3_blades" : 1.14613776,
-            "densityj" : 2.57377496,
-            "density" : 2.54864,
+            "mass" :  1.91211384,
             "connect_to" : {
                 "ID" : 0,
                 "location" : "tip",
-                "dx" :  1.0,
-                "dy" :  1.0,
-                "dz" :  1.0
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0
             },
-            "orientation" : [10.0, 10.0, 10.0],
+            "orientation" : [0.0, 0.0, 0.0],
             "number_blades" : 5,
             "diameter_hub" : 1.0,
             "diameter_rotor" : 10.5,
@@ -46,24 +43,19 @@
             "connect_to" : {
                 "ID" : 0,
                 "location" : "tip",
-                "dx" :  1.0,
-                "dy" :  1.0,
-                "dz" :  1.0
+                "dx" :  0.0,
+                "dy" :  0.0,
+                "dz" :  0.0
             },
-            "orientation" : [10.0, 10.0, 10.0],
+            "orientation" : [0.0, 0.0, 0.0],
             "massj" : 0.0,
-            "densityk" : 2.54863928,
-            "density" : 2.54864,
+            "density" : 2.54863928,
+            "densityk" : 2.54864,
             "radius" : 0.5,
             "hollow_radius" : 0.0,
-            "lengthk" : 0.85773558333,
-            "length" : 0.85774,
+            "length" : 0.85773558333,
+            "lengthk" : 0.85774,
             "length_in_in_for_SW" : 10.292827
-        },
-        "empty_wing" : {
-            "ID" : 5,
-            "type" : "symmetric_airfoil",
-            "mass" : 1.0
         }
     },
     "unused" : {
