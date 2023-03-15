@@ -572,13 +572,15 @@ class Comparison:
             print(self.ratios_terms[i])
             for h in range(len(self.ratios_names[i])):
                 hsort = self.sortcomps[i,h]
-                print(self.ratios_names[i][hsort],end="")
+                print(str(h+1)+".",self.ratios_names[i][hsort],end="")
                 if h != len(self.ratios_names[i]) - 1:
-                    print(end=", ")
+                    print(end=",  ")
             print()
             for j in range(-1,self.ratlen[i]):
                     for k in range(self.num_craft):
                         if j==-1:
+                            if k == 0:
+                                print("{:^3s}\t".format("num"),end="")
                             print("{:^6s}".format(self.Craft[k].name),end="")
                             if k != self.num_craft - 1:
                                 print(" \t",end="")
@@ -586,6 +588,8 @@ class Comparison:
                                 print(" \t{:^6s}".format("avgpwr"),end="")
                         else:
                             jsort = self.sortcomps[i,j]
+                            if k == 0:
+                                print("{:^3s}\t".format(str(j+1)),end="")
                             print("{:<+6.0e}\t".format(self.ratios[i][k][jsort]),end="")
                             if k == self.num_craft -1:
                                 print("{:<+5.3f}".format(self.avgpwr[i,jsort]),end="")

@@ -964,109 +964,150 @@ class Rotor(Component):
         tr2tt, trtt2 = tr2*tt, tr*tt2
         ln = np.log(rr/rt)
 
-        # calculate gamma values
+        # initialize certain vectors for ease of calculation
+        C = np.array([
+            [cr6],
+            [cr5ct],
+            [cr4ct2],
+            [cr3ct3],
+            [cr2ct4],
+            [crct5],
+            [ct6]
+        ])
+        T = np.array([
+            [tr3],
+            [tr2tt],
+            [trtt2],
+            [tt3]
+        ])
+        
+
         self._ya = -280. * ct6 * tt3
 
-        one =       cr6    * (35.*tr3 +  15.*tr2tt +    5.*trtt2 +       tt3)
-        two =  6. * cr5ct  * ( 5.*tr3 +   5.*tr2tt +    3.*trtt2 +       tt3)
-        thr =  5. * cr4ct2 * ( 5.*tr3 +   9.*tr2tt +    9.*trtt2 +    5.*tt3)
-        fou = 20. * cr3ct3 * (    tr3 +   3.*tr2tt +    5.*trtt2 +    5.*tt3)
-        fiv = 15. * cr2ct4 * (    tr3 +   5.*tr2tt +   15.*trtt2 +   35.*tt3)
-        six =  2. *  crct5 * ( 5.*tr3 +  45.*tr2tt +  315.*trtt2 - 3123.*tt3)
-        sev =          ct6 * ( 5.*tr3 + 105.*tr2tt - 3123.*trtt2 + 4329.*tt3)
-        end = ln * (1680.*crct5*tt3 + 840.*ct6*(trtt2 - 3.*tt3)) ###
-        self._yb = -(one + two + thr + fou + fiv + six + sev) - end
+        Db = np.diag([1., 6., 5., 20., 15., 2., 1.])
+        Ab = np.array([
+            [35., 15., 5., 1.],
+            [5., 5., 3., 1.],
+            [5., 9., 9., 5.],
+            [1., 3., 5., 5.],
+            [1., 5., 15., 35.],
+            [5., 45., 315., -3123.],
+            [5., 105., -3123., 4329.]
+        ])
+        Bb = np.array([
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 1.],
+            [0., 0., 1., -3.]
+        ])
+        self._yb = - np.matmul(np.matmul(Db,C).T,np.matmul(Ab + 840.*ln*Bb,T))[0,0]
 
-        one =       cr6    * (90.*tr3 +  40.*tr2tt +   14.*trtt2 +    3.*tt3)
-        two =  2. * cr5ct  * (40.*tr3 +  42.*tr2tt +   27.*trtt2 +   10.*tt3)
-        thr =  5. * cr4ct2 * (14.*tr3 +  27.*tr2tt +   30.*trtt2 +   20.*tt3)
-        fou = 20. * cr3ct3 * ( 3.*tr3 +  10.*tr2tt +   20.*trtt2 +   30.*tt3)
-        fiv =  5. * cr2ct4 * (10.*tr3 +  60.*tr2tt +  270.*trtt2 - 1089.*tt3)
-        six =  2. *  crct5 * (20.*tr3 + 270.*tr2tt - 3267.*trtt2 +  996.*tt3)
-        sev =  3. *    ct6 * (10.*tr3 - 363.*tr2tt +  332.*trtt2 +  840.*tt3)
-        e_a = 5.*cr2ct4*tt3 + 2.*crct5*(3.*trtt2 - 4.*tt3)
-        end = ln * ( e_a + ct6*(tr2tt - 4.*trtt2))
-        self._yc = 4.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
+        Dc = np.diag([1., 2., 5., 20., 5., 2., 3.])
+        Ac = np.array([
+            [90., 40., 14., 3.],
+            [40., 42., 27., 10.],
+            [14., 27., 30., 20.],
+            [3., 10., 20., 30.],
+            [10., 60., 270., -1089],
+            [20., 270., -3267., 996],
+            [10., -363., 332., 840.]
+        ])
+        Bc = np.array([
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 1.],
+            [0., 0., 3., -4.],
+            [0., 1./3., -4./3., 0.]
+        ])
+        self._yc = 4.*np.matmul(np.matmul(Dc,C).T,np.matmul(Ac + 420.*ln*Bc,T))[0,0]
 
-        one =       cr6    * (120.*tr3 +  56.*tr2tt +   21.*trtt2 +   5.*tt3)
-        two =  2. * cr5ct  * ( 56.*tr3 +  63.*tr2tt +   45.*trtt2 +  20.*tt3)
-        thr = 15. * cr4ct2 * (  7.*tr3 +  15.*tr2tt +   20.*trtt2 +  20.*tt3)
-        fou = 20. * cr3ct3 * (  5.*tr3 +  20.*tr2tt +   60.*trtt2 - 117.*tt3)
-        fiv =  5. * cr2ct4 * ( 20.*tr3 + 180.*tr2tt - 1053.*trtt2 -  21.*tt3)
-        six =  6. *  crct5 * ( 20.*tr3 - 351.*tr2tt -   21.*trtt2 + 280.*tt3)
-        sev =  3. *    ct6 * (-39.*tr3 -   7.*tr2tt +  280.*trtt2 + 280.*tt3)
-        e_a = 20.*cr3ct3*tt3 + 5.*cr2ct4*(9.*trtt2 - 7.*tt3)
-        end = ln * ( e_a + 6.*crct5*(3.*tr2tt - 7.*trtt2) + ct6*(tr3-7.*tr2tt))
-        self._yd = -14.*(one + two + thr + fou + fiv + six + sev) - 840.*end
+        Dd = np.diag([1., 2., 15., 20., 5., 6., 3.])
+        Ad = np.array([
+            [120., 56., 21., 5.],
+            [56., 63., 45., 20.],
+            [7., 15., 20., 20.],
+            [5., 20., 60., -117.],
+            [20., 180., -1053., -21.],
+            [20., -351., -21., 280.],
+            [-39., -7., 280., 280.]
+        ])
+        Bd = np.array([
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 1.],
+            [0., 0., 9., -7.],
+            [0., 3., -7., 0.],
+            [1./3., -7./3., 0., 0.]
+        ])
+        self._yd = -14.*np.matmul(np.matmul(Dd,C).T,np.matmul(Ad + 60.*ln*Bd,T))[0,0]
 
-        one =       cr6    * ( 168.*tr3 +  84.*tr2tt +  35.*trtt2 +  10.*tt3)
-        two =  6. * cr5ct  * (  28.*tr3 +  35.*tr2tt +  30.*trtt2 +  20.*tt3)
-        thr =  5. * cr4ct2 * (  35.*tr3 +  90.*tr2tt + 180.*trtt2 - 174.*tt3)
-        fou = 20. * cr3ct3 * (  10.*tr3 +  60.*tr2tt - 174.*trtt2 -  33.*tt3)
-        fiv = 15. * cr2ct4 * (  20.*tr3 - 174.*tr2tt -  99.*trtt2 +  70.*tt3)
-        six =  2. *  crct5 * (-174.*tr3 - 297.*tr2tt + 630.*trtt2 + 280.*tt3)
-        sev =          ct6 * ( -33.*tr3 + 210.*tr2tt + 280.*trtt2 + 420.*tt3)
-        e_a = 10.*cr4ct2*tt3 + 20.*cr3ct3*(2.*trtt2 - tt3) 
-        e_b = 15.*cr2ct4*(2.*tr2tt - 3.*trtt2) + 2.*crct5*(2.*tr3 - 9.*tr2tt)
-        end = ln * ( e_a + e_b - ct6*tr3 )
-        self._ye = 28.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
+        De = np.diag([1., 6., 5., 20., 15., 2., 1.])
+        Ae = np.array([
+            [168., 84., 35., 10.],
+            [28., 35., 30., 20.],
+            [35., 90., 180., -174.],
+            [10., 60., -174., -33.],
+            [20., -174., -99., 70.],
+            [-174., -297., 630., 280.],
+            [-33., 210., 280., 420.]
+        ])
+        Be = np.array([
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 2.],
+            [0., 0., 2., -1.],
+            [0., 2., -3., 0.],
+            [2., -9., 0., 0.],
+            [-1., 0., 0., 0.]
+        ])
+        self._ye = 28.*np.matmul(np.matmul(De,C).T,np.matmul(Ae + 60.*ln*Be,T))[0,0]
 
-        one =        cr6    * (126.*tr3 +  70.*tr2tt + 35.*trtt2 +  15.*tt3)
-        two =  10. * cr5ct  * ( 14.*tr3 +  21.*tr2tt + 27.*trtt2 -  12.*tt3)
-        thr =  25. * cr4ct2 * (  7.*tr3 +  27.*tr2tt - 36.*trtt2 -  12.*tt3)
-        fou = 300. * cr3ct3 * (     tr3 -   4.*tr2tt -  4.*trtt2 +      tt3)
-        fiv = -25. * cr2ct4 * ( 12.*tr3 +  36.*tr2tt - 27.*trtt2 -   7.*tt3)
-        six = -10. *  crct5 * ( 12.*tr3 -  27.*tr2tt - 21.*trtt2 -  14.*tt3)
-        sev =           ct6 * ( 15.*tr3 +  35.*tr2tt + 70.*trtt2 + 126.*tt3)
-        e_a = -2.*cr5ct*tt3 - 5.*cr4ct2*(3.*trtt2 - tt3) 
-        e_b = -20.*cr3ct3*(tr2tt - trtt2) - 5.*cr2ct4*(tr3 - 3.*tr2tt)
-        end = ln * ( e_a + e_b  + 2.*crct5*tr3 )
-        self._yf = -70.*(one + two + thr + fou + fiv + six + sev) + 4200.*end
+        Df = np.diag([1., 10., 25., 300., 25., 10., 1.])
+        Af = np.array([
+            [126., 70., 35., 15.],
+            [14., 21., 27., -12.],
+            [7., 27., -36., -12.],
+            [1., -4., -4., 1.],
+            [-12., -36., 27., 7.],
+            [-12., 27., 21., 14.],
+            [15., 35., 70., 126.]
+        ])
+        Bf = np.array([
+            [0., 0., 0., 0.],
+            [0., 0., 0., 1./5.],
+            [0., 0., 3./5., -1./5.],
+            [0., 1./15., -1./15., 0.],
+            [1./5., -3./5., 0., 0.],
+            [-1./5., 0., 0., 0.],
+            [0., 0., 0., 0.]
+        ])
+        self._yf = -70.*np.matmul(np.matmul(Df,C).T,np.matmul(Af + 60.*ln*Bf,T))[0,0]
 
-        one =       cr6    * ( 420.*tr3 + 280.*tr2tt + 210.*trtt2 -   33.*tt3)
-        two =  2. * cr5ct  * ( 280.*tr3 + 630.*tr2tt - 297.*trtt2 -  174.*tt3)
-        thr = 15. * cr4ct2 * (  70.*tr3 -  99.*tr2tt - 174.*trtt2 +   20.*tt3)
-        fou = 20. * cr3ct3 * ( -33.*tr3 - 174.*tr2tt +  60.*trtt2 +   10.*tt3)
-        fiv =  5. * cr2ct4 * (-174.*tr3 + 180.*tr2tt +  90.*trtt2 +   35.*tt3)
-        six =  6. *  crct5 * (  20.*tr3 +  30.*tr2tt +  35.*trtt2 +   28.*tt3)
-        sev =          ct6 * (  10.*tr3 +  35.*tr2tt +  84.*trtt2 +  168.*tt3)
-        e_a = cr6*tt3 - 2.*cr5ct*(2.*tt3 - 9.*trtt2)
-        e_b = -15.*cr4ct2*(2.*trtt2 - 3.*tr2tt) - 20.*cr3ct3*(2.*tr2tt - tr3)
-        end = ln * ( e_a + e_b - 10.*cr2ct4*tr3 )
-        self._yg = 28.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
+        Dg = np.flip(De)
+        Ag = np.flip(Ae)
+        Bg = np.flip(Be)
+        self._yg = 28.*np.matmul(np.matmul(Dg,C).T,np.matmul(Ag - 60.*ln*Bg,T))[0,0]
 
-        one =  3. * cr6    * ( 280.*tr3 +  280.*tr2tt -   7.*trtt2 -  39.*tt3)
-        two =  6. * cr5ct  * ( 280.*tr3 -   21.*tr2tt - 351.*trtt2 +  20.*tt3)
-        thr =  5. * cr4ct2 * ( -21.*tr3 - 1053.*tr2tt + 180.*trtt2 +  20.*tt3)
-        fou = 20. * cr3ct3 * (-117.*tr3 +   60.*tr2tt +  20.*trtt2 +   5.*tt3)
-        fiv = 15. * cr2ct4 * (  20.*tr3 +   20.*tr2tt +  15.*trtt2 +   7.*tt3)
-        six =  2. *  crct5 * (  20.*tr3 +   45.*tr2tt +  63.*trtt2 +  56.*tt3)
-        sev =          ct6 * (   5.*tr3 +   21.*tr2tt +  56.*trtt2 + 120.*tt3)
-        e_a = - cr6*(tt3-7.*trtt2) - 6.*cr5ct*(3.*trtt2 - 7.*tr2tt)
-        e_b = - 5.*cr4ct2*(9.*tr2tt - 7.*tr3) - 20.*cr3ct3*tr3
-        end = ln * ( e_a + e_b )
-        self._yh = -14.*(one + two + thr + fou + fiv + six + sev) - 840.*end
+        Dh = np.flip(Dd)
+        Ah = np.flip(Ad)
+        Bh = np.flip(Bd)
+        self._yh = -14.*np.matmul(np.matmul(Dh,C).T,np.matmul(Ah - 60.*ln*Bh,T))[0,0]
 
-        one =  3. * cr6    * (  840.*tr3 +  332.*tr2tt - 363.*trtt2 + 10.*tt3)
-        two =  2. * cr5ct  * (  996.*tr3 - 3267.*tr2tt + 270.*trtt2 + 20.*tt3)
-        thr =  5. * cr4ct2 * (-1089.*tr3 +  270.*tr2tt +  60.*trtt2 + 10.*tt3)
-        fou = 20. * cr3ct3 * (   30.*tr3 +   20.*tr2tt +  10.*trtt2 +  3.*tt3)
-        fiv =  5. * cr2ct4 * (   20.*tr3 +   30.*tr2tt +  27.*trtt2 + 14.*tt3)
-        six =  2. *  crct5 * (   10.*tr3 +   27.*tr2tt +  42.*trtt2 + 40.*tt3)
-        sev =          ct6 * (    3.*tr3 +   14.*tr2tt +  40.*trtt2 + 90.*tt3)
-        e_a = - cr6*(trtt2 - 4.*tr2tt) - 2.*cr5ct*(3.*tr2tt - 4.*tr3)
-        end = ln * ( e_a - 5.*cr4ct2*tr3 )
-        self._yi = 4.*(one + two + thr + fou + fiv + six + sev) + 1680.*end
+        Di = np.flip(Dc)
+        Ai = np.flip(Ac)
+        Bi = np.flip(Bc)
+        self._yi = 4.*np.matmul(np.matmul(Di,C).T,np.matmul(Ai - 420.*ln*Bi,T))[0,0]
 
-        one =       cr6    * ( 4329.*tr3 - 3123.*tr2tt + 105.*trtt2 +  5.*tt3)
-        two =  2. * cr5ct  * (-3123.*tr3 +  315.*tr2tt +  45.*trtt2 +  5.*tt3)
-        thr = 15. * cr4ct2 * (   35.*tr3 +   15.*tr2tt +   5.*trtt2 +     tt3)
-        fou = 20. * cr3ct3 * (    5.*tr3 +    5.*tr2tt +   3.*trtt2 +     tt3)
-        fiv =  5. * cr2ct4 * (    5.*tr3 +    9.*tr2tt +   9.*trtt2 +  5.*tt3)
-        six =  6. *  crct5 * (       tr3 +    3.*tr2tt +   5.*trtt2 +  5.*tt3)
-        sev =          ct6 * (       tr3 +    5.*tr2tt +  15.*trtt2 + 35.*tt3)
-        end = ln * (- 2.*cr5ct*tr3 - cr6*(tr2tt - 3.*tr3))
-        self._yj = -(one + two + thr + fou + fiv + six + sev) - 840.*end
+        Dj = np.flip(Db)
+        Aj = np.flip(Ab)
+        Bj = np.flip(Bb)
+        self._yj = - np.matmul(np.matmul(Dj,C).T,np.matmul(Aj - 840.*ln*Bj,T))[0,0]
 
         self._yk = -280. * cr6 * tr3
 

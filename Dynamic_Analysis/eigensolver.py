@@ -116,6 +116,8 @@ class Solver:
         self.CY_b       = CY.get("beta")
         self.CY_pbar    = CY.get("Lpbar") * self.CL0 + CY.get("pbar")
         self.CY_rbar    = CY.get("rbar")
+        self.CY_da      = CY.get("da",0.0)
+        self.CY_dr      = CY.get("dr",0.0)
         CD = aero.get("CD")
         self.CD0        = CD.get("L0")
         self.CD1        = CD.get("L")
@@ -128,6 +130,8 @@ class Solver:
         self.Cl_b       = Cl.get("beta")
         self.Cl_pbar    = Cl.get("pbar")
         self.Cl_rbar    = Cl.get("Lrbar") * self.CL0 + Cl.get("rbar")
+        self.Cl_da      = Cl.get("da",0.0)
+        self.Cl_dr      = Cl.get("dr",0.0)
         Cm = aero.get("Cm")
         self.Cmo        = Cm.get("0")
         self.Cm_a       = Cm.get("alpha")
@@ -138,6 +142,8 @@ class Solver:
         self.Cn_b       = Cn.get("beta")
         self.Cn_pbar    = Cn.get("Lpbar") * self.CL0 + Cn.get("pbar")
         self.Cn_rbar    = Cn.get("rbar")
+        self.Cn_da      = Cn.get("da",0.0)
+        self.Cn_dr      = Cn.get("dr",0.0)
 
         # store handling quality input values
         self.HQ = self.input_dict.get("handling_qualities",{})
@@ -174,8 +180,9 @@ class Solver:
         self.CD_a = self.CD1 * self.CL_a + 2. * self.CD2 * self.CLo * self.CL_a
         if self.report:
             print("Running solver for {}".format(self.aircraft_name))
-            print("Vo  = ", self.vo)
-            print("self.CDo  = ", self.CDo)
+            print("Vo   = ", self.vo)
+            print("CLo  = ", self.CLo)
+            print("CDo  = ", self.CDo)
             print("CD,a = ", self.CD_a)
             print()
 
@@ -960,8 +967,33 @@ class Solver:
         k = 1. / self.W / self.Izz * self.Y_b * self.n_r
         d = self.g/self.vo * ( k + self.l_b / self.l_p * h )
         Wn = ( c + d )**0.5
-        # self.b["drwnhq"] = np.abs(Wn)
-        # self.b["drzthq"] = Sg/np.abs(Wn)
+        self.b["drwnhq"] = np.abs(Wn)
+        self.b["drzthq"] = Sg/np.abs(Wn)
+
+        a = (Ky_b + Kn_rbreve) / Kl_pbreve
+        b = Kl_b * (1.-Kn_pbreve)/Kl_pbreve
+        c = Kn_b + Ky_b * Kn_rbreve
+        self.b["drwnhq"] = self.g/self.vo*( -0.5*a*b+c+b )**0.5
+        a = Ky_b + Kn_rbreve
+        b = Kl_rbreve * Kn_pbreve / Kl_pbreve
+        c = Kl_b * (1.-Kn_pbreve)/Kl_pbreve**2.
+        Sg = -0.5*self.g/self.vo*(a-b-c)
+        self.b["drzthq"] = Sg/self.b["drwnhq"]
+
+        # a = (self.Y_b/self.W + self.vo*self.n_r/self.g/self.Izz) / (self.vo*self.l_p/self.g/self.Ixx)
+        # b = self.vo**2.*self.l_b/self.g**2./self.Ixx * (1.-self.vo*self.n_p/self.g/self.Izz)/(self.vo*self.l_p/self.g/self.Ixx)
+        # c = self.vo**2.*self.n_b/self.g**2./self.Izz + self.Y_b/self.W * self.vo*self.n_r/self.g/self.Izz
+        # self.b["drwn"] = self.g/self.vo*( -0.5*a*b+c+b )**0.5
+        
+        sm_l = self.Cl_b/self.CY_b
+        sm_m = -self.Cm_a/self.CL_a
+        sm_n = -self.Cn_b/self.CY_b
+        # print(self.aircraft_name,sm_n>sm_m)
+        # print(self.aircraft_name, sm_m*self.cwbar,sm_n*self.bw)
+        # cy = "{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}".format(self.CY_b,self.CY_rbar,self.CY_pbar,self.CY_da,self.CY_dr)
+        # cl = "{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}".format(self.Cl_b,self.Cl_rbar,self.Cl_pbar,self.Cl_da,self.Cl_dr)
+        # cn = "{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}".format(self.Cn_b,self.Cn_rbar,self.Cn_pbar,self.Cn_da,self.Cn_dr)
+        # print(cy,"  ",cl,"  ",cn)
 
         a = - Kl_rbreve * Kn_pbreve / Kl_pbreve
         b_num = Kl_rbreve * Kn_b - Kl_b * Kn_rbreve
@@ -979,11 +1011,8 @@ class Solver:
         wndr = self.g / self.vo * (g + h + i)**0.5
         self.b["drwnhq"] = wndr
         self.b["drzthq"] = Sdr/wndr # these are correct
-        # Sdr = -0.5 * self.g / self.vo * ( Ky_b + Kn_rbreve - RDRc + RDRp )
-        # wndr = self.g / self.vo * (0.5*(Ky_b+Kn_rbreve)*(RDRp-RDRc) + \
-        #     0.25*(RDRp-RDRc)**2. + (1.-Ky_rbreve)*Kn_b + Ky_b*Kn_rbreve + RDRs)**0.5
-        # self.b["drwnhq"] = wndr
-        # self.b["drzthq"] = Sdr/wndr # these are correct
+
+
 
         # print("A matrix")
         # for i in range(6):
@@ -1493,11 +1522,16 @@ class Solver:
 
 
 
-def print_hq(hq):
+def print_hq(hq,print_bold=False):
     if type(hq) != str:
-        print(" \& {:> 8.4f}".format(hq),end="")
+        string = " \& {:> 8.4f}".format(hq)
     else:
-        print(" \&  {:^7}".format(hq),end="")
+        string = " \&  {:^7s}".format(hq)
+    if print_bold:
+        print("\033[1m" + string + "\033[0m", end="")
+    else:
+        print(string, end="")
+    
 
 
 if __name__ == "__main__":
@@ -1524,7 +1558,8 @@ if __name__ == "__main__":
     # Class IV
     "F16_bolander.json",
     "NT_33A.json", "F_104A.json", "F_4C.json",
-    "A_7A.json", "A_4D.json"
+    "A_7A.json", "A_4D.json",
+    # "9_8_2.json"
     ]
     run_files = ["aircraft_database/" + i for i in run_files]
     num_craft = len(run_files)
@@ -1532,7 +1567,7 @@ if __name__ == "__main__":
     for i in range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
 
-    # create dictionaries for pretty titling of print out
+    # create dictionaries for pretty title-ing of print out
     modenames = {
         "sp" : "Short Period",
         "ph" : "Phugoid",
@@ -1545,13 +1580,78 @@ if __name__ == "__main__":
         "wn" : "Natural Frequency, rad/s",
         "Sg" : "Damping Rate, 1/s"
     }
+    evecnames = {
+        "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \bar{q}$", 
+            r"$\Delta \xi_x$", r"$\Delta \xi_z$", r"$\Delta \theta$"],
+        "lat" : [r"$\Delta \beta$", r"$\Delta \bar{p}$", r"$\Delta \bar{r}$", 
+            r"$\Delta \xi_y$", r"$\Delta \phi$", r"$\Delta \psi$"]
+    }
+    clrs = {
+        "lon" : ["#F5793A","#F5793A","#A95AA1","#85C0F9","#85C0F9","#0F2080"],
+        "lat" : ["#F5793A","#A95AA1","#A95AA1","#85C0F9","#0F2080","#0F2080"]
+    }
+    mrks = {
+        "lon" : ["o","s","^","o","s","^"],
+        "lat" : ["^","o","s","^","o","s"]
+    }
+
+    for i in range(num_craft):
+        dyn = eigensolved[i]
+        method = dyn.b
+        si = "lon"
+        mo = "sp"
+        mbind = dyn.b[si][mo]
+        if mo in ["sp","ph","dr"]:
+            mbind = mbind[0]
+        mpind = dyn.p[si][mo]
+        if mo in ["sp","ph","dr"]:
+            mpind = mpind[0]
+
+        # print(dyn.b["lon"]["evals"])
+        A_b = dyn.b[si][ "amp" ][:, mbind]
+        P_b = np.deg2rad(dyn.b[si]["phase"][:, mbind])
+        A_p = dyn.p[si][ "amp" ][:, mpind]
+        P_p = np.deg2rad(dyn.p[si]["phase"][:, mpind])
+        print(A_b)
+        print(np.rad2deg(P_b))
+
+        num = 100
+        t = np.linspace(0.0,4.*np.pi,num=num)
+        r = np.linspace(0.0,2.0,num=num)
+        fix, ax = plt.subplots(subplot_kw={"projection" : "polar"})
+        ax.plot([0],[0],"k",label="Buck")
+        ax.plot([0],[0],"k",ls=":",label="Trad")
+        for i in range(len(A_b)):
+            ax.plot([0,P_b[i]],[0,A_b[i]],c=clrs[si][i],marker=mrks[si][i],label=evecnames[si][i])
+            ax.plot([0,P_p[i]],[0,A_p[i]],c=clrs[si][i],ls=":",marker=mrks[si][i])
+        # ax.set_rmax(2)
+        # ax.set_rticks([0.5, 1, 1.5, 2])  # Less radial ticks
+        # ax.set_rlabel_position(-22.5)  # Move radial labels away from plotted line
+        # ax.grid(True)
+        ax.legend()
+        plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    quit()
 
     # report handling qualities
     max_name = max([len(plane.aircraft_name) for plane in eigensolved]) + 2
     side = ["lon"] * 4 + ["lat"] * 4
     mode = ["sp"] * 2 + ["ph"] * 2 + ["ro","sl"] + ["dr"] * 2
     haqu = ["wn","zt"] * 2 + ["Sg"] * 2 + ["wn","zt"]
-    column_header = ["wt/ft","linear","approx","buckham"]
+    column_header = ["wt/ft","linear","approx","redimmd","pd-a&b"]
     for i in range(len(side)):
         mo = mode[i]
         si = side[i]
@@ -1559,7 +1659,7 @@ if __name__ == "__main__":
         print(modenames[mo],propertynames[hq])
 
         print("{:^{}}".format("aircraft",max_name),end="")
-        for i in range(4):
+        for i in range(len(column_header)):
             print_hq(column_header[i])
         print(" \\\\")
 
@@ -1578,6 +1678,19 @@ if __name__ == "__main__":
                 print_hq(eigensolved[j].b[si][hq][eigensolved[j].b[si][mo]][0])
             print_hq(eigensolved[j].b[mo+hq])
             print_hq(eigensolved[j].b[mo+hq+"hq"])
+            
+            app = eigensolved[j].b[mo+hq]
+            buck = eigensolved[j].b[mo+hq+"hq"]
+            if app != 0.0:
+                pd = (app-buck)/app
+                if abs(pd) >= 0.2:
+                    print_bold = True
+                else:
+                    print_bold = False
+            else:
+                pd = "---"
+                print_bold=False
+            print_hq(pd,print_bold)
 
             print(" \\\\")
         print()

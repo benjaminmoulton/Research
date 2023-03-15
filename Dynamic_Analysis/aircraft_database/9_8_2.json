@@ -1,0 +1,83 @@
+{
+    "aircraft": {
+        "name": "MoF 9.8.2",
+        "short_name": "MoF",
+        "wing_area[ft^2]": 185.0,
+        "wing_span[ft]": 33.0,
+        "weight[lbf]": 2800.0,
+        "Ixx[slug-ft^2]": 1000.0,
+        "Iyy[slug-ft^2]": 3000.0,
+        "Izz[slug-ft^2]": 3500.0,
+        "Ixz[slug-ft^2]": 30.0,
+        "Ixy[slug-ft^2]": 0.0,
+        "Iyz[slug-ft^2]": 0.0,
+        "from": "MoF 8.2.1, 9.8.2",
+        "notes": "hq not data available"
+    },
+    "analysis": {
+        "density[slugs/ft^3]": 0.00237689261479
+    },
+    "aerodynamics": {
+        "CL": {
+            "0": 0.3930613828660304,
+            "alpha": 4.4,
+            "qbar": 3.8,
+            "alpha_hat": 1.6,
+            "mu_hat": 0.0,
+            "de": 0.0
+        },
+        "CS": {
+            "beta": -0.560,
+            "pbar": 0.0,
+            "Lpbar": 0.0,
+            "rbar": 0.24,
+            "da": 0.0,
+            "dr": 0.0
+        },
+        "CD": {
+            "L0": 0.03436687681782834,
+            "L": 0.0,
+            "L2": 0.10118706392045454,
+            "qbar": 0.0,
+            "Lqbar": 0.0,
+            "L2qbar": 0.0,
+            "alpha_hat": 0.0,
+            "mu_hat": 0.0,
+            "de": 0.0
+        },
+        "Cl": {
+            "beta": -0.075,
+            "pbar": -0.41,
+            "rbar": 0.105,
+            "Lrbar": 0.0,
+            "da": 0.0,
+            "dr": 0.0
+        },
+        "Cm": {
+            "0": 0.0,
+            "alpha": -0.68,
+            "qbar": -9.950,
+            "alpha_hat": -4.35,
+            "mu_hat": 0.0,
+            "de": 0.0
+        },
+        "Cn": {
+            "beta": 0.07,
+            "pbar": -0.0575,
+            "Lpbar": 0.0,
+            "rbar": -0.125,
+            "da": 0.0,
+            "dr": 0.0
+        }
+    },
+    "handling_qualities" : {
+        "zt_sp": "n/a",
+        "wn_sp": "n/a",
+        "zt_ph": "n/a",
+        "wn_ph": "n/a",
+        "Sg_ro": "n/a",
+        "Sg_sl": "n/a",
+        "zt_dr": "n/a",
+        "wn_dr": "n/a"
+    }
+}
