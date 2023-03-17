@@ -1,5 +1,72 @@
 {
     "aircraft" : {
+        "F-89" : {
+            "geometry/mass" : {
+                "S" : 606.0,
+                "b" : 59.7083333333,
+                "W" : 30500.0,
+                "m" : 947.0
+            },
+            "flight_condition" : {
+                "h" :  20000.0,
+                "M" :  0.638,
+                "a" : 1037.0,
+                "p" : 0.00127,
+                "Vto" : 660.0,
+                "qdyn" : 276.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0016,
+                "Xu" : -0.0097,
+                "Xde" : 0.0,
+                "Zw" : -1.43,
+                "Zwdot" : 0.0,
+                "Zu" : -0.0955,
+                "Zde" : -69.8,
+                "Mw" : -0.0235,
+                "Mwdot" : -0.0013,
+                "Mq" : -1.92,
+                "Mu" : 0.0,
+                "Mde" : -26.1
+            },
+            "lateral" : {
+                "Yv" : -0.0829,
+                "Ydastar" : ,
+                "Ydrstar" : ,
+                "Lbprime" : ,
+                "Lpprime" : ,
+                "Lrprime" : ,
+                "Ldaprime" : ,
+                "Ldrprime" : ,
+                "Nbprime" : ,
+                "Npprime" : ,
+                "Nrprime" : ,
+                "Ndaprime" : ,
+                "Ndrprime" : 
+            },
+            "other" : {
+                "name" : "F-89-no-inertia",
+                "short_name" : "F-89***",
+                "file_name" : "F-89_no_inertia.json",
+                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al.",
+                "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
+                "notes" : "No inertia data given",
+                "notes_2" : "S, b from wikipedia",
+                "notes_2_link" : "https://en.wikipedia.org/wiki/Northrop_F-89_Scorpion#Specifications_(F-89D)"
+            },
+            "handling_qualities" : {
+                "zt_sp" : "n/a",
+                "wn_sp" : "n/a",
+                "zt_ph" : "n/a",
+                "wn_ph" : "n/a",
+                "Sg_ro" : "n/a",
+                "Sg_sl" : "n/a",
+                "zt_dr" : "n/a",
+                "wn_dr" : "n/a"
+            }
+        }
+    },
+    "Heffley_aircraft" : {
         "A-7A" : {
             "geometry/mass" : {
                 "S" : 375.0,

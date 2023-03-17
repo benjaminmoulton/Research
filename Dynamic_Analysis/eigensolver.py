@@ -1535,14 +1535,22 @@ def print_hq(hq,print_bold=False):
 
 
 if __name__ == "__main__":
-    # plt.rcParams['text.usetex'] = True
-    # plt.rcParams["font.family"] = "Times New Roman"
-    # plt.rcParams["font.size"] = 16
-    # import matplotlib.colors.ColorConverter().to_rgba as rgba
-
-    # es.Solver("aircraft_database/F16_bolander.json",report=True)
-    # es.Solver("aircraft_database/NT_33A.json",report=True)
-
+    
+    # change plot text parameters
+    plt.rcParams["font.family"] = "Serif"
+    plt.rcParams["font.size"] = 8.0
+    plt.rcParams["axes.labelsize"] = 8.0
+    # plt.rcParams['lines.linewidth'] = 1.0
+    # plt.rcParams["xtick.minor.visible"] = True
+    # plt.rcParams["ytick.minor.visible"] = True
+    # plt.rcParams["xtick.direction"] = plt.rcParams["ytick.direction"] = "in"
+    # plt.rcParams["xtick.bottom"] = plt.rcParams["xtick.top"] = True
+    # plt.rcParams["ytick.left"] = plt.rcParams["ytick.right"] = True
+    # plt.rcParams["xtick.major.width"] = plt.rcParams["ytick.major.width"] = 1.0
+    # plt.rcParams["xtick.minor.width"] = plt.rcParams["ytick.minor.width"] = 1.0
+    # plt.rcParams["xtick.major.size"] = plt.rcParams["ytick.major.size"] = 5.0
+    # plt.rcParams["xtick.minor.size"] = plt.rcParams["ytick.minor.size"] = 2.5
+    # plt.rcParams["mathtext.fontset"] = "dejavuserif"
 
     # Convair 990 https://www.nasa.gov/centers/dryden/pdf/87810main_H-693.pdf
 
@@ -1568,6 +1576,8 @@ if __name__ == "__main__":
         eigensolved[i] = Solver(run_files[i],report=False)
 
     # create dictionaries for pretty title-ing of print out
+    modes = ["sp","ph","sl","ro","dr"]
+    sides = ["lon","lon","lat","lat","lat"]
     modenames = {
         "sp" : "Short Period",
         "ph" : "Phugoid",
@@ -1581,55 +1591,89 @@ if __name__ == "__main__":
         "Sg" : "Damping Rate, 1/s"
     }
     evecnames = {
-        "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \bar{q}$", 
-            r"$\Delta \xi_x$", r"$\Delta \xi_z$", r"$\Delta \theta$"],
-        "lat" : [r"$\Delta \beta$", r"$\Delta \bar{p}$", r"$\Delta \bar{r}$", 
-            r"$\Delta \xi_y$", r"$\Delta \phi$", r"$\Delta \psi$"]
+        "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \breve{q}$", 
+            r"$\Delta \breve{x}$", r"$\Delta \breve{z}$", r"$\Delta \theta$"],
+        "lat" : [r"$\Delta \beta$", r"$\Delta \breve{p}$", r"$\Delta \breve{r}$", 
+            r"$\Delta \breve{y}$", r"$\Delta \phi$", r"$\Delta \psi$"]
     }
+    cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080"]
     clrs = {
-        "lon" : ["#F5793A","#F5793A","#A95AA1","#85C0F9","#85C0F9","#0F2080"],
-        "lat" : ["#F5793A","#A95AA1","#A95AA1","#85C0F9","#0F2080","#0F2080"]
+        "lon" : [cs[0],cs[0],cs[1],cs[2],cs[2],cs[3]],
+        "lat" : [cs[0],cs[1],cs[1],cs[2],cs[3],cs[3]]
     }
+    ms = ["o","^","s"]
     mrks = {
-        "lon" : ["o","s","^","o","s","^"],
-        "lat" : ["^","o","s","^","o","s"]
+        "lon" : [ms[0],ms[2],ms[1],ms[0],ms[2],ms[1]],
+        "lat" : [ms[1],ms[0],ms[2],ms[1],ms[0],ms[2]]
     }
+    # base directory
+    bd = "phasor_plots/"
+    # show plots
+    show = False
+    print("plotting...")
 
     for i in range(num_craft):
         dyn = eigensolved[i]
-        method = dyn.b
-        si = "lon"
-        mo = "sp"
-        mbind = dyn.b[si][mo]
-        if mo in ["sp","ph","dr"]:
-            mbind = mbind[0]
-        mpind = dyn.p[si][mo]
-        if mo in ["sp","ph","dr"]:
-            mpind = mpind[0]
+        print(" "*11 + dyn.aircraft_name + "...")
+        for j in range(len(modes)):
+            method = dyn.b
+            si = sides[j]
+            mo = modes[j]
+            direc = bd + "phasor_" + modenames[mo].lower().replace(" ","_")+"/"
+            file = direc + mo + "_"+ dyn.aircraft_name.lower().replace(" ","_")
+            file = file.replace("-","_") + ".png"
+            # print(file)
+            mbind = dyn.b[si][mo]
+            if mo in ["sp","ph","dr"]:
+                mbind = mbind[0]
+            mpind = dyn.p[si][mo]
+            if mo in ["sp","ph","dr"]:
+                mpind = mpind[0]
 
-        # print(dyn.b["lon"]["evals"])
-        A_b = dyn.b[si][ "amp" ][:, mbind]
-        P_b = np.deg2rad(dyn.b[si]["phase"][:, mbind])
-        A_p = dyn.p[si][ "amp" ][:, mpind]
-        P_p = np.deg2rad(dyn.p[si]["phase"][:, mpind])
-        print(A_b)
-        print(np.rad2deg(P_b))
+            # print(dyn.b["lon"]["evals"])
+            A_b = dyn.b[si][ "amp" ][:, mbind]
+            P_b = np.deg2rad(dyn.b[si]["phase"][:, mbind])
+            A_p = dyn.p[si][ "amp" ][:, mpind]
+            P_p = np.deg2rad(dyn.p[si]["phase"][:, mpind])
+            # print(A_b)
+            # print(np.rad2deg(P_b))
 
-        num = 100
-        t = np.linspace(0.0,4.*np.pi,num=num)
-        r = np.linspace(0.0,2.0,num=num)
-        fix, ax = plt.subplots(subplot_kw={"projection" : "polar"})
-        ax.plot([0],[0],"k",label="Buck")
-        ax.plot([0],[0],"k",ls=":",label="Trad")
-        for i in range(len(A_b)):
-            ax.plot([0,P_b[i]],[0,A_b[i]],c=clrs[si][i],marker=mrks[si][i],label=evecnames[si][i])
-            ax.plot([0,P_p[i]],[0,A_p[i]],c=clrs[si][i],ls=":",marker=mrks[si][i])
-        # ax.set_rmax(2)
-        # ax.set_rticks([0.5, 1, 1.5, 2])  # Less radial ticks
-        # ax.set_rlabel_position(-22.5)  # Move radial labels away from plotted line
-        # ax.grid(True)
-        ax.legend()
-        plt.show()
+            # determine phase difference between methods
+            b_p_diff = P_b[0] - P_p[0]
+            P_b = P_b - b_p_diff
+            
+            num = 100
+            t = np.linspace(0.0,4.*np.pi,num=num)
+            r = np.linspace(0.0,2.0,num=num)
+            fig, ax = plt.subplots(1,2,figsize=(10,5),
+                subplot_kw={"projection" : "polar"})
+            for k in range(len(A_b)):
+                ax[1].plot([0,P_b[k]],[0,A_b[k]],c=clrs[si][k],
+                    marker=mrks[si][k],label=evecnames[si][j])
+                ax[0].plot([0,P_p[k]],[0,A_p[k]],c=clrs[si][k],
+                    marker=mrks[si][k],mfc="none")
+            # ax.set_rmax(2)
+            # ax.set_rticks([0.5, 1, 1.5, 2])  # Less radial ticks
+            ax[0].set_rlabel_position(60.0)
+            ax[0].grid(True)
+            ax[0].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
+            ax[0].set_xlabel("Phase Angle [deg]")
+            ax[0].text(np.deg2rad(80.0),0.4*max(A_p),"Amplitude",rotation=60.0)
+            ax[0].set_title("Traditional Dimensionless Form")
+            ax[1].set_rlabel_position(60.0)
+            ax[1].grid(True)
+            ax[1].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
+            ax[1].set_xlabel("Phase Angle [deg]")
+            ax[1].text(np.deg2rad(80.0),0.4*max(A_b),"Amplitude",rotation=60.0)
+            ax[1].set_title("Alternate Dimensionless Form")
+            ax[1].legend(bbox_to_anchor=(-0.05, 1.0), loc='upper right')
+            fig.suptitle(dyn.aircraft_name + " " + modenames[mo])
+            plt.tight_layout()
+            plt.savefig(file)#,dpi=300.0)
+            if show:
+                plt.show()
+            else:
+                plt.close()
 
 
 
