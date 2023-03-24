@@ -1,72 +1,7 @@
 {
     "aircraft" : {
-        "F-89" : {
-            "geometry/mass" : {
-                "S" : 606.0,
-                "b" : 59.7083333333,
-                "W" : 30500.0,
-                "m" : 947.0
-            },
-            "flight_condition" : {
-                "h" :  20000.0,
-                "M" :  0.638,
-                "a" : 1037.0,
-                "p" : 0.00127,
-                "Vto" : 660.0,
-                "qdyn" : 276.0
-            },
-            "longitudinal" : {
-                "Xw" : 0.0016,
-                "Xu" : -0.0097,
-                "Xde" : 0.0,
-                "Zw" : -1.43,
-                "Zwdot" : 0.0,
-                "Zu" : -0.0955,
-                "Zde" : -69.8,
-                "Mw" : -0.0235,
-                "Mwdot" : -0.0013,
-                "Mq" : -1.92,
-                "Mu" : 0.0,
-                "Mde" : -26.1
-            },
-            "lateral" : {
-                "Yv" : -0.0829,
-                "Ydastar" : ,
-                "Ydrstar" : ,
-                "Lbprime" : ,
-                "Lpprime" : ,
-                "Lrprime" : ,
-                "Ldaprime" : ,
-                "Ldrprime" : ,
-                "Nbprime" : ,
-                "Npprime" : ,
-                "Nrprime" : ,
-                "Ndaprime" : ,
-                "Ndrprime" : 
-            },
-            "other" : {
-                "name" : "F-89-no-inertia",
-                "short_name" : "F-89***",
-                "file_name" : "F-89_no_inertia.json",
-                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al.",
-                "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
-                "notes" : "No inertia data given",
-                "notes_2" : "S, b from wikipedia",
-                "notes_2_link" : "https://en.wikipedia.org/wiki/Northrop_F-89_Scorpion#Specifications_(F-89D)"
-            },
-            "handling_qualities" : {
-                "zt_sp" : "n/a",
-                "wn_sp" : "n/a",
-                "zt_ph" : "n/a",
-                "wn_ph" : "n/a",
-                "Sg_ro" : "n/a",
-                "Sg_sl" : "n/a",
-                "zt_dr" : "n/a",
-                "wn_dr" : "n/a"
-            }
-        }
     },
-    "Heffley_aircraft" : {
+    "Teper_aircraft" : {
         "A-7A" : {
             "geometry/mass" : {
                 "S" : 375.0,
@@ -123,7 +58,9 @@
             "other" : {
                 "name" : "A-7A",
                 "short_name" : "A-7A",
-                "file_name" : "A_7A.json"
+                "file_name" : "A_7A.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf"
             },
             "handling_qualities" : {
                 "zt_sp" : 0.367,
@@ -192,7 +129,9 @@
             "other" : {
                 "name" : "A-4D",
                 "short_name" : "A-4D",
-                "file_name" : "A_4D.json"
+                "file_name" : "A_4D.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf"
             },
             "handling_qualities" : {
                 "zt_sp" : 0.352,
@@ -262,6 +201,8 @@
                 "name" : "F-105B",
                 "short_name" : "F-105B",
                 "file_name" : "F_105B.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf",
                 "notes" : "Power Approach Clean, flight condition 4; hq data available"
             },
             "handling_qualities" : {
@@ -332,6 +273,8 @@
                 "name" : "Navion",
                 "short_name" : "Navion",
                 "file_name" : "navion.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf",
                 "notes" : "hq data available"
             },
             "handling_qualities" : {
@@ -402,6 +345,8 @@
                 "name" : "DC-8",
                 "short_name" : "DC-8",
                 "file_name" : "DC_8.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf",
                 "notes" : "hq data available"
             },
             "handling_qualities" : {
@@ -414,7 +359,9 @@
                 "zt_dr" : 0.1096,
                 "wn_dr" : 0.996
             }
-        },
+        }
+    },
+    "Heffley_aircraft" : {
         "X-15" : {
             "geometry/mass" : {
                 "S" : 200.0,
@@ -472,7 +419,7 @@
                 "name" : "X-15",
                 "short_name" : "X-15",
                 "file_name" : "X_15.json",
-                "from" : "NASA CR-2144 -- Heffley et al.",
+                "from" : "NASA CR-2144 -- Heffley et al. 1972",
                 "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
             },
             "handling_qualities" : {
@@ -543,7 +490,7 @@
                 "name" : "HL-10",
                 "short_name" : "HL-10",
                 "file_name" : "HL_10.json",
-                "from" : "NASA CR-2144 -- Heffley et al.",
+                "from" : "NASA CR-2144 -- Heffley et al. 1972",
                 "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
             },
             "handling_qualities" : {
@@ -558,7 +505,312 @@
             }
         }
     },
-    "unused" : {
+    "McRuer_aircraft" : {
+        "C-47" : {
+            "geometry/mass" : {
+                "S" : 987.0,
+                "b" : 95.0,
+                "W" : 23000.0,
+                "m" : 714.0,
+                "Ix" : 13635.0,
+                "Iy" : 58966.0,
+                "Iz" : 67560.0,
+                "Ixz" : 2933.0
+            },
+            "flight_condition" : {
+                "h" :  1000.0,
+                "M" :  0.122,
+                "a" : 1113.0,
+                "p" : 0.002309,
+                "Vto" : 136.0,
+                "qdyn" : 21.3,
+                "ao[deg]" : 0.0,
+                "Uo" : 136.0,
+                "Wo" : 0.0,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.115,
+                "Xu" : -0.0647,
+                "Xde" :0.0,
+                "Zw" : -1.235,
+                "Zwdot" : 0.0,
+                "Zu" : -0.476,
+                "Zde" : -0.712,
+                "Mw" : -0.011,
+                "Mwdot" : -0.00845,
+                "Mq" : -2.20,
+                "Mu" : 0.0,
+                "Mde" : -4.56
+            },
+            "lateral" : {
+                "Yv" : -0.0593,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.0405,
+                "Lbprime" : -2.12,
+                "Lpprime" : -6.63,
+                "Lrprime" : 2.65,
+                "Ldaprime" : 4.06,
+                "Ldrprime" : 0.073,
+                "Nbprime" : 0.983,
+                "Npprime" : -0.200,
+                "Nrprime" : -0.547,
+                "Ndaprime" : 0.047,
+                "Ndrprime" : -0.958
+            },
+            "other" : {
+                "name" : "C-47",
+                "short_name" : "C-47",
+                "file_name" : "C_47.json",
+                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
+                "notes" : [
+                    "flight condition 4701",
+                    "ao[deg], Uo, Wo, deo[deg], yo[deg] assumed"
+                ]
+            },
+            "handling_qualities" : {
+                "zt_sp" : 1.25,
+                "wn_sp" : 3.31,
+                "zt_ph" : 0.201,
+                "wn_ph" : 0.201,
+                "Sg_ro" : 6.57,
+                "Sg_sl" : -0.043,
+                "zt_dr" : 0.323,
+                "wn_dr" : 1.10
+            }
+        },
+        "XC-142" : {
+            "geometry/mass" : {
+                "S" : 534.0,
+                "b" : 67.5,
+                "W" : 37474.0,
+                "m" : 1163.8,
+                "Ix" : 173000.0,
+                "Iy" : 122000.0,
+                "Iz" : 267000.0,
+                "Ixz" : 7000.0
+            },
+            "flight_condition" : {
+                "h" :  0.0,
+                "M" :  0.1812,
+                "a" : 1117.0,
+                "p" : 0.002378,
+                "Vto" : 202.56,
+                "qdyn" : 48.8,
+                "ao[deg]" : 0.0,
+                "xcg/cbar" : 0.20,
+                "iw[deg]" : 1.25,
+                "Uo" : 202.56,
+                "Wo" : 0.0,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.060,
+                "Xu" : -0.22,
+                "Xde" : 0.120,
+                "XdT" : 130.0,
+                "Zw" : -0.85,
+                "Zwdot" : 0.0,
+                "Zu" : -0.15,
+                "Zde" : 4.58,
+                "ZdT" : -97.0,
+                "Mw" : -0.0095,
+                "Mwdot" : -0.00127,
+                "Mq" : -0.89,
+                "Mu" : 0.01,
+                "Mde" : 1.195,
+                "MdT" : -5.08
+            },
+            "lateral" : {
+                "Yv" : -0.175,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.00464,
+                "Lbprime" : -1.91,
+                "Lpprime" : -0.855,
+                "Lrprime" : 0.559,
+                "Ldaprime" : -0.193,
+                "Ldrprime" : 0.0913,
+                "Nbprime" : 0.580,
+                "Npprime" : -0.116,
+                "Nrprime" : -0.565,
+                "Ndaprime" : -0.0266,
+                "Ndrprime" : -0.132
+            },
+            "other" : {
+                "name" : "XC-142",
+                "short_name" : "XC-142",
+                "file_name" : "XC_142.json",
+                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
+                "notes" : "flight condition 1422"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.624,
+                "wn_sp" : 1.60,
+                "zt_ph" : 0.306,
+                "wn_ph" : 0.352,
+                "Sg_ro" : 1.161,
+                "Sg_sl" : 0.1236,
+                "zt_dr" : 0.1699,
+                "wn_dr" : 0.914
+            }
+        },
+        "VZ-4" : {
+            "geometry/mass" : {
+                "S" : 111.50981405,
+                "b" : 25.5,
+                "W" : 3100.0,
+                "m" : 96.351,
+                "Ix" : 1990.0,
+                "Iy" : 1790.0,
+                "Iz" : 3450.0,
+                "Ixz" : -247.971
+            },
+            "flight_condition" : {
+                "h" : 0.0,
+                "M" : 0.0,
+                "a" : 0.0,
+                "p" : 0.0023769,
+                "Vto" : 126.6,
+                "qdyn" : 19.047953682,
+                "ao[deg]" : 0.0,
+                "Uo" : 126.6,
+                "Wo" : 0.0,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : 0.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.015,
+                "Xu" : -0.21,
+                "Xde" : 0.0,
+                "XdT" : 0.914,
+                "Zw" : -0.718,
+                "Zwdot" : 0.0,
+                "Zu" : -0.345,
+                "Zde" : 1.0,
+                "ZdT" : -0.406,
+                "Mw" : -0.082,
+                "Mwdot" : 0.0,
+                "Mq" : -1.839,
+                "Mu" : 0.0107,
+                "Mde" : 0.775,
+                "MdT" : 0.0
+            },
+            "lateral" : {
+                "Yv" : -0.333,
+                "Ydastar" : -0.002462691,
+                "Ydrstar" : 0.000435316,
+                "Lbprime" : -0.0158,
+                "Lpprime" : -0.677,
+                "Lrprime" : 0.807,
+                "Ldaprime" : 0.979,
+                "Ldrprime" : 0.126,
+                "Nbprime" : 0.0184,
+                "Npprime" : 0.0596,
+                "Nrprime" : -1.19,
+                "Ndaprime" : -0.0571,
+                "Ndrprime" : -2.213
+            },
+            "other" : {
+                "name" : "VZ-4",
+                "short_name" : "VZ-4",
+                "file_name" : "VZ_4.json",
+                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
+                "notes" : [
+                    "flight condition Uo = 126.6 ft/s",
+                    "b from the link below (S calced from schematic in book)",
+                    "https://en.wikipedia.org/wiki/Doak_VZ-4#Specifications"
+                ]
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.374,
+                "wn_sp" : 3.404,
+                "zt_ph" : 0.346,
+                "wn_ph" : 0.316,
+                "Sg_ro" : 0.796,
+                "Sg_sl" : 0.062,
+                "zt_dr" : 0.421,
+                "wn_dr" : 1.59
+            }
+        },
+        "F.2B" : {
+            "geometry/mass" : {
+                "S" : 405.0,
+                "b" : 40.0,
+                "W" : 3090.0,
+                "m" : 96.0,
+                "Ix" : 2600.0,
+                "Iy" : 1925.0,
+                "Iz" : 4100.0,
+                "Ixz" : 0.0
+            },
+            "flight_condition" : {
+                "h" : 6000.0,
+                "M" : 0.126,
+                "a" : 1094.0,
+                "p" : 0.0020,
+                "Vto" : 138.0,
+                "qdyn" : 19.05,
+                "ao[deg]" : 3.0,
+                "Uo" : 138.0,
+                "Wo" : 7.24,
+                "deo[deg]" : 0.0,
+                "yo[deg]"  : -10.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.1765,
+                "Xu" : -0.0471,
+                "Xde" : 0.0,
+                "Zw" : -2.06,
+                "Zwdot" : 0.0,
+                "Zu" : -0.353,
+                "Zde" : 0.0,
+                "Mw" : -0.016,
+                "Mwdot" : -0.00768,
+                "Mq" : -2.24,
+                "Mu" : 0.000684,
+                "Mde" : -12.0
+            },
+            "lateral" : {
+                "Yv" : -0.176,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.0,
+                "Lbprime" : -4.50,
+                "Lpprime" : -7.17,
+                "Lrprime" : 2.06,
+                "Ldaprime" : 26.1,
+                "Ldrprime" : 0.0,
+                "Nbprime" : 1.55,
+                "Npprime" : -0.436,
+                "Nrprime" : -0.341,
+                "Ndaprime" : -1.66,
+                "Ndrprime" : 1.30
+            },
+            "other" : {
+                "name" : "F.2B",
+                "short_name" : "F.2B",
+                "file_name" : "F_2B.json",
+                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
+                "notes" : "flight condition 0001"
+            },
+            "handling_qualities" : {
+                "zt_sp" : 2.08,
+                "wn_sp" : 3.25,
+                "zt_ph" : 0.197,
+                "wn_ph" : 0.183,
+                "Sg_ro" : 7.07,
+                "Sg_sl" : -0.000836,
+                "zt_dr" : 0.215,
+                "wn_dr" : 1.44
+            }
+        }
+    },
+    "Teper_incomplete" : {
         "F-106B" : {
             "geometry/mass" : {
                 "S" : 695.0,
@@ -616,6 +868,8 @@
                 "name" : "F-106B-lateral-only",
                 "short_name" : "F106**",
                 "file_name" : "F_106B_lateral_only.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf",
                 "notes" : "flight condition 4"
             },
             "handling_qualities" : {
@@ -685,7 +939,9 @@
             "other" : {
                 "name" : "T-38-lateral-only",
                 "short_name" : "T38***",
-                "file_name" : "T_38_lateral_only.json"
+                "file_name" : "T_38_lateral_only.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf"
             },
             "handling_qualities" : {
                 "zt_sp" : "n/a",
@@ -755,6 +1011,8 @@
                 "name" : "F-5A-longitudinal-only",
                 "short_name" : "***F5A",
                 "file_name" : "F_5A_longitudinal_only.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf",
                 "notes" : "at 50% fuel, config II, flight condition 13; has thrust"
             },
             "handling_qualities" : {
@@ -825,6 +1083,8 @@
                 "name" : "B-58-lateral-only",
                 "short_name" : "B58***",
                 "file_name" : "B_58_lateral_only.json",
+                "from" : "NASA CR-96008 -- Teper, Gary L. 1969",
+                "file" : "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf",
                 "notes" : "No alpha given, cannot determine the rest"
             },
             "handling_qualities" : {
@@ -847,6 +1107,75 @@
             "Sg_sl" : 0.0,
             "zt_dr" : 0.0,
             "wn_dr" : 0.0
+        }
+    },
+    "McRuer_incomplete" : {
+        "F-89" : {
+            "geometry/mass" : {
+                "S" : 606.0,
+                "b" : 59.7083333333,
+                "W" : 30500.0,
+                "m" : 947.0
+            },
+            "flight_condition" : {
+                "h" :  20000.0,
+                "M" :  0.638,
+                "a" : 1037.0,
+                "p" : 0.00127,
+                "Vto" : 660.0,
+                "qdyn" : 276.0
+            },
+            "longitudinal" : {
+                "Xw" : 0.0016,
+                "Xu" : -0.0097,
+                "Xde" : 0.0,
+                "Zw" : -1.43,
+                "Zwdot" : 0.0,
+                "Zu" : -0.0955,
+                "Zde" : -69.8,
+                "Mw" : -0.0235,
+                "Mwdot" : -0.0013,
+                "Mq" : -1.92,
+                "Mu" : 0.0,
+                "Mde" : -26.1
+            },
+            "lateral" : {
+                "Yv" : -0.0829,
+                "Ydastar" : 0.0,
+                "Ydrstar" : 0.0116,
+                "Lbprime" : -4.55,
+                "Lpprime" : -1.70,
+                "Lrprime" : 0.172,
+                "Ldaprime" : 27.3,
+                "Ldrprime" : 0.576,
+                "Nbprime" : 3.38,
+                "Npprime" : -0.0654,
+                "Nrprime" : -0.0893,
+                "Ndaprime" : 0.395,
+                "Ndrprime" : -1.36
+            },
+            "other" : {
+                "name" : "F-89-no-inertia",
+                "short_name" : "F-89***",
+                "file_name" : "F_89_no_inertia.json",
+                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
+                "notes" : [
+                    "No inertia data given",
+                    "S, b from wikipedia",
+                    "https://en.wikipedia.org/wiki/Northrop_F-89_Scorpion#Specifications_(F-89D)"
+                ]
+            },
+            "handling_qualities" : {
+                "zt_sp" : 0.493,
+                "wn_sp" : 4.27,
+                "zt_ph" : 0.0714,
+                "wn_ph" : 0.0630,
+                "Sg_ro" : 1.78,
+                "Sg_sl" : -0.00135,
+                "zt_dr" : 0.0247,
+                "wn_dr" : 1.88
+            }
         }
     }
 }

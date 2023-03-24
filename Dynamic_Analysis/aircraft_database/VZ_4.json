@@ -1,0 +1,88 @@
+{
+    "aircraft": {
+        "name": "VZ-4",
+        "short_name": "VZ-4",
+        "wing_area[ft^2]": 111.50981405,
+        "wing_span[ft]": 25.5,
+        "weight[lbf]": 3100.0,
+        "Ixx[slug-ft^2]": 1990.0,
+        "Iyy[slug-ft^2]": 1790.0,
+        "Izz[slug-ft^2]": 3450.0,
+        "Ixz[slug-ft^2]": -247.971,
+        "Ixy[slug-ft^2]": 0.0,
+        "Iyz[slug-ft^2]": 0.0,
+        "from": "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+        "file": "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
+        "notes": [
+            "flight condition Uo = 126.6 ft/s",
+            "b from the link below (S calced from schematic in book)",
+            "https://en.wikipedia.org/wiki/Doak_VZ-4#Specifications"
+        ]
+    },
+    "analysis": {
+        "density[slugs/ft^3]": 0.00237689261479
+    },
+    "aerodynamics": {
+        "CL": {
+            "0": 0.9906440001734484,
+            "alpha": 3.520375490471443,
+            "qbar": 0.0,
+            "alpha_hat": 0.0,
+            "mu_hat": 0.0,
+            "de": -0.0453622730578313
+        },
+        "CS": {
+            "beta": -1.9123736351174399,
+            "pbar": 0.0,
+            "Lpbar": 0.0,
+            "rbar": 0.0,
+            "da": -0.01414289891844145,
+            "dr": 0.002499960484518869
+        },
+        "CD": {
+            "L0": 0.47573607093938414,
+            "L": 0.0,
+            "L2": 0.12967984249580664,
+            "qbar": 0.0,
+            "Lqbar": 0.0,
+            "L2qbar": 0.0,
+            "alpha_hat": 0.0,
+            "mu_hat": 0.0,
+            "de": 0.0
+        },
+        "Cl": {
+            "beta": -0.0004962687161893329,
+            "pbar": -0.24427169517470548,
+            "rbar": 0.24031069643416683,
+            "Lrbar": 0.0,
+            "da": 0.03570806291501116,
+            "dr": -0.005502290985338352
+        },
+        "Cm": {
+            "0": 0.0,
+            "alpha": -2.000627618598327,
+            "qbar": -20.52065511106031,
+            "alpha_hat": 0.0,
+            "mu_hat": 0.0,
+            "de": 0.14935521947498395
+        },
+        "Cn": {
+            "beta": 0.001099684486095605,
+            "pbar": 0.00691935516607198,
+            "Lpbar": 0.0,
+            "rbar": -0.7159555229476852,
+            "da": 0.0008450183017261097,
+            "dr": -0.14038412084444435
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": 0.374,
+        "wn_sp": 3.404,
+        "zt_ph": 0.346,
+        "wn_ph": 0.316,
+        "Sg_ro": 0.796,
+        "Sg_sl": 0.062,
+        "zt_dr": 0.421,
+        "wn_dr": 1.59
+    }
+}

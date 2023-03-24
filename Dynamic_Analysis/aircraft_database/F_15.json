@@ -1,0 +1,82 @@
+{
+    "aircraft" : {
+        "name" : "F-15",
+        "short_name" : "F-15",
+        "wing_area[ft^2]" : 608.0,
+        "wing_span[ft]" : 42.8,
+        "weight[lbf]" : 35900.0,
+        "Ixx[slug-ft^2]" : 25500.0,
+        "Iyy[slug-ft^2]" : 166600.0,
+        "Izz[slug-ft^2]" : 187000.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : -1000.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "Automatic Control of Aircraft and Missiles -- Blakelock 1991",
+        "notes" : "configuration 1"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 1.26725882157e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.24,
+            "alpha" : 4.17,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.4
+        },
+        "CS" : {
+            "beta" : -0.92,
+            "pbar" : 0.14,
+			"Lpbar": 0.0,
+            "rbar" : 0.3,
+            "da" : -0.01,
+            "dr" : 0.19
+        },
+        "CD" : {
+            "L0" : 0.03992805755395684,
+            "L" : 0.0,
+            "L2" : 0.17486011191047163,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.086,
+            "pbar" : -0.27,
+            "rbar" : 0.065,
+			"Lrbar": 0.0,
+            "da" : 0.048,
+            "dr" : 0.007
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.29,
+            "qbar" : -3.99668356336261,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : -0.5
+        },
+        "Cn" : {
+            "beta" : 0.17,
+            "pbar" : -0.055,
+			"Lpbar": 0.0,
+            "rbar" : -0.275,
+            "da" : 0.013,
+            "dr" : -0.092
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": "n/a",
+        "wn_sp": "n/a",
+        "zt_ph": "n/a",
+        "wn_ph": "n/a",
+        "Sg_ro": "n/a",
+        "Sg_sl": "n/a",
+        "zt_dr": "n/a",
+        "wn_dr": "n/a"
+    }
+}

@@ -11,8 +11,7 @@
         "Ixy[slug-ft^2]" : ,
         "Ixz[slug-ft^2]" : ,
         "Iyz[slug-ft^2]" : ,
-        "from" : "NASA CR-2144 -- Heffley et al.",
-        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+        "from" : "Airplane Aerodynamics and Performance -- Roskam 1982"
     },
     "analysis" : {
         "density[slugs/ft^3]" : 2.37689261479e-03

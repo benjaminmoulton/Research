@@ -11,7 +11,7 @@
         "Ixy[slug-ft^2]" : 0.0,
         "Ixz[slug-ft^2]" : 0.0,
         "Iyz[slug-ft^2]" : 0.0,
-        "from" : "NASA CR-2144 -- Heffley et al.",
+        "from" : "NASA CR-2144 -- Heffley et al. 1972",
         "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
     },
     "analysis" : {

@@ -365,8 +365,13 @@ class Solver:
         self.p["drSg"] = - self.vo / self.bw * (Ry_b + Rn_rbar - RDRc + RDRp)
         self.p["drt99"] = np.log(0.01) / - self.p["drSg"]
         self.p["drt2x"] = np.log(2.0) / - self.p["drSg"]
-        self.p["drWD"] = 2. * self.vo / self.bw * np.sqrt( (1.-Ry_rbar)*Rn_b +\
-            Ry_b * Rn_rbar + RDRs - 0.25*( Ry_b + Rn_rbar)**2. )
+
+        a = (1.-Ry_rbar)*Rn_b 
+        b = Ry_b * Rn_rbar 
+        c = RDRs 
+        d = - 0.25*( Ry_b + Rn_rbar)**2.
+        e = complex(a + b + c + d)
+        self.p["drWD"] = np.abs(2. * self.vo / self.bw * np.sqrt( e ))
         self.p["drT"] = 2. * np.pi / self.p["drWD"]
 
         # print("A matrix")
@@ -1553,21 +1558,34 @@ if __name__ == "__main__":
     # plt.rcParams["mathtext.fontset"] = "dejavuserif"
 
     # Convair 990 https://www.nasa.gov/centers/dryden/pdf/87810main_H-693.pdf
+    # some aircraft (plots, not values) in "" by Edward Seckel
 
+    # Order:
+    # Cessna book
+    # Our F16
+    # Teper
+    # Heffley
+    # McRuer
+    # Blakelock
+    # Phillips
     run_files = [
-    # Class I
-    "Cessna_172.json",
-    "navion.json",
-    # Class II
-    "X_15.json", "HL_10.json", "Lockheed_Jetstar.json", "Convair_880M.json", 
-    "F_105B.json", "DC_8.json",
-    # Class III
-    "boeing_747.json", "C_5A.json", "XB_70A.json",
-    # Class IV
-    "F16_bolander.json",
-    "NT_33A.json", "F_104A.json", "F_4C.json",
-    "A_7A.json", "A_4D.json",
+    ### Class I -- small light
+    # "Cessna_172.json",
+    # "navion.json",
+    "VZ_4.json", "F_2B.json",
+    ### Class II -- medium-weight, low-to-medium maneuverability
+    # "X_15.json", "HL_10.json", "Lockheed_Jetstar.json", "Convair_880M.json", 
+    # "F_105B.json",
+    "C_47.json", "XC_142.json",
+    ### Class III -- large, heavy, low-to-medium maneuverability
+    # "boeing_747.json", "C_5A.json", "XB_70A.json",
+    # "DC_8.json",
     # "9_8_2.json"
+    ### Class IV -- high-maneuverability
+    # "F16_bolander.json",
+    # "NT_33A.json", "F_104A.json", "F_4C.json",
+    # "A_7A.json", "A_4D.json",
+    "F_94A.json", "F_15.json",
     ]
     run_files = ["aircraft_database/" + i for i in run_files]
     num_craft = len(run_files)
@@ -1612,6 +1630,11 @@ if __name__ == "__main__":
     show = False
     print("plotting...")
 
+    # for plotting    
+    num = 100
+    t = np.linspace(0.0,4.*np.pi,num=num)
+    r = np.linspace(0.0,2.0,num=num)
+
     for i in range(num_craft):
         dyn = eigensolved[i]
         print(" "*11 + dyn.aircraft_name + "...")
@@ -1641,10 +1664,8 @@ if __name__ == "__main__":
             # determine phase difference between methods
             b_p_diff = P_b[0] - P_p[0]
             P_b = P_b - b_p_diff
-            
-            num = 100
-            t = np.linspace(0.0,4.*np.pi,num=num)
-            r = np.linspace(0.0,2.0,num=num)
+
+            # plot
             fig, ax = plt.subplots(1,2,figsize=(10,5),
                 subplot_kw={"projection" : "polar"})
             for k in range(len(A_b)):

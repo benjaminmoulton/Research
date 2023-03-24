@@ -11,7 +11,8 @@
         "Ixy[slug-ft^2]" : 0.0,
         "Ixz[slug-ft^2]" : 0.0,
         "Iyz[slug-ft^2]" : 0.0,
-        "from" : "Airplane Aerodynamics and Performance -- Roskam"
+        "from" : "Airplane Aerodynamics and Performance -- Roskam 1982",
+        "from_this_link" : "https://groups.google.com/g/sci.aeronautics/c/69ECYNDKIJA"
     },
     "analysis" : {
         "density[slugs/ft^3]" : 2.04817262048e-03

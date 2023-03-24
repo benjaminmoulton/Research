@@ -1,0 +1,81 @@
+{
+    "aircraft" : {
+        "name" : "F-94A",
+        "short_name" : "F-94A",
+        "wing_area[ft^2]" : 239.0,
+        "wing_span[ft]" : 37.3,
+        "weight[lbf]" : 13614.0,
+        "Ixx[slug-ft^2]" : 11029.0,
+        "Iyy[slug-ft^2]" : 26543.0,
+        "Izz[slug-ft^2]" : 36801.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : -790.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "Automatic Control of Aircraft and Missiles -- Blakelock 1991",
+        "notes" : "configuration cruise 4, no tanks"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 1.64796117454e-03
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.385,
+            "alpha" : 5.27,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.43
+        },
+        "CS" : {
+            "beta" : -0.546,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.287,
+            "dr" : 0.149
+        },
+        "CD" : {
+            "L0" : 0.014407020872865278,
+            "L" : 0.0,
+            "L2" : 0.07146553636117203,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : -0.0654,
+            "pbar" : -0.39,
+            "rbar" : 0.115,
+			"Lrbar": 0.0,
+            "da" : -0.114,
+            "dr" : 0.0057
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : -0.44,
+            "qbar" : -8.448,
+            "alpha_hat" : -4.2768,
+            "mu_hat" : 0.0,
+            "de" : -0.934
+        },
+        "Cn" : {
+            "beta" : 0.1,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : -0.134,
+            "da" : 0.0057,
+            "dr" : -0.069
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": "n/a",
+        "wn_sp": "n/a",
+        "zt_ph": "n/a",
+        "wn_ph": "n/a",
+        "Sg_ro": "n/a",
+        "Sg_sl": "n/a",
+        "zt_dr": "n/a",
+        "wn_dr": "n/a"
+    }
+}
