@@ -1570,21 +1570,21 @@ if __name__ == "__main__":
     # Phillips
     run_files = [
     ### Class I -- small light
-    # "Cessna_172.json",
-    # "navion.json",
-    "VZ_4.json", "F_2B.json",
+    "Cessna_172.json",
+    "navion.json",
+    "F_2B.json", #"VZ_4.json",
     ### Class II -- medium-weight, low-to-medium maneuverability
-    # "X_15.json", "HL_10.json", "Lockheed_Jetstar.json", "Convair_880M.json", 
-    # "F_105B.json",
-    "C_47.json", "XC_142.json",
+    "X_15.json", "HL_10.json", "Lockheed_Jetstar.json", "Convair_880M.json", 
+    "F_105B.json",
+    "C_47.json", #"XC_142.json",
     ### Class III -- large, heavy, low-to-medium maneuverability
-    # "boeing_747.json", "C_5A.json", "XB_70A.json",
-    # "DC_8.json",
-    # "9_8_2.json"
+    "boeing_747.json", "C_5A.json", "XB_70A.json",
+    "DC_8.json",
+    # "9_8_2.json",
     ### Class IV -- high-maneuverability
-    # "F16_bolander.json",
-    # "NT_33A.json", "F_104A.json", "F_4C.json",
-    # "A_7A.json", "A_4D.json",
+    "F16_bolander.json",
+    "NT_33A.json", "F_104A.json", "F_4C.json",
+    "A_7A.json", "A_4D.json",
     "F_94A.json", "F_15.json",
     ]
     run_files = ["aircraft_database/" + i for i in run_files]
@@ -1670,7 +1670,7 @@ if __name__ == "__main__":
                 subplot_kw={"projection" : "polar"})
             for k in range(len(A_b)):
                 ax[1].plot([0,P_b[k]],[0,A_b[k]],c=clrs[si][k],
-                    marker=mrks[si][k],label=evecnames[si][j])
+                    marker=mrks[si][k],label=evecnames[si][k])
                 ax[0].plot([0,P_p[k]],[0,A_p[k]],c=clrs[si][k],
                     marker=mrks[si][k],mfc="none")
             # ax.set_rmax(2)

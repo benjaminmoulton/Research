@@ -118,6 +118,7 @@ class Comparison:
             zelf.CY_pbar    = CY.get("Lpbar") * zelf.CL0 + \
                 CY.get("pbar")
             zelf.CY_rbar    = CY.get("rbar")
+            zelf.CY_da      = CY.get("da",0.0)
             CD = aero.get("CD")
             zelf.CD0        = CD.get("L0")
             zelf.CD1        = CD.get("L")
@@ -288,7 +289,7 @@ class Comparison:
         # create ratios names list
         self.ratios_names = [
             ["Kl,b","-Kl,b*Kn,p","Kl,b*Ky,r*Kn,p","-KY,b*Kl,r*Kn,p"],
-            ["Kn,b","-Ky,r*Kn,b","Ky,b*Kn,r"],
+            ["Kn,b","Ky,r*Kn,b","Ky,b*Kn,r"],
             ["Kl,r*Kn,b","-Kl,b*Kn,r"],
             ["Kn,b","Ky,b*Kn,r"],
             ["-Kl,b*(1-Kn,p)/Kl,p","(Kl,r*Kn,b-Kl,b*Kn,r)/(Kn,b+Ky,b*Kn,r)","-Kl,r*Kn,p"],
@@ -319,6 +320,12 @@ class Comparison:
             ["l,b*n,p","l,b*n,r","-l,p*n,b","-l,r*n,b"],
             ["-Kz,mu","Frac"],
             ["2*Lo/W*lnp/lmp","-Do**2/W**2"],
+            ["1","Ky,r"],
+            ["CS,pbar","CS,rbar","CS,da"],
+            ["CW","CS,rbreve"],
+            ["Kn,pbreve","Kl,pbreve"],
+            ["hnp_l/bw","lnp_m/cwbar","lnp_n/bw"],
+            ["hnp_l","lnp_m","lnp_n"],
         ]
         self.num_ratios = len(self.ratios_names)
         self.ratlen = [len(self.ratios_names[i]) for i in range(self.num_ratios)]
@@ -350,7 +357,7 @@ class Comparison:
                     g+=1;ratios[i,j,g] = -zelf.Ky_b*zelf.Kl_rbreve*zelf.Kn_pbreve
                 elif i == 1:
                     g+=1;ratios[i,j,g] = zelf.Kn_b
-                    g+=1;ratios[i,j,g] = -zelf.Ky_rbreve * zelf.Kn_b
+                    g+=1;ratios[i,j,g] = zelf.Ky_rbreve * zelf.Kn_b
                     g+=1;ratios[i,j,g] = zelf.Ky_b * zelf.Kn_rbreve
                 elif i == 2:
                     g+=1;ratios[i,j,g] = zelf.Kl_rbreve * zelf.Kn_b
@@ -392,7 +399,7 @@ class Comparison:
                     b = -zelf.Kl_b * (1. - zelf.Kn_pbreve) / zelf.Kl_pbreve
                     c = -zelf.Kl_rbreve * zelf.Kn_pbreve
                     A = 0.5 * (zelf.Ky_b+zelf.Kn_rbreve)/zelf.Kl_pbreve*(a+b+c)
-                    B = 0.25/zelf.Kl_pbreve**2. * (a+b+c)
+                    B = 0.25/zelf.Kl_pbreve**2. * (a+b+c)**2.
                     C = zelf.Kn_b
                     D = zelf.Ky_b * zelf.Kn_rbreve
                     E =  zelf.Kl_b / zelf.Kl_pbreve
@@ -492,7 +499,7 @@ class Comparison:
                     Aa = 0.5 * (zelf.Ky_b+zelf.Kn_rbreve)/zelf.Kl_pbreve*(a)
                     Ab = 0.5 * (zelf.Ky_b+zelf.Kn_rbreve)/zelf.Kl_pbreve*(b)
                     Ac = 0.5 * (zelf.Ky_b+zelf.Kn_rbreve)/zelf.Kl_pbreve*(c)
-                    B = 0.25/zelf.Kl_pbreve**2. * (a+b+c)
+                    B = 0.25/zelf.Kl_pbreve**2. * (a+b+c)**2.
                     C = zelf.Kn_b
                     D = zelf.Ky_b * zelf.Kn_rbreve
                     E =  zelf.Kl_b / zelf.Kl_pbreve
@@ -533,6 +540,27 @@ class Comparison:
                 elif i == 31:
                     g+=1;ratios[i,j,g] = 2.*zelf.Lo/zelf.W*zelf.l_np/zelf.l_mp
                     g+=1;ratios[i,j,g] = -zelf.Do**2./zelf.W**2.
+                elif i == 32:
+                    g+=1;ratios[i,j,g] = 1.0
+                    g+=1;ratios[i,j,g] = zelf.Ky_rbreve
+                elif i == 33:
+                    g+=1;ratios[i,j,g] = zelf.CY_pbar
+                    g+=1;ratios[i,j,g] = zelf.CY_rbar
+                    g+=1;ratios[i,j,g] = zelf.CY_da
+                elif i == 34:
+                    g+=1;ratios[i,j,g] = zelf.CW
+                    g+=1;ratios[i,j,g] = zelf.CY_rbar * zelf.g*zelf.bw/2./zelf.vo**2.
+                elif i == 35:
+                    g+=1;ratios[i,j,g] = zelf.Kn_pbreve
+                    g+=1;ratios[i,j,g] = zelf.Kl_pbreve
+                elif i == 36:
+                    g+=1;ratios[i,j,g] =   zelf.l_b / zelf.bw    / zelf.Y_b
+                    g+=1;ratios[i,j,g] = - zelf.m_a / zelf.cwbar / zelf.L_a
+                    g+=1;ratios[i,j,g] = - zelf.n_b / zelf.bw    / zelf.Y_b
+                elif i == 37:
+                    g+=1;ratios[i,j,g] =   zelf.l_b / zelf.Y_b
+                    g+=1;ratios[i,j,g] = - zelf.m_a / zelf.L_a
+                    g+=1;ratios[i,j,g] = - zelf.n_b / zelf.Y_b
                 
         
         # take absolute value
@@ -619,12 +647,33 @@ class Comparison:
 if __name__ == "__main__":
 
     # compare general aviation, RC glider, and fighter aircraft
-    run_files = ["F16_bolander.json",
-    "NT_33A.json","F_104A.json","F_4C.json","X_15.json","HL_10.json",
-    "Lockheed_Jetstar.json","Convair_880M.json","boeing_747.json","C_5A.json",
-    "XB_70A.json",
-    "A_7A.json", "A_4D.json", "F_105B.json", "navion.json", "DC_8.json",
-    "Cessna_172.json"]
+    # Order:
+    # Cessna book
+    # Our F16
+    # Teper
+    # Heffley
+    # McRuer
+    # Blakelock
+    # Phillips
+    run_files = [
+    ### Class I -- small light
+    "Cessna_172.json",
+    "navion.json",
+    "F_2B.json", #"VZ_4.json",
+    ### Class II -- medium-weight, low-to-medium maneuverability
+    "X_15.json", "HL_10.json", "Lockheed_Jetstar.json", "Convair_880M.json", 
+    "F_105B.json",
+    "C_47.json", #"XC_142.json",
+    ### Class III -- large, heavy, low-to-medium maneuverability
+    "boeing_747.json", "C_5A.json", "XB_70A.json",
+    "DC_8.json",
+    # "9_8_2.json",
+    ### Class IV -- high-maneuverability
+    "F16_bolander.json",
+    "NT_33A.json", "F_104A.json", "F_4C.json",
+    "A_7A.json", "A_4D.json",
+    "F_94A.json", "F_15.json",
+    ]
     run_files = ["aircraft_database/" + i for i in run_files]
     Comparison(run_files)
 
