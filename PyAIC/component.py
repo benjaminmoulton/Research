@@ -543,52 +543,56 @@ class Prismoid(Component):
 
     def _get_lanham_mass_properties(self):
 
-        # determine properties for later use
-        b = self._b
-        c, ct = self._cr, self._ct
-        tr, tt = self._cr*self._tr, self._ct*self._tt
-        LL = np.arctan( np.tan(self._Lambda) + 0.25 / b * ( c - ct ) )
-        LT = np.arctan( np.tan(self._Lambda) - 0.75 / b * ( c - ct ) )
-        tLL, tLT = np.tan(LL), np.tan(LT)
-        ca = self._cr
-        cb = np.tan(self._Lambda) + 0.25 * ( c - ct )
-        cc = cb + ct
+        # # determine properties for later use
+        # b = self._b
+        # c, ct = self._cr, self._ct
+        # tr, tt = self._cr*self._tr, self._ct*self._tt
+        # LL = np.arctan( np.tan(self._Lambda) + 0.25 / b * ( c - ct ) )
+        # LT = np.arctan( np.tan(self._Lambda) - 0.75 / b * ( c - ct ) )
+        # tLL, tLT = np.tan(LL), np.tan(LT)
+        # ca = self._cr
+        # cb = np.tan(self._Lambda) + 0.25 * ( c - ct )
+        # cc = cb + ct
 
-        # save mass
-        m = self.mass
-        self.mass_lanham = m
+        # # save mass
+        # m = self.mass
+        # self.mass_lanham = m
 
-        # calculate volume
-        V = b * ( tr*(c + b/2.*(tLT-tLL)) - (tr-tt)*(c/2. + b/3.*(tLT-tLL)) )
-        self.volume_lanham = V
+        # # calculate volume
+        # V = b * ( tr*(c + b/2.*(tLT-tLL)) - (tr-tt)*(c/2. + b/3.*(tLT-tLL)) )
+        # self.volume_lanham = V
 
-        # calculate cg location
-        xcg = 2 * b * (-ca**2. + cb**2. + cc*cb + cc**2.) / (-ca + cb + cc)
-        ycg = b**2./V*(tr*(c/2.+b/3.*(tLT-tLL)) -(tr-tt)*(c/3.+b/4.*(tLT-tLL)))
-        self.cg_location_lanham = np.array([
-            [xcg],
-            [self._delta * ycg],
-            [0.0]
-        ])
+        # # calculate cg location
+        # xcg = 2 * b * (-ca**2. + cb**2. + cc*cb + cc**2.) / (-ca + cb + cc)
+        # ycg = b**2./V*(tr*(c/2.+b/3.*(tLT-tLL)) -(tr-tt)*(c/3.+b/4.*(tLT-tLL)))
+        # self.cg_location_lanham = np.array([
+        #     [xcg],
+        #     [self._delta * ycg],
+        #     [0.0]
+        # ])
         # print(xcg,1/(-ca + cb + cc))
 
         # calculate inertia tensor
-        Ixx = m * b**3. / V * ( (tr-tt) * (c / 4. + b / 5. * (tLT-tLL)) \
-            + tr * (c / 3. + b / 4. * (tLT-tLL)) )
+        # Ixx = m * b**3. / V * ( (tr-tt) * (c / 4. + b / 5. * (tLT-tLL)) \
+        #     + tr * (c / 3. + b / 4. * (tLT-tLL)) )
         
-        Iyy = m * b / V * ( tr * (c**3. / 3. + b * c * tLT*(c/2. + b/3. * tLT)\
-            + b**3. / 12. * (tLT**3. - tLL**3.)) \
-                - (tr-tt) * (c**3. / 6. + b * c * tLT * (c /3. + b /4. * tLT) \
-                    + b**3. / 15 * (tLT**3. - tLL**3.)) )
+        # Iyy = m * b / V * ( tr * (c**3. / 3. + b * c * tLT*(c/2. + b/3. * tLT)\
+        #     + b**3. / 12. * (tLT**3. - tLL**3.)) \
+        #         - (tr-tt) * (c**3. / 6. + b * c * tLT * (c /3. + b /4. * tLT) \
+        #             + b**3. / 15 * (tLT**3. - tLL**3.)) )
         
-        Izz = Ixx + Iyy
+        # Izz = Ixx + Iyy
 
-        one = c**2.*b**2./4. + c*b**3./3.*tLT + b**4./ 8.*(tLT**2. - tLL**2.)
-        two = c**2.*b**2./6. + c*b**3./4.*tLT + b**4./10.*(tLT**2. - tLL**2.)
-        thr = m / V * tr      * np.sin(self._Gamma) * one
-        fou = m / V * (tr-tt) * np.sin(self._Gamma) * two
-        Ixz = thr - fou
+        # one = c**2.*b**2./4. + c*b**3./3.*tLT + b**4./ 8.*(tLT**2. - tLL**2.)
+        # two = c**2.*b**2./6. + c*b**3./4.*tLT + b**4./10.*(tLT**2. - tLL**2.)
+        # thr = m / V * tr      * np.sin(self._Gamma) * one
+        # fou = m / V * (tr-tt) * np.sin(self._Gamma) * two
+        # Ixz = thr - fou
 
+        self.mass_lanham = self.mass
+        self.volume_lanham = 1.0
+        self.cg_location_lanham = np.zeros((3,1))
+        Ixx = Iyy = Izz = Ixz = 0.0
         Ixy = 0.0
         Iyz = 0.0
 
@@ -1046,7 +1050,7 @@ class Rotor(Component):
             [1./3., -7./3., 0., 0.]
         ])
         self._yd = -14.*np.matmul(np.matmul(Dd,C).T,np.matmul(Ad + 60.*ln*Bd,T))[0,0]
-
+        
         De = np.diag([1., 6., 5., 20., 15., 2., 1.])
         Ae = np.array([
             [168., 84., 35., 10.],
@@ -1067,7 +1071,7 @@ class Rotor(Component):
             [-1., 0., 0., 0.]
         ])
         self._ye = 28.*np.matmul(np.matmul(De,C).T,np.matmul(Ae + 60.*ln*Be,T))[0,0]
-
+        
         Df = np.diag([1., 10., 25., 300., 25., 10., 1.])
         Af = np.array([
             [126., 70., 35., 15.],
@@ -1088,7 +1092,7 @@ class Rotor(Component):
             [0., 0., 0., 0.]
         ])
         self._yf = -70.*np.matmul(np.matmul(Df,C).T,np.matmul(Af + 60.*ln*Bf,T))[0,0]
-
+        
         Dg = np.flip(De)
         Ag = np.flip(Ae)
         Bg = np.flip(Be)

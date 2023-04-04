@@ -1,26 +1,96 @@
 {
+    "#mass" : 0.5,
     "components" : {
-        "main" : {
+        "sphere" : {
             "ID" : 1,
-            "density" : 1.0,
+            "mass" : 5.0,
+            "type" : "#sphere",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  8.0,
+                "dy" :  3.0,
+                "dz" :  0.0,
+                "y_offset" : 0.0
+            },
+            "radius" : 0.5,
+            "hollow_radius" : 0.0
+        },
+        "cylinder" : {
+            "ID" : 2,
+            "mass" : 20.0,
+            "type" : "#cylinder",
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  3.5,
+                "dy" :  0.0,
+                "dz" :  -2.0,
+                "y_offset" : 0.0
+            },
+            "radius" : 0.5,
+            "hollow_radius" : 0.0,
+            "length" : 9.0
+        },
+        "wing" : {
+            "ID" : 3,
+            "mass" : 30.0,
             "type" : "symmetric_airfoil",
             "side" : "right",
             "connect_to" : {
                 "ID" : 0,
                 "location" : "tip",
                 "dx" :  0.0,
-                "dy" :  0.0,
+                "dy" :  -5.0,
                 "dz" :  0.0,
                 "y_offset" : 0.0
             },
-            "semispan" : 8.0,
+            "semispan" : 5.0,
             "sweep" : 0.0,
-            "dihedral" : 9.0,
-            "chord" : [[0.0, 1.0],
-                        [1.0, 1.0]],
-            "thickness" : [[0.0, 0.12],
-                            [1.0, 0.12]],
-            "camber" : 0.02
+            "chord" : [ [0.0, 1.0],
+                        [1.0, 0.8]],
+            "thickness" : [ [0.0, 0.12],
+                            [1.0, 0.10]],
+            "airfoil" : [  [0.0, "NACA_0012"],
+                            [1.0, "NACA_0010"]]
+        },
+        "propeller" : {
+            "ID" : 4,
+            "type" : "#rotor",
+            "#density" :  1.90407447947,
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  -1.5,
+                "dy" :  0.0,
+                "dz" :  0.0
+            },
+            "orientation" : [0.0, 0.0, 0.0],
+            "number_blades" : 1000,
+            "diameter_hub" : 0.5,
+            "diameter_rotor" : 3.0,
+            "rotation_rate" : 0.0,
+            "chord" : [
+                [0.0, 0.5],
+                [1.0, 0.2]
+            ],
+            "thickness" : [	[0.0,	0.18],
+                            [1.0,	0.12]]
+        },
+        "prop_hub" : {
+            "ID" : 5,
+            "type" : "#cylinder",  
+            "connect_to" : {
+                "ID" : 0,
+                "location" : "tip",
+                "dx" :  -1.5,
+                "dy" :  0.0,
+                "dz" :  0.0
+            },
+            "orientation" : [0.0, 0.0, 0.0],
+            "#density" : 1.90407447947,
+            "radius" : 0.25,
+            "length" : 0.5
         }
     }
 }

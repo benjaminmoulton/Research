@@ -348,13 +348,14 @@ class AircraftSystem:
 
         # report
         if report:
-            if not individual:
-                self.report_as_SolidWorks_report(self.properties_dict,\
-                    positive_tensor)
-                if use_Lanham:
-                    self.report_as_SolidWorks_report(lanham,positive_tensor,\
-                        use_Lanham)
-            else:
+            print("TOTAL")
+            self.report_as_SolidWorks_report(self.properties_dict,\
+                positive_tensor)
+            if use_Lanham:
+                self.report_as_SolidWorks_report(lanham,positive_tensor,\
+                    use_Lanham)
+            if individual:
+                print("\nINDIVIDUAL")
                 for i in self.components:
                     if i != 0:
                         info = self.components[i].properties_dict
@@ -419,10 +420,11 @@ class AircraftSystem:
 
         # report
         if report:
-            if not individual:
-                self.report_as_SolidWorks_report(self.properties_dict,\
-                    positive_tensor)
-            else:
+            print("TOTAL")
+            self.report_as_SolidWorks_report(self.properties_dict,\
+                positive_tensor)
+            if individual:
+                print("INDIVIDUAL")
                 for i in self.components:
                     if i != 0:
                         info = self.components[i].properties_dict
@@ -438,16 +440,16 @@ class AircraftSystem:
 if __name__ == "__main__":
     # AS = AircraftSystem("test_input.json")
     # AS.get_mass_properties()
-    # AS = AircraftSystem("hunsaker_test.json")
-    # AS.get_mass_properties(report=True)
+    AS = AircraftSystem("hunsaker_test.json")
+    AS.get_mass_properties(report=True,individual=True)
     # AS = AircraftSystem("simple_foam_wings.json")
     # AS.get_mass_properties(report=True,individual=True)
     # AS = AircraftSystem("CRM.json")
     # AS.get_mass_properties(report=True,use_Lanham=True)
     # AS = AircraftSystem("horizon.json")
     # AS.get_mass_properties(report=True,use_Lanham=True)#,individual=True)
-    AS = AircraftSystem("propeller.json")
-    AS.get_mass_properties(report=True)#,individual=True)
+    # AS = AircraftSystem("propeller.json")
+    # AS.get_mass_properties(report=True)#,individual=True)
     # AS = AircraftSystem("test_untwisted_propeller.json")
     # AS.get_mass_properties(report=True)#,individual=True)
     # AS = AircraftSystem("test_alternate_untwisted_propeller.json")
