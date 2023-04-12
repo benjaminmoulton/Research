@@ -22,10 +22,16 @@ if __name__ == "__main__":
 
     t = np.arange(1800.0,2020.0,step = 1.0)
 
+    # find from "timeseries" in file after ctrl + shift + I
     ngram_files = [ # check all these...
         "burble.txt", "burbled.txt", "burbles.txt", "burbling.txt",
+        "Burble_.txt", "BURBLE__.txt", 
         "compressibility_burble.txt", # only _INF version
-        "flow_separated.txt", "flow_separation.txt", "flow_separations.txt",
+        "Compressibility_burble_.txt", "Compressibility_Burble__.txt", 
+        "COMPRESSIBILITY_BURBLE___.txt", 
+        "flow_separate.txt", "flow_separated.txt", 
+        "flow_separates.txt", "flow_separating.txt", 
+        "flow_separation.txt", "flow_separations.txt",
         "separation_of_flow.txt", "separation_of_flowing.txt", 
         "separation_of_flows.txt",
     ]
@@ -44,12 +50,17 @@ if __name__ == "__main__":
     plt.show()
     
     ngrams_simp = {}
+    ngrams_simp["compressibility_burble"] = (
+        + ngrams["compressibility_burble"] + ngrams["Compressibility_burble_"]
+        + ngrams["Compressibility_Burble__"] + ngrams["COMPRESSIBILITY_BURBLE___"])
     ngrams_simp["burble"] = (ngrams["burble"] + ngrams["burbled"] 
-        + ngrams["burbles"] + ngrams["burbling"] 
-        - ngrams["compressibility_burble"])
-    ngrams_simp["compressibility_burble"] = ngrams["compressibility_burble"]
-    ngrams_simp["flow_separation"] = (ngrams["flow_separated"] 
-        + ngrams["flow_separation"] + ngrams["flow_separations"] 
+        + ngrams["burbles"] + ngrams["burbling"]
+        + ngrams["Burble_"] + ngrams["BURBLE__"]
+        - ngrams_simp["compressibility_burble"])
+    ngrams_simp["flow_separation"] = (
+        ngrams["flow_separate"] + ngrams["flow_separated"] 
+        + ngrams["flow_separates"] + ngrams["flow_separating"]
+        + ngrams["flow_separation"] + ngrams["flow_separations"]
         + ngrams["separation_of_flow"] + ngrams["separation_of_flowing"]
         + ngrams["separation_of_flows"])
 
