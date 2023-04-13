@@ -38,6 +38,8 @@ if __name__ == "__main__":
 
     ngrams = {}
     folder = "./ngrams/"
+    plots_folder = "./plots/"
+    show_plots = True
 
     for file in ngram_files:
         ngram = file.split(".")[0]
@@ -70,4 +72,8 @@ if __name__ == "__main__":
     plt.xlabel("Year")
     plt.ylabel("Word Use as Percentage of Annual Words Published")
     plt.legend()
-    plt.show()
+    plt.savefig(fname=plots_folder+"condensed.png",dpi=300.0,transparent=True)
+    if show_plots:
+        plt.show()
+    else:
+        plt.close()
