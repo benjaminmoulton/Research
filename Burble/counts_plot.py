@@ -21,14 +21,20 @@ def get_info(filename):
 if __name__ == "__main__":
 
     t = np.arange(1800.0,2020.0,step = 1.0)
+    it = np.argwhere(t>=1900.0)[0,0]
 
     # find from "timeseries" in file after ctrl + shift + I
     ngram_files = [ # check all these...
         "burble.txt", "burbled.txt", "burbles.txt", "burbling.txt",
-        "Burble_.txt", "BURBLE__.txt", 
+        "Burble_.txt", "BURBLE__.txt", "Burbles_.txt", "BURBLES__.txt", 
+        "Burbling_.txt", 
+
+        "burble_point.txt", 
+
         "compressibility_burble.txt", # only _INF version
         "Compressibility_burble_.txt", "Compressibility_Burble__.txt", 
         "COMPRESSIBILITY_BURBLE___.txt", 
+
         "flow_separate.txt", "flow_separated.txt", 
         "flow_separates.txt", "flow_separating.txt", 
         "flow_separation.txt", "flow_separations.txt",
@@ -53,21 +59,40 @@ if __name__ == "__main__":
     
     ngrams_simp = {}
     ngrams_simp["compressibility_burble"] = (
-        + ngrams["compressibility_burble"] + ngrams["Compressibility_burble_"]
-        + ngrams["Compressibility_Burble__"] + ngrams["COMPRESSIBILITY_BURBLE___"])
-    ngrams_simp["burble"] = (ngrams["burble"] + ngrams["burbled"] 
-        + ngrams["burbles"] + ngrams["burbling"]
-        + ngrams["Burble_"] + ngrams["BURBLE__"]
-        - ngrams_simp["compressibility_burble"])
+        + ngrams["compressibility_burble"] 
+        # + ngrams["Compressibility_burble_"]
+        # + ngrams["Compressibility_Burble__"] + ngrams["COMPRESSIBILITY_BURBLE___"]
+    )
+    ngrams_simp["burble_point"] = (
+        + ngrams["burble_point"]
+    )
+    ngrams_simp["burble"] = (ngrams["burble"] 
+        # + ngrams["burbled"] 
+        # + ngrams["burbles"] + ngrams["burbling"]
+        # + ngrams["Burble_"] + ngrams["BURBLE__"]
+        # + ngrams["Burbles_"] + ngrams["BURBLES__"]
+        # + ngrams["Burbling_"]
+        - ngrams_simp["compressibility_burble"]
+        - ngrams_simp["burble_point"]
+    )
     ngrams_simp["flow_separation"] = (
-        ngrams["flow_separate"] + ngrams["flow_separated"] 
-        + ngrams["flow_separates"] + ngrams["flow_separating"]
-        + ngrams["flow_separation"] + ngrams["flow_separations"]
-        + ngrams["separation_of_flow"] + ngrams["separation_of_flowing"]
-        + ngrams["separation_of_flows"])
+        + ngrams["flow_separation"] 
+        # + ngrams["flow_separate"] + ngrams["flow_separated"] 
+        # + ngrams["flow_separates"] + ngrams["flow_separating"]
+        #  + ngrams["flow_separations"]
+        # + ngrams["separation_of_flow"] + ngrams["separation_of_flowing"]
+        # + ngrams["separation_of_flows"]
+    )
 
-    for ngram in ngrams_simp:
-        plt.plot(t,ngrams_simp[ngram],label = ngram.replace("_"," "))
+    order = ["burble","flow_separation",
+    "compressibility_burble","burble_point"]
+
+    cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080","k"]
+
+    for i in range(len(order)):
+        ngram = order[i]
+        lbl = ngram.replace("_"," ")
+        plt.plot(t[it:],ngrams_simp[ngram][it:],c=cs[i],label=lbl)
     
     plt.xlabel("Year")
     plt.ylabel("Word Use as Percentage of Annual Words Published")
