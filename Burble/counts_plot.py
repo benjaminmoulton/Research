@@ -29,6 +29,8 @@ if __name__ == "__main__":
         "Burble_.txt", "BURBLE__.txt", "Burbles_.txt", "BURBLES__.txt", 
         "Burbling_.txt", 
 
+        "burble_fence.txt", 
+
         "burble_point.txt", 
 
         "compressibility_burble.txt", # only _INF version
@@ -40,6 +42,9 @@ if __name__ == "__main__":
         "flow_separation.txt", "flow_separations.txt",
         "separation_of_flow.txt", "separation_of_flowing.txt", 
         "separation_of_flows.txt",
+
+        "babble.txt", 
+        "bubble.txt", 
     ]
 
     ngrams = {}
@@ -66,6 +71,9 @@ if __name__ == "__main__":
     ngrams_simp["burble_point"] = (
         + ngrams["burble_point"]
     )
+    ngrams_simp["burble_fence"] = (
+        + ngrams["burble_fence"]
+    )
     ngrams_simp["burble"] = (ngrams["burble"] 
         # + ngrams["burbled"] 
         # + ngrams["burbles"] + ngrams["burbling"]
@@ -74,6 +82,7 @@ if __name__ == "__main__":
         # + ngrams["Burbling_"]
         - ngrams_simp["compressibility_burble"]
         - ngrams_simp["burble_point"]
+        - ngrams_simp["burble_fence"]
     )
     ngrams_simp["flow_separation"] = (
         + ngrams["flow_separation"] 
@@ -83,11 +92,19 @@ if __name__ == "__main__":
         # + ngrams["separation_of_flow"] + ngrams["separation_of_flowing"]
         # + ngrams["separation_of_flows"]
     )
+    ngrams_simp["babble"] = (
+        + ngrams["babble"]
+    )
+    ngrams_simp["bubble"] = (
+        + ngrams["bubble"]
+    )
 
-    order = ["burble","flow_separation",
-    "compressibility_burble","burble_point"]
-
+    # color-blind colors
     cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080","k"]
+
+    # plot condensed plot
+    order = ["burble","flow_separation",
+    "compressibility_burble","burble_point","burble_fence"]
 
     for i in range(len(order)):
         ngram = order[i]
@@ -95,9 +112,45 @@ if __name__ == "__main__":
         plt.plot(t[it:],ngrams_simp[ngram][it:],c=cs[i],label=lbl)
     
     plt.xlabel("Year")
-    plt.ylabel("Word Use as Percentage of Annual Words Published")
+    plt.ylabel("Word Use / Annual Words Published")
     plt.legend()
     plt.savefig(fname=plots_folder+"condensed.png",dpi=300.0,transparent=True)
+    if show_plots:
+        plt.show()
+    else:
+        plt.close()
+
+    # plot comparison plot
+    order = ["burble","babble","bubble"]
+
+    for i in range(len(order)):
+        ngram = order[i]
+        lbl = ngram.replace("_"," ")
+        plt.plot(t[it:],ngrams_simp[ngram][it:],c=cs[i],label=lbl)
+    
+    plt.xlabel("Year")
+    plt.ylabel("Word Use / Annual Words Published")
+    plt.legend()
+    plt.savefig(fname=plots_folder+"comparison.png",dpi=300.0,transparent=True)
+    if show_plots:
+        plt.show()
+    else:
+        plt.close()
+
+    # plot normalized comparison plot
+    order = ["burble","babble","bubble"]
+
+    for i in range(len(order)):
+        ngram = order[i]
+        lbl = ngram.replace("_"," ")
+        div_2019 = ngrams_simp[ngram][it:] / ngrams_simp[ngram][-1]
+        plt.plot(t[it:],div_2019,c=cs[i],label=lbl)
+    
+    plt.xlabel("Year")
+    plt.ylabel("Word Use / Latest Word Use")
+    plt.legend()
+    plt.savefig(fname=plots_folder+"norm_comparison.png",dpi=300.0,\
+        transparent=True)
     if show_plots:
         plt.show()
     else:
