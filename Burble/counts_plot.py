@@ -33,6 +33,8 @@ if __name__ == "__main__":
 
         "burble_point.txt", 
 
+        "separation_region.txt",
+
         "compressibility_burble.txt", # only _INF version
         "Compressibility_burble_.txt", "Compressibility_Burble__.txt", 
         "COMPRESSIBILITY_BURBLE___.txt", 
@@ -52,10 +54,17 @@ if __name__ == "__main__":
     plots_folder = "./plots/"
     show_plots = True
 
-    for file in ngram_files:
+    # color blind colors
+    cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080",
+    '#377eb8', '#4daf4a',
+    '#f781bf', '#a65628', '#984ea3',
+    '#999999', '#e41a1c', '#dede00']
+
+    for i,file in enumerate(ngram_files):
         ngram = file.split(".")[0]
         ngrams[ngram] = get_info(folder + file)
-        plt.plot(t,ngrams[ngram],label = ngram.replace("_"," "))
+        c_i = i % len(cs)
+        plt.plot(t,ngrams[ngram],c=cs[c_i],label = ngram.replace("_"," "))
     
     plt.xlabel("Year")
     plt.ylabel("Word Use as Percentage of Annual Words Published")
@@ -73,6 +82,9 @@ if __name__ == "__main__":
     )
     ngrams_simp["burble_fence"] = (
         + ngrams["burble_fence"]
+    )
+    ngrams_simp["separation_region"] = (
+        + ngrams["separation_region"]
     )
     ngrams_simp["burble"] = (ngrams["burble"] 
         # + ngrams["burbled"] 
@@ -99,12 +111,9 @@ if __name__ == "__main__":
         + ngrams["bubble"]
     )
 
-    # color-blind colors
-    cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080","k"]
-
     # plot condensed plot
     order = ["burble","flow_separation",
-    "compressibility_burble","burble_point","burble_fence"]
+    "compressibility_burble","separation_region","burble_point","burble_fence"]
 
     for i in range(len(order)):
         ngram = order[i]
