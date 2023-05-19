@@ -563,7 +563,7 @@
                 "name" : "C-47",
                 "short_name" : "C-47",
                 "file_name" : "C_47.json",
-                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "from" : "NASA TR No. 129-1, AD859330 -- McRuer et al. 1973",
                 "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
                 "notes" : [
                     "flight condition 4701",
@@ -643,7 +643,7 @@
                 "name" : "XC-142",
                 "short_name" : "XC-142",
                 "file_name" : "XC_142.json",
-                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "from" : "NASA TR No. 129-1, AD859330 -- McRuer et al. 1973",
                 "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
                 "notes" : "flight condition 1422"
             },
@@ -718,7 +718,7 @@
                 "name" : "VZ-4",
                 "short_name" : "VZ-4",
                 "file_name" : "VZ_4.json",
-                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "from" : "NASA TR No. 129-1, AD859330 -- McRuer et al. 1973",
                 "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
                 "notes" : [
                     "flight condition Uo = 126.6 ft/s",
@@ -794,7 +794,7 @@
                 "name" : "F.2B",
                 "short_name" : "F.2B",
                 "file_name" : "F_2B.json",
-                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "from" : "NASA TR No. 129-1, AD859330 -- McRuer et al. 1973",
                 "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
                 "notes" : "flight condition 0001"
             },
@@ -1158,7 +1158,7 @@
                 "name" : "F-89-no-inertia",
                 "short_name" : "F-89***",
                 "file_name" : "F_89_no_inertia.json",
-                "from" : "NASC TR No. 129-1, AD859330 -- McRuer et al. 1973",
+                "from" : "NASA TR No. 129-1, AD859330 -- McRuer et al. 1973",
                 "file" : "https://apps.dtic.mil/sti/pdfs/AD0859330.pdf",
                 "notes" : [
                     "No inertia data given",

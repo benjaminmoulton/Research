@@ -3,8 +3,6 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 from scipy.linalg import eig
-import numpy as np
-from matplotlib import pyplot as plt
 
 class Solver:
     """A class which solves an eigenproblem based on an aircraft 
@@ -1218,10 +1216,17 @@ class Solver:
         if method["lat"]["evals"][i_ro].imag == 0.0:
             # dutch roll must be the only complex evals
             i_dr = np.argwhere(np.abs(method["lat"]["evals"].imag) != 0.0).T[0]
+            if len(i_dr) == 0:
+                evals_big = method["lat"]["evals"]*1.
+                evals_big[i_rb] = 1.e100
+                i_sl = np.abs(evals_big.real).argmin()
 
-            # spiral remains
-            i_sl = np.delete(np.array(range(6)),\
-                np.concatenate((i_rb,i_dr,np.array([i_ro]))))[0]
+                i_dr = np.delete(np.array(range(6)),\
+                    np.concatenate((i_rb,np.array([i_ro,i_sl]))))
+            else:
+                # spiral remains
+                i_sl = np.delete(np.array(range(6)),\
+                    np.concatenate((i_rb,i_dr,np.array([i_ro]))))[0]
         else:
             # spiral is complex conjugate
             i_sl = np.argwhere(method["lat"]["evals"] == \
@@ -1690,7 +1695,7 @@ if __name__ == "__main__":
             ax[1].legend(bbox_to_anchor=(-0.05, 1.0), loc='upper right')
             fig.suptitle(dyn.aircraft_name + " " + modenames[mo])
             plt.tight_layout()
-            plt.savefig(file)#,dpi=300.0)
+            plt.savefig(file,dpi=300.0)
             if show:
                 plt.show()
             else:

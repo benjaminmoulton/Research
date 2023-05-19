@@ -245,7 +245,7 @@ class Cuboid(Component):
         # calculate inertia
         Ixxo = self.mass / 12. * (v2*(ly2sq+lz2sq) - v1*(ly1sq+lz1sq))/(v2-v1)
         Iyyo = self.mass / 12. * (v2*(lx2sq+lz2sq) - v1*(lx1sq+lz1sq))/(v2-v1)
-        Izzo = self.mass / 12. * (v2*(lx2sq+lz2sq) - v1*(lx1sq+lz1sq))/(v2-v1)
+        Izzo = self.mass / 12. * (v2*(lx2sq+ly2sq) - v1*(lx1sq+ly1sq))/(v2-v1)
         
         Ixyo = 0.0
         Ixzo = 0.0

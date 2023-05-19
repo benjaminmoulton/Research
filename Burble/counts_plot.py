@@ -20,6 +20,8 @@ def get_info(filename):
 
 if __name__ == "__main__":
 
+    # look for "timeseries" in graph?content.... under Sources after ctrl + shift + I
+
     t = np.arange(1800.0,2020.0,step = 1.0)
     it = np.argwhere(t>=1900.0)[0,0]
 

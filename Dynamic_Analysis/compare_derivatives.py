@@ -186,7 +186,7 @@ class Comparison:
             # ratios of import
             pSwcw_4 = zelf.rho * zelf.Sw * zelf.cwbar / 4.
             pSwbw_4 = zelf.rho * zelf.Sw * zelf.bw    / 4.
-            dynF = 0.5 * zelf.rho * zelf.vo**2. * zelf.Sw
+            zelf.dynF = dynF = 0.5 * zelf.rho * zelf.vo**2. * zelf.Sw
 
             ### Longitudinal derivatives
             # D,udot
@@ -326,6 +326,10 @@ class Comparison:
             ["Kn,pbreve","Kl,pbreve"],
             ["hnp_l/bw","lnp_m/cwbar","lnp_n/bw"],
             ["hnp_l","lnp_m","lnp_n"],
+            ["Lo","D,a"],
+            ["L,a","Do"],
+            ["CW","CS,rbreve"],
+            ["l,p/h_np_l","S,p"]
         ]
         self.num_ratios = len(self.ratios_names)
         self.ratlen = [len(self.ratios_names[i]) for i in range(self.num_ratios)]
@@ -561,6 +565,21 @@ class Comparison:
                     g+=1;ratios[i,j,g] =   zelf.l_b / zelf.Y_b
                     g+=1;ratios[i,j,g] = - zelf.m_a / zelf.L_a
                     g+=1;ratios[i,j,g] = - zelf.n_b / zelf.Y_b
+                elif i == 38:
+                    g+=1;ratios[i,j,g] =   zelf.Lo
+                    g+=1;ratios[i,j,g] =   zelf.D_a
+                elif i == 39:
+                    g+=1;ratios[i,j,g] =   zelf.L_a
+                    g+=1;ratios[i,j,g] =   zelf.Do
+                elif i == 40:
+                    g+=1;ratios[i,j,g] =   zelf.Lo / zelf.dynF
+                    g+=1;ratios[i,j,g] =   zelf.Y_r / zelf.dynF * zelf.g / zelf.vo
+                    # ok to drop.
+                elif i == 41:
+                    h_np_l = zelf.l_b / zelf.Y_b
+                    g+=1;ratios[i,j,g] =   zelf.l_p / h_np_l
+                    g+=1;ratios[i,j,g] =   zelf.Y_p
+
                 
         
         # take absolute value
