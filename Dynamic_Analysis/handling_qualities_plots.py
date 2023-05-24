@@ -113,6 +113,12 @@ def analyze_aircraft(file_name):
     fsl, asl = plt.subplots()
     fdr, adr = plt.subplots()
 
+    # plot grid
+    asl.grid(which="major",lw=0.6,ls="-",c="0.5")
+    asl.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    adr.grid(which="major",lw=0.6,ls="-",c="0.5")
+    adr.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+
     for i,hnpl in enumerate(hnpl_array):
         # calculate spiral time to double
         Ep = hnpl*sys.n_p + lnpn*sys.l_p
