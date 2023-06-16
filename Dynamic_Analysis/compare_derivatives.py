@@ -688,7 +688,7 @@ if __name__ == "__main__":
     "DC_8.json",
     # "9_8_2.json",
     ### Class IV -- high-maneuverability
-    "F16_bolander.json",
+    "F_16.json",
     "NT_33A.json", "F_104A.json", "F_4C.json",
     "A_7A.json", "A_4D.json",
     "F_94A.json", "F_15.json",

@@ -13,7 +13,8 @@
         "Iyz[slug-ft^2]": 0.0,
         "from": "NASA CR-96008 -- Teper, Gary L. 1969",
         "file": "https://ntrs.nasa.gov/api/citations/19690022405/downloads/19690022405.pdf",
-        "notes": "hq data available"
+        "notes": "hq data available",
+        "configuration" : "cruise"
     },
     "analysis": {
         "density[slugs/ft^3]": 0.00237689261479

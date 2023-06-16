@@ -2,7 +2,8 @@ from shutil import ReadError
 import numpy as np
 import json
 import matplotlib.pyplot as plt
-from scipy.linalg import eig
+from scipy.linalg import eig, block_diag
+from control import ctrb
 
 class Solver:
     """A class which solves an eigenproblem based on an aircraft 
@@ -86,10 +87,11 @@ class Solver:
         # store aircraft input values
         aircraft = self.input_dict.get("aircraft",{})
         self.aircraft_name = aircraft.get("name","Jimmy")
+        self.aircraft_short_name = aircraft.get("short_name","Jim")
         self.EL = aircraft.get("launch_kinetic_energy[ft-lbf]",0.0)
         self.Sw = aircraft.get("wing_area[ft^2]")
         self.bw = aircraft.get("wing_span[ft]")
-        self.cwbar = self.Sw / self.bw
+        self.cwbar = aircraft.get("wing_chord[ft]", self.Sw / self.bw)
         self.W = aircraft.get("weight[lbf]")
         self.Ixx = aircraft.get("Ixx[slug-ft^2]")
         self.Iyy = aircraft.get("Iyy[slug-ft^2]")
@@ -110,6 +112,7 @@ class Solver:
         self.CL_qbar    = CL.get("qbar")
         self.CL_ahat    = CL.get("alpha_hat")
         self.CL_uhat    = CL.get("mu_hat",0.0)
+        self.CL_de      = CL.get("de",0.0)
         CY = aero.get("CS")
         self.CY_b       = CY.get("beta")
         self.CY_pbar    = CY.get("Lpbar") * self.CL0 + CY.get("pbar")
@@ -124,6 +127,7 @@ class Solver:
             CD.get("Lqbar") * self.CL0 + CD.get("qbar")
         self.CD_ahat    = CD.get("alpha_hat",0.0)
         self.CD_uhat    = CD.get("mu_hat",0.0)
+        self.CD_de      = CD.get("de",0.0)
         Cl = aero.get("Cl")
         self.Cl_b       = Cl.get("beta")
         self.Cl_pbar    = Cl.get("pbar")
@@ -136,6 +140,7 @@ class Solver:
         self.Cm_qbar    = Cm.get("qbar")
         self.Cm_ahat    = Cm.get("alpha_hat")
         self.Cm_uhat    = Cm.get("mu_hat",0.0)
+        self.Cm_de      = Cm.get("de",0.0)
         Cn = aero.get("Cn")
         self.Cn_b       = Cn.get("beta")
         self.Cn_pbar    = Cn.get("Lpbar") * self.CL0 + Cn.get("pbar")
@@ -219,6 +224,9 @@ class Solver:
         Rx_qbar = Rpx * - self.CD_qbar
         Rz_qbar = Rpx * - self.CL_qbar
         Rm_qbar = Ryy * self.Cm_qbar
+        Rx_de = Rpx * - self.CD_de
+        Rz_de = Rpx * - self.CL_de
+        Rm_de = Ryy * self.Cm_de
         # initialize A and B matrices
         A = np.zeros((6,6))
         A[0,0] = Rx_mu
@@ -247,6 +255,26 @@ class Solver:
         # self.p["B"] = B * 1.
         C = np.matmul(np.linalg.inv(B),A)
 
+        # control matrix
+        D = np.zeros((6,1))
+        D[0,0] = Rx_de
+        D[1,0] = Rz_de
+        D[2,0] = Rm_de
+        E = np.matmul(np.linalg.inv(B),D)
+
+        # redimensionalize matrices
+        Vinv = 1./self.vo
+        C_dim = np.diag([
+            Vinv,
+            Vinv,
+            Vinv*self.cwbar/2.,
+            2./self.cwbar,
+            2./self.cwbar,
+            1.
+        ])
+        dim_C = np.diag(1./(np.diag(C_dim)/(2.*self.vo/self.cwbar)))
+        E_dim = np.ones((1,1))
+
         # print("A matrix")
         # for i in range(6):
         #     for j in range(6):
@@ -263,6 +291,10 @@ class Solver:
         self.p["lon"] = {}
         self.p["lon"]["A"] = A
         self.p["lon"]["B"] = B
+        self.p["lon"]["Ac"] = C
+        self.p["lon"]["Bc"] = E
+        self.p["lon"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
+        self.p["lon"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
         self.p["lon"]["evals"],self.p["lon"]["evecs"] = eig(C)
 
         # calculate amplitude and phase angles
@@ -285,6 +317,12 @@ class Solver:
         Ry_rbar = Rpy * self.CY_rbar
         Rl_rbar = Rxx * self.Cl_rbar
         Rn_rbar = Rzz * self.Cn_rbar
+        Ry_da = Rpy * self.CY_da
+        Rl_da = Rxx * self.Cl_da
+        Rn_da = Rzz * self.Cn_da
+        Ry_dr = Rpy * self.CY_dr
+        Rl_dr = Rxx * self.Cl_dr
+        Rn_dr = Rzz * self.Cn_dr
         # initialize A and B matrices
         A *= 0.
         A[0,0] = Ry_b
@@ -309,10 +347,37 @@ class Solver:
         # calculate C matrix
         C = np.matmul(np.linalg.inv(B),A)
 
+        # control matrix
+        D = np.zeros((6,2))
+        D[0,0] = Ry_da
+        D[0,1] = Ry_dr
+        D[1,0] = Rl_da
+        D[1,1] = Rl_dr
+        D[2,0] = Rn_da
+        D[2,1] = Rn_dr
+        E = np.matmul(np.linalg.inv(B),D)
+
+        # redimensionalize matrices
+        Vinv = 1./self.vo
+        C_dim = np.diag([
+            Vinv,
+            Vinv*self.bw/2.,
+            Vinv*self.bw/2.,
+            2./self.bw,
+            1.,
+            1.
+        ])
+        dim_C = np.diag(1./(np.diag(C_dim)/(2.*self.vo/self.bw)))
+        E_dim = np.eye(2)
+
         # calculate eigenvalues and vectors
         self.p["lat"] = {}
         self.p["lat"]["A"] = A
         self.p["lat"]["B"] = B
+        self.p["lat"]["Ac"] = C
+        self.p["lat"]["Bc"] = E
+        self.p["lat"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
+        self.p["lat"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
         self.p["lat"]["evals"],self.p["lat"]["evecs"] = eig(C)
 
         # calculate amplitude and phase angles
@@ -371,6 +436,8 @@ class Solver:
         e = complex(a + b + c + d)
         self.p["drWD"] = np.abs(2. * self.vo / self.bw * np.sqrt( e ))
         self.p["drT"] = 2. * np.pi / self.p["drWD"]
+        self.p["drwn"] = ( self.p["drSg"]**2. + self.p["drWD"]**2. )**0.5
+        self.p["drzt"] = self.p["drSg"] / self.p["drwn"]
 
         # print("A matrix")
         # for i in range(6):
@@ -487,6 +554,26 @@ class Solver:
         # calculate C matrix
         C = np.matmul(np.linalg.inv(B),A)
 
+        # control matrix
+        D = np.zeros((6,1))
+        D[0,0] = - self.CD_de
+        D[1,0] = - self.CL_de
+        D[2,0] = self.Cm_de
+        E = np.matmul(np.linalg.inv(B),D)
+
+        # redimensionalize matrices
+        Vinv = 1./self.vo
+        C_dim = np.diag([
+            Vinv,
+            Vinv,
+            Vinv*self.cwbar/2.,
+            2./self.cwbar,
+            2./self.cwbar,
+            1.
+        ])
+        dim_C = np.diag(1./(np.diag(C_dim)/(2.*self.vo/self.cwbar)))
+        E_dim = np.ones((1,1))
+
         # print("A matrix")
         # for i in range(6):
         #     for j in range(6):
@@ -503,6 +590,10 @@ class Solver:
         self.h["lon"] = {}
         self.h["lon"]["A"] = A
         self.h["lon"]["B"] = B
+        self.h["lon"]["Ac"] = C
+        self.h["lon"]["Bc"] = E
+        self.h["lon"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
+        self.h["lon"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
         self.h["lon"]["evals"],self.h["lon"]["evecs"] = eig(C)
 
         # calculate amplitude and phase angles
@@ -540,10 +631,37 @@ class Solver:
         # calculate C matrix
         C = np.matmul(np.linalg.inv(B),A)
 
+        # control matrix
+        D = np.zeros((6,2))
+        D[0,0] = self.CY_da
+        D[0,1] = self.CY_dr
+        D[1,0] = self.Cl_da
+        D[1,1] = self.Cl_dr
+        D[2,0] = self.Cn_da
+        D[2,1] = self.Cn_dr
+        E = np.matmul(np.linalg.inv(B),D)
+
+        # redimensionalize matrices
+        Vinv = 1./self.vo
+        C_dim = np.diag([
+            Vinv,
+            Vinv*self.bw/2.,
+            Vinv*self.bw/2.,
+            2./self.bw,
+            1.,
+            1.
+        ])
+        dim_C = np.diag(1./(np.diag(C_dim)/(2.*self.vo/self.bw)))
+        E_dim = np.eye(2)
+
         # calculate eigenvalues and vectors
         self.h["lat"] = {}
         self.h["lat"]["A"] = A
         self.h["lat"]["B"] = B
+        self.h["lat"]["Ac"] = C
+        self.h["lat"]["Bc"] = E
+        self.h["lat"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
+        self.h["lat"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
         self.h["lat"]["evals"],self.h["lat"]["evecs"] = eig(C)
 
         # calculate amplitude and phase angles
@@ -719,6 +837,15 @@ class Solver:
         Ky_rbreve = Rpy * self.CY_rbar
         Kl_rbreve = Rxx * self.Cl_rbar
         Kn_rbreve = Rzz * self.Cn_rbar
+        Ky_da = CWinv * self.CY_da
+        Kl_da = Rxx2 * self.Cl_da
+        Kn_da = Rzz2 * self.Cn_da
+        Kx_de = CWinv * self.CD_de
+        Kz_de = CWinv * self.CL_de
+        Km_de = Ryy2 * self.Cm_de
+        Ky_dr = CWinv * self.CY_dr
+        Kl_dr = Rxx2 * self.Cl_dr
+        Kn_dr = Rzz2 * self.Cn_dr
         # initialize A and B matrices
         A = np.zeros((6,6))
         A[0,0] = Kx_mu
@@ -749,6 +876,26 @@ class Solver:
         # calculate C matrix
         C = np.matmul(np.linalg.inv(B),A)
 
+        # control matrix
+        D = np.zeros((6,1))
+        D[0,0] = -Kx_de
+        D[1,0] = -Kz_de
+        D[2,0] = Km_de
+        E = np.matmul(np.linalg.inv(B),D)
+
+        # redimensionalize matrices
+        Vinv = 1./self.vo
+        C_dim = np.diag([
+            Vinv,
+            Vinv,
+            self.vo/self.g,
+            self.g/self.vo**2.,
+            self.g/self.vo**2.,
+            1.
+        ])
+        dim_C = np.diag(1./(np.diag(C_dim)/(self.g/self.vo)))
+        E_dim = np.ones((1,1))
+
         # print("A matrix")
         # for i in range(6):
         #     for j in range(6):
@@ -765,6 +912,10 @@ class Solver:
         self.b["lon"] = {}
         self.b["lon"]["A"] = A
         self.b["lon"]["B"] = B
+        self.b["lon"]["Ac"] = C
+        self.b["lon"]["Bc"] = E
+        self.b["lon"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
+        self.b["lon"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
         self.b["lon"]["evals"],self.b["lon"]["evecs"] = eig(C)
 
         # calculate amplitude and phase angles
@@ -799,10 +950,37 @@ class Solver:
         # calculate C matrix
         C = np.matmul(np.linalg.inv(B),A)
 
+        # control matrix
+        D = np.zeros((6,2))
+        D[0,0] = Ky_da
+        D[0,1] = Ky_dr
+        D[1,0] = Kl_da
+        D[1,1] = Kl_dr
+        D[2,0] = Kn_da
+        D[2,1] = Kn_dr
+        E = np.matmul(np.linalg.inv(B),D)
+
+        # redimensionalize matrices
+        Vinv = 1./self.vo
+        C_dim = np.diag([
+            Vinv,
+            self.vo/self.g,
+            self.vo/self.g,
+            self.g/self.vo**2.,
+            1.,
+            1.
+        ])
+        dim_C = np.diag(1./(np.diag(C_dim)/(self.g/self.vo)))
+        E_dim = np.eye(2)
+
         # calculate eigenvalues and vectors
         self.b["lat"] = {}
         self.b["lat"]["A"] = A
         self.b["lat"]["B"] = B
+        self.b["lat"]["Ac"] = C
+        self.b["lat"]["Bc"] = E
+        self.b["lat"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
+        self.b["lat"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
         self.b["lat"]["evals"],self.b["lat"]["evecs"] = eig(C)
 
         # calculate amplitude and phase angles
@@ -853,7 +1031,7 @@ class Solver:
         self.b["phSg"] = -self.g / self.vo * (-Kz_mu/2. *(Kx_mu/-Kz_mu+RPHd-RPHp))
         self.b["pht99"] = np.log(0.01) / - self.b["phSg"]
         self.b["phWD"] = self.g / self.vo * -Kz_mu/2. * \
-            np.sqrt( -4./-Kz_mu*RPHs - (Kx_mu/-Kz_mu+RPHd)**2.)
+            ( np.abs(-4./-Kz_mu*RPHs - (Kx_mu/-Kz_mu+RPHd)**2.) )**0.5
         self.b["phT"] = 2. * np.pi / self.b["phWD"]
         self.b["phwn"] = ( self.b["phSg"]**2. + self.b["phWD"]**2. )**0.5
         self.b["phzt"] = self.b["phSg"] / self.b["phwn"]
@@ -1587,7 +1765,7 @@ if __name__ == "__main__":
     "DC_8.json",
     # "9_8_2.json",
     ### Class IV -- high-maneuverability
-    "F16_bolander.json",
+    "F_16.json",
     "NT_33A.json", "F_104A.json", "F_4C.json",
     "A_7A.json", "A_4D.json",
     "F_94A.json", "F_15.json",
@@ -1597,6 +1775,62 @@ if __name__ == "__main__":
     eigensolved = [0.0] * num_craft
     for i in range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
+    
+
+    # evaluate controllability, condition number
+    title_string = "{:^6} |".format("name")
+    for i in ["P","H","B","D"]:
+        for j in ["lon","lat","fll", "fac"]:
+            if j == "fll" or j == "fac":
+                title_string += " "
+            title_string += " {:>1} {:>6}  ".format("R","C," + i + j)
+            if j == "fac":
+                title_string = title_string[:-1] + "|"
+    print(title_string)
+    print("-"*len(title_string))
+    for i in range(num_craft):
+        craft = eigensolved[i]
+        print("{:^6} |".format(craft.aircraft_short_name),end="")
+        # print(np.max(craft.p["lon"]["Ac_dim"]-craft.h["lon"]["Ac_dim"]))
+        # print(np.max(craft.p["lon"]["Ac_dim"]-craft.b["lon"]["Ac_dim"]))
+        # print(np.max(craft.p["lat"]["Ac_dim"]-craft.h["lat"]["Ac_dim"]))
+        # print(np.max(craft.p["lat"]["Ac_dim"]-craft.b["lat"]["Ac_dim"]))
+        # print(np.max(craft.p["lon"]["Bc_dim"]-craft.h["lon"]["Bc_dim"]))
+        # print(np.max(craft.p["lon"]["Bc_dim"]-craft.b["lon"]["Bc_dim"]))
+        # print(np.max(craft.p["lat"]["Bc_dim"]-craft.h["lat"]["Bc_dim"]))
+        # print(np.max(craft.p["lat"]["Bc_dim"]-craft.b["lat"]["Bc_dim"]))
+        
+        # print("Sg same =",abs(craft.b["drSg"] - craft.p["drSg"])<1e-15,"  ",
+        #     "WD same =",abs(craft.b["drWD"] - craft.p["drWD"])<1e-15,"  ",
+        #     "wn same =",abs(craft.b["drwn"] - craft.p["drwn"])<1e-15,"  ",
+        #     "zt same =",abs(craft.b["drzt"] - craft.p["drzt"])<1e-15)
+        dm = ["","","","_dim"]
+        for j,method in enumerate([craft.p,craft.h,craft.b,craft.b]):
+            G_lon = ctrb(method["lon"]["Ac"+dm[j]],method["lon"]["Bc"+dm[j]])
+            G_lon_r = np.linalg.matrix_rank(G_lon)
+            G_lon_c = np.linalg.cond(G_lon)
+            G_lat = ctrb(method["lat"]["Ac"+dm[j]],method["lat"]["Bc"+dm[j]])
+            G_lat_r = np.linalg.matrix_rank(G_lat)
+            G_lat_c = np.linalg.cond(G_lat)
+            A = block_diag(method["lon"]["Ac"+dm[j]],method["lat"]["Ac"+dm[j]])
+            B = block_diag(method["lon"]["Bc"+dm[j]],method["lat"]["Bc"+dm[j]])
+            G = ctrb(A,B)
+            G_r = np.linalg.matrix_rank(G)
+            G_c = np.linalg.cond(G)
+            s = 1./0.0495
+            S = np.diag([s,s,s])
+            Z = np.zeros((A.shape[0],B.shape[1]))
+            A_act = np.block([[A,B],[Z.T,-S]])
+            B_act = np.block([[Z],[S]])
+            G_act = ctrb(A_act,B_act)
+            G_act_r = np.linalg.matrix_rank(G_act)
+            G_act_c = np.linalg.cond(G_act)
+            print(" {:>1} {:> 6.0e}  ".format(G_lon_r,G_lon_c),end="")
+            print(" {:>1} {:> 6.0e}  ".format(G_lat_r,G_lat_c),end="")
+            print(" {:>2} {:> 6.0e}  ".format(G_r,G_c),end="")
+            print(" {:>2} {:> 6.0e} |".format(G_act_r,G_act_c),end="")
+        print()
+    quit()
 
     # create dictionaries for pretty title-ing of print out
     modes = ["sp","ph","sl","ro","dr"]

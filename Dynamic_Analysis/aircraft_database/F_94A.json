@@ -12,7 +12,7 @@
         "Ixz[slug-ft^2]" : -790.0,
         "Iyz[slug-ft^2]" : 0.0,
         "from" : "Automatic Control of Aircraft and Missiles -- Blakelock 1991",
-        "notes" : "configuration cruise 4, no tanks"
+        "configuration" : "cruise 4, no tanks"
     },
     "analysis" : {
         "density[slugs/ft^3]" : 1.64796117454e-03

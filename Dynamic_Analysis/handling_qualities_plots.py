@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.ticker import ScalarFormatter
 
 from eigensolver import Solver
 
 def analyze_aircraft(file_name):
     # run eigensolver
     sys = Solver(file_name,report=False)
+    print("running {}".format(file_name))
 
     ## Phugoid
     lnpm_0 = - sys.m_a/sys.L_a
@@ -25,6 +27,10 @@ def analyze_aircraft(file_name):
     sm2[0] = 0.0001
     lnpm = sm*sys.cwbar
     lmpm = lnpm - sys.m_q*sys.g/sys.vo/sys.W
+
+    # calculate short-period damping ratio
+    z_sp = -0.5*(sys.L_a/sys.Iyy/lmpm)**0.5*(sys.m_adot/sys.L_a + ayyb)
+    CAP_sp = sys.g*lmpm/ryyb**2.
     
     # calculate phugoid damping ratio
     z_ph = 1./RG*(lmpm/2./lnpm)**0.5 \
@@ -42,11 +48,32 @@ def analyze_aircraft(file_name):
     # calculate exact
     Cm_a_0 = sys.Cm_a*1.
     z_ph_exact = sm2*0.
+    z_sp_exact = sm2*0.
+    CAP_sp_exact = sm2*0.
+    craft_presented = ["Navion","F-94A","Lockheed Jetstar","Boeing 747"]
     for i in range(sm2.shape[0]):
         sys.Cm_a = -sm2[i]*sys.CL_a
         sys._buckingham_matrices_and_approximations()
         sys._longitudinal_dimensional_properties(sys.b,is_alternate=True)
+        z_sp_exact[i] = sys.b["lon"]["zt"][sys.b["lon"]["sp"][0]]*1.
+        CAP_sp_exact[i] = sys.b["lon"]["wn"][sys.b["lon"]["sp"][0]]**2.\
+            /sys.CL_a*sys.CW
         z_ph_exact[i] = sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.
+        if z_sp_exact[i] == 0. and sys.aircraft_name in craft_presented:
+            e1 = sys.b["lon"]["evals"][sys.b["lon"]["sp"][0]]
+            e2 = sys.b["lon"]["evals"][sys.b["lon"]["sp"][1]]
+            z_sp_exact[i] = np.real(-(e1+e2) /2./np.sqrt(e1*e2))
+            e1 = sys.b["lon"]["dimevals"][sys.b["lon"]["sp"][0]]
+            e2 = sys.b["lon"]["dimevals"][sys.b["lon"]["sp"][1]]
+            wn = np.real(np.sqrt(e1*e2))
+            CAP_sp_exact[i] = wn**2./sys.CL_a*sys.CW
+            # print(sm2[i])
+            # print(sys.b["lon"]["sp"])
+            # print(sys.b["lon"]["ph"])
+            # print(sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]])
+            # print(sys.b["lon"]["zt"][sys.b["lon"]["sp"][0]])
+            # print(sys.b["lon"]["evals"])
+            # print()
     # return to normal
     sys.Cm_a = Cm_a_0*1.
     sys._buckingham_matrices_and_approximations()
@@ -60,31 +87,143 @@ def analyze_aircraft(file_name):
         "constrained_layout" : True,
         "sharex" : True
     }
+    aircraft_name = sys.aircraft_name.lower().replace(" ","_").replace("-","_")
+
+    # initialize figures
+    fsp, asp = plt.subplots()
+    fsC, asC = plt.subplots()
+    fph, aph = plt.subplots()
 
     # plot grid
-    plt.grid(which="major",lw=0.6,ls="-",c="0.5")
-    plt.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    asp.grid(which="major",lw=0.6,ls="-",c="0.5")
+    asp.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    aph.grid(which="major",lw=0.6,ls="-",c="0.5")
+    aph.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    asC.grid(which="major",lw=0.6,ls="-",c="0.5")
+    asC.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
     
     # plot
-    plt.plot(sm2[1:],z_ph_exact[1:],c="k",marker="o",mfc="none",ms=4.,\
+    asp_y2 = asp.twinx()
+    asp_y2.plot(sm2[1:],CAP_sp_exact[1:],c="0.25",marker="o",mfc="none",ms=4.,\
+        ls="none")
+    asp_y2.plot(sm,CAP_sp,c="0.25",label="Eq. (105)")
+    asp.plot(sm2[1:],z_sp_exact[1:],c="k",marker="o",mfc="none",ms=4.,\
         ls="none",label="exact")
-    plt.plot(sm,z_ph,c="k",label="Eq. (111)")
-    plt.plot(sm,z_ph_other,c="k",ls="--",label="Eq. (113)")
-    # plt.plot([lnpm_0 - lmpm_0,lnpm_0 - lmpm_0],[0,1],c="k",ls="-.")
-    # plt.plot(lnpm_0/sys.cwbar,sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.,\
+    asp.plot(sm,z_sp,c="k",label="Eq. (106)")
+    # plot asC limits based on flight phase
+    if sys.aircraft_name in ["Lockheed Jetstar","Boeing 747"]:
+        # landing lines
+        asC.loglog([5.,.15,.15],[.038,.038,20.],c="k")
+        asC.loglog([.2,.2,2.,2.],[.038,10.,10.,.038],c="k")
+        asC.loglog([2.,.3,.3,2.],[.085,.085,3.6,3.6],c="k")
+        l1pos = (0.7,0.4)
+        l4y = 0.03
+    elif sys.aircraft_name in ["Navion","F-94A"]:
+        # cruise lines
+        asC.loglog([5.,.15,.15],[.096,.096,20.],c="k")
+        asC.loglog([.25,.25,2.,2.],[.096,10.,10.,.096],c="k")
+        asC.loglog([1.3,.35,.35,1.3,1.3],[.15,.15,3.6,3.6,.15],c="k")
+        l1pos = (0.7,1.3)
+        l4y = 0.04
+    else:
+        # plot cruise lines
+        asC.loglog([5.,.15,.15],[.096,.096,20.],c="k")
+        asC.loglog([.25,.25,2.,2.],[.096,10.,10.,.096],c="k")
+        asC.loglog([1.3,.35,.35,1.3,1.3],[.15,.15,3.6,3.6,.15],c="k")
+        l1pos = (0.7,1.3)
+        l4y = 0.04
+    asC.loglog(z_sp,CAP_sp,c="0.25")
+    CAPlist = np.logspace(np.log10(CAP_sp[int(num/20)]),np.log10(CAP_sp[-1]),
+        10,base=10.,endpoint=False)
+    ind_list = [np.argwhere(CAP_sp <= CAPlist_it)[-1,0] for CAPlist_it in CAPlist]
+    for i in ind_list:
+        asC.annotate('',
+        xytext=(z_sp[i],CAP_sp[i]),
+        xy=(z_sp[i+1],CAP_sp[i+1]),
+        arrowprops=dict(arrowstyle="->", color="0.25"),
+        size=10.
+        )
+    # plot level labels
+    alfa = 0.8
+    text = asC.text(l1pos[0],l1pos[1],"Level 1",va="center",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    text = asC.text(0.7,6.,"Level 2",va="center",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    text = asC.text(0.7,13.,"Level 3",va="center",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    text = asC.text(0.7,l4y,"Level 4",va="center",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    # asp.plot(sm,z_sp_other,c="k",ls="--",label="Eq. (113)")
+    #
+    aph.plot(sm2[1:],z_ph_exact[1:],c="k",marker="o",mfc="none",ms=4.,\
+        ls="none",label="exact")
+    aph.plot(sm,z_ph,c="k",label="Eq. (111)")
+    aph.plot(sm,z_ph_other,c="k",ls="--",label="Eq. (113)")
+    # aph.plot([lnpm_0 - lmpm_0,lnpm_0 - lmpm_0],[0,1],c="k",ls="-.")
+    # aph.plot(lnpm_0/sys.cwbar,sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.,\
     #     marker="o",c="b",mfc="none",ms=4.,ls="none")
-    plt.xlabel(r"Pitching static margin, $l_{np_m}/\bar{c}_w$")
-    plt.ylabel(r"Phugoid damping ratio, $\zeta_{ph}$")
-    plt.legend()#bbox_to_anchor=(1.05, 1.0), loc='upper right')
+    if sys.aircraft_name == "Navion":
+        ph_limit = 0.5
+        sp_limit = None
+        y2_limit = None
+    elif sys.aircraft_name == "F-94A":
+        ph_limit = 0.1
+        sp_limit = 0.2
+        y2_limit = 0.05
+    elif sys.aircraft_name == "Lockheed Jetstar":
+        ph_limit = 0.25
+        sp_limit = 0.35
+        y2_limit = 0.09
+    elif sys.aircraft_name == "Boeing 747":
+        ph_limit = 0.45
+        sp_limit = None
+        y2_limit = None
+    else:
+        ph_limit = 1.
+        sp_limit = None
+        y2_limit = None
+    asp.set_xlim((0.,sm_final))
+    asp.set_ylim(bottom=sp_limit)
+    asp_y2.set_ylim(bottom=y2_limit)
+    aph.set_xlim((0.,sm_final))
+    aph.set_ylim((0.,ph_limit))
+    asC.set_xlim((0.1,5.))
+    asC.set_ylim((0.02,20.))
+    asC.xaxis.set_major_formatter(ScalarFormatter())
+    asC.yaxis.set_major_formatter(ScalarFormatter())
+    # asC.semilogy()
+    # asC.semilogx()
+    asp.set_xlabel(r"Pitch static margin, $l_{np_m}/\bar{c}_w$")
+    asp.set_ylabel(r"Short-period damping ratio, $\zeta_{sp}$")
+    asp_y2.set_ylabel(r"Short-period CAP")
+    aph.set_xlabel(r"Pitch static margin, $l_{np_m}/\bar{c}_w$")
+    aph.set_ylabel(r"Phugoid damping ratio, $\zeta_{ph}$")
+    asC.set_xlabel(r"Short-period damping ratio, $\zeta_{sp}$")
+    asC.set_ylabel(r"Short-period CAP")
+    aph.legend()
+    lgnd_elms_sp = [
+        Line2D([0], [0], c="k",marker="o",mfc="none",ms=4.,\
+        ls="none",label="exact"),
+        Line2D([0], [0], c='k', label='Eq. (106)'),
+        Line2D([0], [0], c='0.25', label='Eq. (105)')
+    ]
+    asp.legend(handles=lgnd_elms_sp,loc="upper center")
     folder = "hand_qual_plots/"
     savedict = dict(transparent=True,format="png",dpi=300.0)
-    name = "z_ph_"
-    name += sys.aircraft_name.lower().replace(" ","_").replace("-","_")
-    plt.savefig(folder + "phugoid/" + name + ".png",**savedict)
+    name = "z_sp_" + aircraft_name
+    fsp.savefig(folder + "short_period/" + name + ".png",**savedict)
+    name = "z_ph_" + aircraft_name
+    fph.savefig(folder + "phugoid/" + name + ".png",**savedict)
+    name = "CAP_v_z_sp_" + aircraft_name
+    fsC.savefig(folder + "short_period_CAP_v_z/" + name + ".png",**savedict)
     if False:
         plt.show()
     else:
-        plt.close()
+        plt.close('all')
     
 
     ## Spiral & Dutch-roll
@@ -101,7 +240,7 @@ def analyze_aircraft(file_name):
     nsm2[0] = 0.001
     lnpn = nsm*sys.bw
 
-    # run for various rolling static margins, shift by 0.05 lnpn/bw
+    # run for various roll static margins, shift by 0.05 lnpn/bw
     lsm_final = 0.20
     step = 0.05
     num = int(lsm_final/step) + 1
@@ -112,12 +251,15 @@ def analyze_aircraft(file_name):
     # initialize figures
     fsl, asl = plt.subplots()
     fdr, adr = plt.subplots()
+    fdC, adC = plt.subplots()
 
     # plot grid
     asl.grid(which="major",lw=0.6,ls="-",c="0.5")
     asl.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
     adr.grid(which="major",lw=0.6,ls="-",c="0.5")
     adr.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    adC.grid(which="major",lw=0.6,ls="-",c="0.5")
+    adC.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
 
     for i,hnpl in enumerate(hnpl_array):
         # calculate spiral time to double
@@ -172,6 +314,9 @@ def analyze_aircraft(file_name):
         drZ = drSg/drWD
         z_dr = drZ
 
+        # calculate dutch roll CAP
+        CAP_dr = sys.g*lmpn/rzzb**2.
+
 
         # get positive indices for spiral
         try:
@@ -188,16 +333,16 @@ def analyze_aircraft(file_name):
         Cl_b_0 = sys.Cl_b*1.
         t_sl_exact = nsm2*0.
         z_dr_exact = nsm2*0.
+        CAP_dr_exact = nsm2*0.
         for j in range(2,nsm2.shape[0]):
             sys.Cn_b = -nsm2[j]*sys.CY_b
             sys.Cl_b =  lsm[i]*sys.CY_b
             sys._buckingham_matrices_and_approximations()
             sys._lateral_dimensional_properties(sys.b,is_alternate=True)
             t_sl_exact[j] = sys.b["lat"]["double"][sys.b["lat"]["sl"]]*1.
-            try:
-                z_dr_exact[j] = sys.b["lat"]["zt"][sys.b["lat"]["dr"][0]]*1.
-            except:
-                z_dr_exact[j] = sys.b["lat"]["zt"][sys.b["lat"]["sl"][0]]*1.
+            z_dr_exact[j] = sys.b["lat"]["zt"][sys.b["lat"]["dr"][0]]*1.
+            CAP_dr_exact[j] = -sys.b["lat"]["wn"][sys.b["lat"]["dr"][0]]**2./\
+                sys.CY_b*sys.CW
         # return to normal
         sys.Cl_b = Cl_b_0*1.
         sys.Cn_b = Cn_b_0*1.
@@ -205,20 +350,26 @@ def analyze_aircraft(file_name):
         sys._lateral_dimensional_properties(sys.b,is_alternate=True)
 
         # plot spiral
+        asl.plot(nsm[:ipo],t_sl_other[:ipo],ls="--",c=str(i/num*0.95))
+        asl.plot(nsm[ips:],t_sl[ips:],c=str(i/num*0.95))
         asl.plot(nsm2[2:],t_sl_exact[2:],c=str(i/num*0.95),marker="o",\
             mfc="none",ms=4.,ls="none")
-        asl.plot(nsm[ips:],t_sl[ips:],c=str(i/num*0.95))
-        asl.plot(nsm[:ipo],t_sl_other[:ipo],ls="--",c=str(i/num*0.95))
 
-        # plot spiral
+        # plot Dutch-roll damping ratio
+        adr.plot(nsm,z_dr_other,ls="--",c=str(i/num*0.95))
+        adr.plot(nsm,z_dr,c=str(i/num*0.95))
         adr.plot(nsm2[2:],z_dr_exact[2:],c=str(i/num*0.95),marker="o",\
             mfc="none",ms=4.,ls="none")
-        adr.plot(nsm,z_dr,c=str(i/num*0.95))
-        adr.plot(nsm,z_dr_other,ls="--",c=str(i/num*0.95))
+        
+        # plot Dutch-roll CAP
+        if i == 0:
+            adC.plot(nsm,CAP_dr,c=str(i/num*0.95))
+            adC.plot(nsm2[2:],CAP_dr_exact[2:],c=str(i/num*0.95),marker="o",\
+                mfc="none",ms=4.,ls="none")
     
     # legend elements
     lbl_name = r"$h_{np_\ell}/b_w =$ "
-    lgnd_elms_sp = [
+    lgnd_elms_sl = [
         Line2D([0], [0], c='k', ls='none',lw=1,marker="o",\
             mfc="none",ms=4., label='exact'),
         Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (115)'),
@@ -236,32 +387,50 @@ def analyze_aircraft(file_name):
         Line2D([0], [0], c=str(2/num*0.95), ls='-',lw=1, label=lbl_name + "0.1"),
         Line2D([0], [0], c=str(4/num*0.95), ls='-',lw=1, label=lbl_name + "0.2")
     ]
+    lgnd_elms_CP = [
+        Line2D([0], [0], c='k', ls='none',lw=1,marker="o",\
+            mfc="none",ms=4., label='exact'),
+        Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (126)')
+    ]
 
     t_2m = 240.
+    asl.set_xlim((0.,sm_final))
     asl.set_ylim((0.,t_2m))
-    asl.set_xlabel(r"Yawing static margin, $l_{np_n}/b_w$")
+    asl.set_xlabel(r"Yaw static margin, $l_{np_n}/b_w$")
     asl.set_ylabel(r"Spiral time to double, $\tau_{sl}$")
-    asl.legend(handles=lgnd_elms_sp)
-    name = "t_sl_"
-    name += sys.aircraft_name.lower().replace(" ","_").replace("-","_")
+    asl.legend(handles=lgnd_elms_sl)
+    name = "t_sl_" + aircraft_name
     fsl.savefig(folder + "spiral/" + name + ".png",**savedict)
-    if False:
-        plt.show()
-    else:
-        plt.close()
 
-    limit = 1.
-    adr.set_ylim((-limit,limit))
-    adr.set_xlabel(r"Yawing static margin, $l_{np_n}/b_w$")
+    if sys.aircraft_name == "Navion":
+        limit = 0.75
+    elif sys.aircraft_name == "F-94A":
+        limit = 0.4
+    elif sys.aircraft_name == "Lockheed Jetstar":
+        limit = 0.6
+    elif sys.aircraft_name == "Boeing 747":
+        limit = 0.6
+    else:
+        limit = 1.
+    adr.set_xlim((0.,sm_final))
+    adr.set_ylim((0.,limit))
+    adr.set_xlabel(r"Yaw static margin, $l_{np_n}/b_w$")
     adr.set_ylabel(r"Dutch-roll damping ratio, $\zeta_{dr}$")
     adr.legend(handles=lgnd_elms_dr)
-    name = "z_dr_"
-    name += sys.aircraft_name.lower().replace(" ","_").replace("-","_")
+    name = "z_dr_" + aircraft_name
     fdr.savefig(folder + "dutch_roll/" + name + ".png",**savedict)
+
+    adC.set_xlim((0.,sm_final))
+    # adC.set_ylim((0.,limit))
+    adC.set_xlabel(r"Yaw static margin, $l_{np_n}/b_w$")
+    adC.set_ylabel(r"Dutch-roll CAP")
+    adC.legend(handles=lgnd_elms_CP)
+    name = "CAP_dr_" + aircraft_name
+    fdC.savefig(folder + "dutch_roll_CAP/" + name + ".png",**savedict)
     if False:
         plt.show()
     else:
-        plt.close()
+        plt.close('all')
 
 
 
@@ -314,7 +483,7 @@ if __name__ == "__main__":
     "DC_8.json",
     # "9_8_2.json",
     ### Class IV -- high-maneuverability
-    "F16_bolander.json",
+    "F_16.json",
     "NT_33A.json", "F_104A.json", "F_4C.json",
     "A_7A.json", "A_4D.json",
     "F_94A.json", "F_15.json",

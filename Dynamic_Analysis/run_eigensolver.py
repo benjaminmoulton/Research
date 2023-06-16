@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # Class III
     "boeing_747.json", "C_5A.json", "XB_70A.json",
     # Class IV
-    "F16_bolander.json",
+    "F_16.json",
     "NT_33A.json", "F_104A.json", "F_4C.json",
     "A_7A.json", "A_4D.json"
     ]

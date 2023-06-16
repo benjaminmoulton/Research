@@ -12,7 +12,8 @@
         "Ixz[slug-ft^2]" : -2.76e6,
         "Iyz[slug-ft^2]" : 0.0,
         "from" : "NASA CR-2144 -- Heffley et al. 1972",
-        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf"
+        "file" : "https://ntrs.nasa.gov/api/citations/19730003312/downloads/19730003312.pdf",
+        "configuration" : "power approach"
     },
     "analysis" : {
         "density[slugs/ft^3]" : 1.26725882157e-03
