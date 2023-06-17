@@ -21,9 +21,9 @@ if __name__ == "__main__":
 
     # declare variables
     print("declaring variables...")
-    ax = sym("ax")
-    ay = sym("ay")
-    az = sym("az")
+    ax = sym("a")
+    ay = sym("b")
+    az = sym("c")
     t = sym("t")
     f = sym("f")
     rp = sym("r")
@@ -36,16 +36,19 @@ if __name__ == "__main__":
     sf = sin(f); cf = cos(f)
     r = sqrt( 1 - (ct*cf/ax)**2 - (ct*sf/ay)**2 - (st/az)**2 )
     f_up = 2 * pi; f_lo = 0
-    theta_up = pi / 2
-    theta_lo = - pi / 2
-    r_up = r; r_lo = 0
+    theta_up = pi
+    theta_lo = 0
+    r_up = 1; r_lo = 0
     f_bnd = (f,f_lo,f_up)
     r_bnd = (rp,r_lo,r_up)
     theta_bnd = (t,theta_lo,theta_up)
 
-    i = ax * cos(t) * cos(f)
-    j = ay * cos(t) * sin(f)
-    k = az * sin(t)
+    # i = ax * rp * cos(t) * cos(f)
+    # j = ay * rp * cos(t) * sin(f)
+    # k = az * rp * sin(t)
+    i = ax * rp * sin(t) * cos(f)
+    j = ay * rp * sin(t) * sin(f)
+    k = az * rp * cos(t)
 
     V = [
         [0,0,0],
@@ -64,13 +67,8 @@ if __name__ == "__main__":
     print("ellipsoid eqs...")
 
     for q in range(len(V)):
-        f = p * i**V[q][0] * j**V[q][1] * k**V[q][2]
-        iii = simp( igr(f * rp**2 * sin(t), r_bnd) )
-        print("i   = ", iii)
-        iii = simp( igr(iii,theta_bnd) )
-        print("ii  = ", iii)
-        iii = simp( igr(iii,f_bnd) )
-        print("iii = ", iii)
+        f = i**V[q][0] * j**V[q][1] * k**V[q][2]
+        iii = simp( p*ax*ay*az*igr(f * rp**2 * sin(t), r_bnd,theta_bnd,f_bnd) )
         V_ints.append(iii)
         print("V{}{}{} = {}".format(V[q][0],V[q][1],V[q][2],iii))
         
