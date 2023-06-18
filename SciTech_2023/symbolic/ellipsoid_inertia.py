@@ -67,8 +67,8 @@ if __name__ == "__main__":
     print("ellipsoid eqs...")
 
     for q in range(len(V)):
-        f = i**V[q][0] * j**V[q][1] * k**V[q][2]
-        iii = simp( p*ax*ay*az*igr(f * rp**2 * sin(t), r_bnd,theta_bnd,f_bnd) )
+        g = i**V[q][0] * j**V[q][1] * k**V[q][2]
+        iii = simp( p*ax*ay*az*igr(g * rp**2 * sin(t), r_bnd,theta_bnd,f_bnd) )
         V_ints.append(iii)
         print("V{}{}{} = {}".format(V[q][0],V[q][1],V[q][2],iii))
         
@@ -133,6 +133,56 @@ if __name__ == "__main__":
         else:
             ii0 = simp(V_ints[momlisti[q-7][0]].replace(ax,rp).replace(ay,rp).replace(az,rp))
             ii1 = simp(V_ints[momlisti[q-7][1]].replace(ax,rp).replace(ay,rp).replace(az,rp))
+            cg0 = cg[momcglist[q-7][0]]
+            cg1 = cg[momcglist[q-7][1]]
+            I = simp(mp*( (ii0+ii1)/m - cg0**2 - cg1**2) )
+            print("I{} = {}".format(momlist[q-7],I))
+        
+    print()
+    print()
+
+    
+
+    print("hemisphere eqs...")
+
+    f_up = pi / 2; f_lo = - pi / 2
+    f_bnd = (f,f_lo,f_up)
+    H_ints = []
+    H = V
+    for q in range(len(H)):
+        g = i**H[q][0] * j**H[q][1] * k**H[q][2]
+        iii = simp( p*ax*ay*az*igr(g * rp**2 * sin(t), r_bnd,theta_bnd,f_bnd) )
+        H_ints.append(iii)
+        print("H{}{}{} = {}".format(H[q][0],H[q][1],H[q][2],iii))
+        
+    print()
+    print()
+
+    print("hemisphere inertia eqs...")
+    m = simp(H_ints[0])
+    cglist = ["x","y","z"]
+    prodlist = ["xy","xz","yz"]
+    prodcglist = [(0,1),(0,2),(1,2)]
+    momlist = ["xx","yy","zz"]
+    momlisti = [(8,9),(7,9),(7,8)]
+    momcglist = [(1,2),(0,2),(0,1)]
+    cg = []
+
+    for q in range(len(H)):
+        iii = simp(H_ints[q])
+        if q == 0:
+            print("V = {}".format(simp(m/p)))
+            print("m = {}".format(m))
+        elif q < 4:
+            cg.append(simp(iii/m))
+            print("{}-cg = {}".format(cglist[q-1],cg[-1]))
+        elif q < 7:
+            cgprod = cg[prodcglist[q-4][0]] * cg[prodcglist[q-4][1]]
+            I = simp(mp*(iii/m - cgprod))
+            print("I{} = {}".format(prodlist[q-4],I))
+        else:
+            ii0 = simp(H_ints[momlisti[q-7][0]])
+            ii1 = simp(H_ints[momlisti[q-7][1]])
             cg0 = cg[momcglist[q-7][0]]
             cg1 = cg[momcglist[q-7][1]]
             I = simp(mp*( (ii0+ii1)/m - cg0**2 - cg1**2) )
