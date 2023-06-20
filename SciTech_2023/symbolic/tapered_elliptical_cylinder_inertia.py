@@ -47,8 +47,8 @@ if __name__ == "__main__":
     theta_bnd = (t,theta_lo,theta_up)
 
     i = x
-    j = ay * cos(t)
-    k = az * sin(t)
+    j = rp * cos(t)
+    k = rp * sin(t)
 
     V = [
         [0,0,0],
@@ -65,8 +65,6 @@ if __name__ == "__main__":
     V_ints = []
 
     print("tapered cylinder eqs...")
-    print("still working on this...")
-    quit()
 
     for q in range(len(V)):
         f = p * i**V[q][0] * j**V[q][1] * k**V[q][2]
