@@ -201,3 +201,6 @@ if __name__ == "__main__":
             cg1 = cg[momcglist[q-7][1]]
             I = simp(mp*( (ii0+ii1)/m - cg0**2 - cg1**2) )
             print("I{} = {}".format(momlist[q-7],I))
+    
+    print()
+    print()
