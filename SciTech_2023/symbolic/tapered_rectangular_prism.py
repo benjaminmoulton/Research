@@ -95,14 +95,18 @@ if __name__ == "__main__":
         elif q < 7:
             cgprod = cg[prodcglist[q-4][0]] * cg[prodcglist[q-4][1]]
             I = simp(mp*(iii/m - cgprod))
-            print("I{} = {}".format(prodlist[q-4],I))
+            print("I{}  = {}".format(prodlist[q-4],I))
+            I = simp(mp*(iii/m))
+            print("I{}o = {}".format(prodlist[q-4],I))
         else:
             ii0 = simp(V_ints[momlisti[q-7][0]])
             ii1 = simp(V_ints[momlisti[q-7][1]])
             cg0 = cg[momcglist[q-7][0]]
             cg1 = cg[momcglist[q-7][1]]
             I = simp(mp*( (ii0+ii1)/m - cg0**2 - cg1**2) )
-            print("I{} = {}".format(momlist[q-7],I))
+            print("I{}  = {}".format(momlist[q-7],I))
+            I = simp(mp*( (ii0+ii1)/m) )
+            print("I{}o = {}".format(momlist[q-7],I))
         
     print()
     print()
@@ -210,14 +214,18 @@ if __name__ == "__main__":
         elif q < 7:
             cgprod = cg[prodcglist[q-4][0]] * cg[prodcglist[q-4][1]]
             I = simp(mp*(iii/m - cgprod))
-            print("I{} = {}".format(prodlist[q-4],I))
+            print("I{}  = {}".format(prodlist[q-4],I))
+            I = simp(mp*(iii/m))
+            print("I{}o = {}".format(prodlist[q-4],I))
         else:
             ii0 = simp(H_ints[momlisti[q-7][0]])
             ii1 = simp(H_ints[momlisti[q-7][1]])
             cg0 = cg[momcglist[q-7][0]]
             cg1 = cg[momcglist[q-7][1]]
             I = simp(mp*( (ii0+ii1)/m - cg0**2 - cg1**2) )
-            print("I{} = {}".format(momlist[q-7],I))
+            print("I{}  = {}".format(momlist[q-7],I))
+            I = simp(mp*( (ii0+ii1)/m) )
+            print("I{}o = {}".format(momlist[q-7],I))
         
     print()
     print()
@@ -259,14 +267,18 @@ if __name__ == "__main__":
         elif q < 7:
             cgprod = cg[prodcglist[q-4][0]] * cg[prodcglist[q-4][1]]
             I = simp(mp*(iii/m - cgprod))
-            print("I{} = {}".format(prodlist[q-4],I))
+            print("I{}  = {}".format(prodlist[q-4],I))
+            I = simp(mp*(iii/m))
+            print("I{}o = {}".format(prodlist[q-4],I))
         else:
             ii0 = simp(Q_ints[momlisti[q-7][0]])
             ii1 = simp(Q_ints[momlisti[q-7][1]])
             cg0 = cg[momcglist[q-7][0]]
             cg1 = cg[momcglist[q-7][1]]
             I = simp(mp*( (ii0+ii1)/m - cg0**2 - cg1**2) )
-            print("I{} = {}".format(momlist[q-7],I))
+            print("I{}  = {}".format(momlist[q-7],I))
+            I = simp(mp*( (ii0+ii1)/m) )
+            print("I{}o = {}".format(momlist[q-7],I))
         
     print()
     print()
