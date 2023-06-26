@@ -63,7 +63,7 @@ if __name__ == "__main__":
     ]
     V_ints = []
 
-    print("tapered rectangual prism eqs...")
+    print("tapered prismoid eqs...")
 
     for q in range(len(V)):
         f = p * i**V[q][0] * j**V[q][1] * k**V[q][2]
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     print()
     print()
 
-    print("tapered rectangular prism inertia eqs...")
+    print("tapered prismoid inertia eqs...")
     m = simp(V_ints[0])
     cglist = ["x","y","z"]
     prodlist = ["xy","xz","yz"]
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     print()
     print()
 
-    # print("rectangular prism eqs...")
+    # print("prismoid eqs...")
     # m = simp( V_ints[0].subs({z1:z0,y1:y0}).subs({z0:lz,y0:ly,h:lx}) )
     # cglist = ["x","y","z"]
     # prodlist = ["xy","xz","yz"]
@@ -177,7 +177,7 @@ if __name__ == "__main__":
     # print()
     # print()
 
-    print("tapered half-rectangular prism (+y) eqs...")
+    print("tapered half-prismoid (+y) eqs...")
     y_up = y/2; y_lo = 0
     # z_up = z/2; z_lo = -z/2
     y_bnd = (yp,y_lo,y_up)
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     print()
     print()
 
-    print("tapered half-rectangular prism inertia (+y) eqs...")
+    print("tapered half-prismoid inertia (+y) eqs...")
     m = simp(H_ints[0])
     cglist = ["x","y","z"]
     prodlist = ["xy","xz","yz"]
@@ -230,7 +230,7 @@ if __name__ == "__main__":
     print()
     print()
 
-    print("tapered quarter-rectangular prism (+y+z) eqs...")
+    print("tapered quarter-prismoid (+y+z) eqs...")
     y_up = y/2; y_lo = 0
     z_up = z/2; z_lo = 0
     y_bnd = (yp,y_lo,y_up)
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     print()
     print()
 
-    print("tapered quarter-rectangular prism inertia (+y+z) eqs...")
+    print("tapered quarter-prismoid inertia (+y+z) eqs...")
     m = simp(Q_ints[0])
     cglist = ["x","y","z"]
     prodlist = ["xy","xz","yz"]
