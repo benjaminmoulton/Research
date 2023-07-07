@@ -25,7 +25,11 @@ if __name__ == "__main__":
     ay = sym("b")
     az = sym("c")
     t = sym("t")
+    t0 = sym("t0")
+    t1 = sym("t1")
     f = sym("f")
+    f0 = sym("f0")
+    f1 = sym("f1")
     rp = sym("r")
     p = sym("p")
     mp = sym("m")
@@ -35,9 +39,10 @@ if __name__ == "__main__":
     st = sin(t); ct = cos(t)
     sf = sin(f); cf = cos(f)
     r = sqrt( 1 - (ct*cf/ax)**2 - (ct*sf/ay)**2 - (st/az)**2 )
-    f_up = 2 * pi; f_lo = 0
-    theta_up = pi
-    theta_lo = 0
+    f_up = f1 # 2*pi #
+    f_lo = f0 # 0 # 
+    theta_up = t1 # pi # 
+    theta_lo = t0 # 0 # 
     r_up = 1; r_lo = 0
     f_bnd = (f,f_lo,f_up)
     r_bnd = (rp,r_lo,r_up)
@@ -111,6 +116,7 @@ if __name__ == "__main__":
         
     print()
     print()
+    quit()
 
     # print("sphere eqs...")
     # m = simp(V_ints[0].replace(ax,rp).replace(ay,rp).replace(az,rp))

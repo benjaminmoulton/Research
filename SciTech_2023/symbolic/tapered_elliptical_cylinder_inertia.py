@@ -24,6 +24,8 @@ if __name__ == "__main__":
     r0 = sym("r0")
     r1 = sym("r1")
     t = sym("t")
+    t0 = sym("t0")
+    t1 = sym("t1")
     h = sym("h")
     rp = sym("r")
     p = sym("p")
@@ -39,8 +41,8 @@ if __name__ == "__main__":
     ay = (ay1-ay0) * x/h + ay0
     az = (az1-az0) * x/h + az0
     x_up = h; x_lo = 0
-    theta_up = 2 * pi
-    theta_lo = 0
+    theta_up = t1 # 2 * pi # 
+    theta_lo = t0 # 0 # 
     r_up = 1; r_lo = 0
     x_bnd = (x,x_lo,x_up)
     r_bnd = (rp,r_lo,r_up)
@@ -111,6 +113,7 @@ if __name__ == "__main__":
         
     print()
     print()
+    quit()
 
     # print("elliptic cylinder eqs...")
     # m = simp( V_ints[0].subs({ay0:ay1,az0:az1}) )
