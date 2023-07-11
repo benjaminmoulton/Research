@@ -1775,6 +1775,21 @@ if __name__ == "__main__":
     eigensolved = [0.0] * num_craft
     for i in range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
+
+        a = np.deg2rad(10.)
+        b = np.deg2rad(1.0)
+        s = np.arctan2(np.tan(b),np.tan(a))
+        s_b = np.sin(a)*np.cos(a)/(np.sin(a)**2.*np.cos(b)**2. + np.cos(a)**2.*np.sin(b)**2.)
+        s_2 = np.tan(a)/np.cos(a)**2./(np.tan(a)**2. + np.tan(b)**2.)
+        s_3 = a / (a**2. + b**2.)
+        # print(eigensolved[i].aircraft_short_name,np.rad2deg(s),s_b,s_2,s_3)
+        CL = eigensolved[i].CL0 + eigensolved[i].CL_a*a
+        CY = eigensolved[i].CY_b*b
+        print("{:^8}   CY = {:> 7.3f} CL*s = {:> 7.3f}, CY/CL/s = {:> 7.3f}".format(
+            eigensolved[i].aircraft_short_name,CY,CL*s,CY/CL/s))
+
+    
+    quit()
     
 
     # evaluate controllability, condition number
