@@ -794,7 +794,7 @@ class Solver:
         a = 10
 
 
-    def _buckingham_matrices_and_approximations(self):
+    def _buckingham_matrices_and_approximations(self,cg_shift=[0.,0.,0.]):
         """Method which creates the matrices to be solved.
         """
 
@@ -808,6 +808,67 @@ class Solver:
         Ryy = self.rho*self.vo**2.*self.Sw*self.cwbar**2./4./self.g/self.Iyy
         Rxx = self.rho*self.vo**2.*self.Sw*self.bw**2./4./self.g/self.Ixx
         Rzz = self.rho*self.vo**2.*self.Sw*self.bw**2./4./self.g/self.Izz
+
+        # force derivatives for cg shifting
+        Cx_mu = -2. * self.CDo
+        Cy_mu = 0.
+        Cz_mu = -2. * self.CLo # I believe this sign is correct...
+        Cx_b = 0.
+        Cy_b = self.CY_b
+        Cz_b = 0.
+        Cx_a = self.CLo - self.CD_a
+        Cy_a = 0.
+        Cz_a = -self.CDo - self.CL_a
+        Cx_pbar = 0.
+        Cy_pbar = self.CY_pbar
+        Cz_pbar = 0.
+        Cx_qbar = -self.CD_qbar # I believe this sign is correct...
+        Cy_qbar = 0.
+        Cz_qbar = -self.CL_qbar # I believe this sign is correct...
+        Cx_rbar = 0.
+        Cy_rbar = self.CY_rbar
+        Cz_rbar = 0.
+        Cx_da = 0.
+        Cy_da = self.CY_da
+        Cz_da = 0.
+        Cx_de = -self.CD_de # I believe this sign is correct...
+        Cy_de = 0.
+        Cz_de = -self.CL_de # I believe this sign is correct...
+        Cx_dr = 0.
+        Cy_dr = self.CY_dr
+        Cz_dr = 0.
+        # induced moments
+        Dxcg,Dycg,Dzcg = cg_shift
+        cw,bw = self.cwbar,self.bw
+        iKl_mu = Rxx2*(Cy_mu   *Dzcg/bw - Cz_mu   *Dycg/bw)
+        iKl_b  = Rxx2*(Cy_b    *Dzcg/bw - Cz_b    *Dycg/bw)
+        iKl_a  = Rxx2*(Cy_a    *Dzcg/bw - Cz_a    *Dycg/bw)
+        iKl_p  = Rxx *(Cy_pbar *Dzcg/bw - Cz_pbar *Dycg/bw)
+        iKl_q  = Rxx *(Cy_qbar *Dzcg/bw - Cz_qbar *Dycg/bw)
+        iKl_r  = Rxx *(Cy_rbar *Dzcg/bw - Cz_rbar *Dycg/bw)
+        iKl_da = Rxx2*(Cy_da   *Dzcg/bw - Cz_da   *Dycg/bw)
+        iKl_de = Rxx2*(Cy_de   *Dzcg/bw - Cz_de   *Dycg/bw)
+        iKl_dr = Rxx2*(Cy_dr   *Dzcg/bw - Cz_dr   *Dycg/bw)
+        #
+        iKm_mu = Ryy2*(Cz_mu   *Dxcg/cw - Cx_mu   *Dzcg/cw)
+        iKm_b  = Ryy2*(Cz_b    *Dxcg/cw - Cx_b    *Dzcg/cw)
+        iKm_a  = Ryy2*(Cz_a    *Dxcg/cw - Cx_a    *Dzcg/cw)
+        iKm_p  = Ryy *(Cz_pbar *Dxcg/cw - Cx_pbar *Dzcg/cw)
+        iKm_q  = Ryy *(Cz_qbar *Dxcg/cw - Cx_qbar *Dzcg/cw)
+        iKm_r  = Ryy *(Cz_rbar *Dxcg/cw - Cx_rbar *Dzcg/cw)
+        iKm_da = Ryy2*(Cz_da   *Dxcg/cw - Cx_da   *Dzcg/cw)
+        iKm_de = Ryy2*(Cz_de   *Dxcg/cw - Cx_de   *Dzcg/cw)
+        iKm_dr = Ryy2*(Cz_dr   *Dxcg/cw - Cx_dr   *Dzcg/cw)
+        #
+        iKn_mu = Rzz2*(Cx_mu   *Dycg/bw - Cy_mu   *Dxcg/bw)
+        iKn_b  = Rzz2*(Cx_b    *Dycg/bw - Cy_b    *Dxcg/bw)
+        iKn_a  = Rzz2*(Cx_a    *Dycg/bw - Cy_a    *Dxcg/bw)
+        iKn_p  = Rzz *(Cx_pbar *Dycg/bw - Cy_pbar *Dxcg/bw)
+        iKn_q  = Rzz *(Cx_qbar *Dycg/bw - Cy_qbar *Dxcg/bw)
+        iKn_r  = Rzz *(Cx_rbar *Dycg/bw - Cy_rbar *Dxcg/bw)
+        iKn_da = Rzz2*(Cx_da   *Dycg/bw - Cy_da   *Dxcg/bw)
+        iKn_de = Rzz2*(Cx_de   *Dycg/bw - Cy_de   *Dxcg/bw)
+        iKn_dr = Rzz2*(Cx_dr   *Dycg/bw - Cy_dr   *Dxcg/bw)
 
         # LONGITUDINAL
         # values
@@ -856,9 +917,9 @@ class Solver:
         A[1,1] = Kz_a
         A[1,2] = 1. - Kz_qbreve
         A[1,5] = - self.st
-        A[2,0] = Km_mu
-        A[2,1] = Km_a
-        A[2,2] = Km_qbreve
+        A[2,0] = Km_mu + iKm_mu
+        A[2,1] = Km_a + iKm_a
+        A[2,2] = Km_qbreve + iKm_q
         A[3,0] = A[4,1] = self.ct
         A[3,1] = self.st
         A[4,5] = - self.ct
@@ -880,7 +941,7 @@ class Solver:
         D = np.zeros((6,1))
         D[0,0] = -Kx_de
         D[1,0] = -Kz_de
-        D[2,0] = Km_de
+        D[2,0] = Km_de + iKm_de
         E = np.matmul(np.linalg.inv(B),D)
 
         # redimensionalize matrices
@@ -932,12 +993,12 @@ class Solver:
         A[0,1] = Ky_pbreve
         A[0,2] = Ky_rbreve - 1.
         A[0,4] = self.ct
-        A[1,0] = Kl_b
-        A[1,1] = Kl_pbreve
-        A[1,2] = Kl_rbreve
-        A[2,0] = Kn_b
-        A[2,1] = Kn_pbreve
-        A[2,2] = Kn_rbreve
+        A[1,0] = Kl_b + iKl_b
+        A[1,1] = Kl_pbreve + iKl_p
+        A[1,2] = Kl_rbreve + iKl_r
+        A[2,0] = Kn_b + iKn_b
+        A[2,1] = Kn_pbreve + iKn_p
+        A[2,2] = Kn_rbreve + iKn_r
         A[3,0] = A[4,1] = 1.
         A[3,5] = self.ct
         A[4,2] = self.st / self.ct
@@ -954,10 +1015,10 @@ class Solver:
         D = np.zeros((6,2))
         D[0,0] = Ky_da
         D[0,1] = Ky_dr
-        D[1,0] = Kl_da
-        D[1,1] = Kl_dr
-        D[2,0] = Kn_da
-        D[2,1] = Kn_dr
+        D[1,0] = Kl_da + iKl_da
+        D[1,1] = Kl_dr + iKl_dr
+        D[2,0] = Kn_da + iKn_da
+        D[2,1] = Kn_dr + iKn_dr
         E = np.matmul(np.linalg.inv(B),D)
 
         # redimensionalize matrices
@@ -1018,8 +1079,9 @@ class Solver:
         self.b["spSg"] = - 0.5 * self.g / self.vo * (Kz_a + Km_qbreve + Km_ahat)
         self.b["spt99"] = np.log(0.01) / - self.b["spSg"]
         self.b["spt2x"] = np.log(2.0) / - self.b["spSg"]
-        self.b["spWD"] = self.g / self.vo * np.sqrt(np.abs(\
-            (Kz_a*Km_qbreve + Km_a) - 0.25*(Kz_a + Km_qbreve + Km_ahat)**2.))
+        inn = (Kz_a*Km_qbreve + Km_a) - 0.25*(Kz_a + Km_qbreve + Km_ahat)**2.
+        # print("inn is pos :",inn >= 0.0)
+        self.b["spWD"] = self.g / self.vo * np.sqrt(np.abs(inn))
         self.b["spT"] = 2. * np.pi / self.b["spWD"]
         self.b["spwn"] = ( self.b["spSg"]**2. + self.b["spWD"]**2. )**0.5
         self.b["spzt"] = self.b["spSg"] / self.b["spwn"]
@@ -1338,6 +1400,13 @@ class Solver:
                 e2 = np.conjugate(e1)
                 method[side]["wn"][i] = np.real(np.sqrt(e1*e2) * redim)
                 method[side]["zt"][i] = np.real(-(e1+e2) /2./np.sqrt(e1*e2))
+            else:
+                if np.real(method[side]["evals"][i]) != 0.0:
+                    method[side]["wd"][i] = np.NaN
+                    method[side]["T"][i] = np.NaN
+                    method[side]["wn"][i] = np.NaN
+                    method[side]["zt"][i] = np.NaN
+                    
 
 
     def _longitudinal_dimensional_properties(self,method,is_alternate=False):
@@ -1348,17 +1417,28 @@ class Solver:
         i_rb = np.argwhere(np.abs(method["lon"]["evals"]) == 0.0).T[0]
 
         # determine indexes for short period mode
-        i_sp = i_rb * 0
-        i_sp[0] = np.abs(method["lon"]["evals"]).argmax()
-        # determine "second" index
-        sp_not_complex = np.imag(method["lon"]["evals"][i_sp[0]]) == 0.0
-        i_sp[1] = np.abs(np.delete(method["lon"]["evals"],i_sp[0])).argmax()
-        if i_sp[1] >= i_sp[0]:
-            i_sp[1] += 1
+        all_real = np.imag(method["lon"]["evals"]) == 0.0
+        max_arg = np.abs(method["lon"]["evals"]).argmax()
+        if all_real.sum() in [2,6]:
+            # get sp mode
+            i_sp = i_rb * 0
+            i_sp[0] = np.abs(method["lon"]["evals"]).argmax()
+            i_sp[1] = np.abs(np.delete(method["lon"]["evals"],i_sp[0])).argmax()
+            if i_sp[1] >= i_sp[0]:
+                i_sp[1] += 1
+            # determine indexes for phugoid mode
+            i_ph = np.delete(np.array(range(6)),np.concatenate((i_rb,i_sp)))
+        elif all_real.sum() == 4:
+            # check if max arg in all real or not
+            if all_real[max_arg]:
+                i_sp = np.array(range(6))[all_real]
+                i_ph = np.delete(np.array(range(6)),np.concatenate((i_rb,i_sp)))
+            else:
+                i_ph = np.array(range(6))[all_real]
+                i_sp = np.delete(np.array(range(6)),np.concatenate((i_rb,i_ph)))
+        else:
+            raise NotImplementedError("This scenario has not been implemented")
         
-        # determine indexes for phugoid mode
-        i_ph = np.delete(np.array(range(6)),np.concatenate((i_rb,i_sp)))
-
         # calculate eigenvalue properties
         self._eigenvalue_properties(method,True,is_alternate)
 
