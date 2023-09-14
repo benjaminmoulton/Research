@@ -810,9 +810,15 @@ class Solver:
         Rzz = self.rho*self.vo**2.*self.Sw*self.bw**2./4./self.g/self.Izz
 
         # force derivatives for cg shifting
-        Cx_mu = -2. * self.CDo
+        Cx_muhat = -self.CD_uhat
+        Cy_muhat = 0.
+        Cz_muhat = -self.CL_uhat
+        Cx_ahat = -self.CD_ahat
+        Cy_ahat = 0.
+        Cz_ahat = -self.CL_ahat
+        Cx_mu = 0.#-2. * self.CDo
         Cy_mu = 0.
-        Cz_mu = -2. * self.CLo # I believe this sign is correct...
+        Cz_mu = 0.#-2. * self.CLo # I believe this sign is correct...
         Cx_b = 0.
         Cy_b = self.CY_b
         Cz_b = 0.
@@ -840,6 +846,8 @@ class Solver:
         # induced moments
         Dxcg,Dycg,Dzcg = cg_shift
         cw,bw = self.cwbar,self.bw
+        iKl_muh= Rxx *(Cy_muhat*Dzcg/bw - Cz_muhat*Dycg/bw)
+        iKl_ah = Rxx *(Cy_ahat *Dzcg/bw - Cz_ahat *Dycg/bw)
         iKl_mu = Rxx2*(Cy_mu   *Dzcg/bw - Cz_mu   *Dycg/bw)
         iKl_b  = Rxx2*(Cy_b    *Dzcg/bw - Cz_b    *Dycg/bw)
         iKl_a  = Rxx2*(Cy_a    *Dzcg/bw - Cz_a    *Dycg/bw)
@@ -850,6 +858,8 @@ class Solver:
         iKl_de = Rxx2*(Cy_de   *Dzcg/bw - Cz_de   *Dycg/bw)
         iKl_dr = Rxx2*(Cy_dr   *Dzcg/bw - Cz_dr   *Dycg/bw)
         #
+        iKm_muh= Ryy *(Cz_muhat*Dxcg/cw - Cx_muhat*Dzcg/bw)
+        iKm_ah = Ryy *(Cz_ahat *Dxcg/cw - Cx_ahat *Dzcg/bw)
         iKm_mu = Ryy2*(Cz_mu   *Dxcg/cw - Cx_mu   *Dzcg/cw)
         iKm_b  = Ryy2*(Cz_b    *Dxcg/cw - Cx_b    *Dzcg/cw)
         iKm_a  = Ryy2*(Cz_a    *Dxcg/cw - Cx_a    *Dzcg/cw)
@@ -860,6 +870,8 @@ class Solver:
         iKm_de = Ryy2*(Cz_de   *Dxcg/cw - Cx_de   *Dzcg/cw)
         iKm_dr = Ryy2*(Cz_dr   *Dxcg/cw - Cx_dr   *Dzcg/cw)
         #
+        iKn_muh= Rzz *(Cx_muhat*Dycg/bw - Cy_muhat*Dxcg/bw)
+        iKn_ah = Rzz *(Cx_ahat *Dycg/bw - Cy_ahat *Dxcg/bw)
         iKn_mu = Rzz2*(Cx_mu   *Dycg/bw - Cy_mu   *Dxcg/bw)
         iKn_b  = Rzz2*(Cx_b    *Dycg/bw - Cy_b    *Dxcg/bw)
         iKn_a  = Rzz2*(Cx_a    *Dycg/bw - Cy_a    *Dxcg/bw)
@@ -907,6 +919,7 @@ class Solver:
         Ky_dr = CWinv * self.CY_dr
         Kl_dr = Rxx2 * self.Cl_dr
         Kn_dr = Rzz2 * self.Cn_dr
+        
         # initialize A and B matrices
         A = np.zeros((6,6))
         A[0,0] = Kx_mu
@@ -931,8 +944,8 @@ class Solver:
         B[0,1] = Kx_ahat
         B[1,0] = Kz_muhat
         B[1,1] = 1. + Kz_ahat
-        B[2,0] = - Km_muhat
-        B[2,1] = - Km_ahat
+        B[2,0] = - Km_muhat - iKm_muh
+        B[2,1] = - Km_ahat - iKm_ah
 
         # calculate C matrix
         C = np.matmul(np.linalg.inv(B),A)
@@ -1418,6 +1431,7 @@ class Solver:
 
         # determine indexes for short period mode
         all_real = np.imag(method["lon"]["evals"]) == 0.0
+        non_rb_real = np.delete(all_real,i_rb)
         max_arg = np.abs(method["lon"]["evals"]).argmax()
         if all_real.sum() in [2,6]:
             # get sp mode
@@ -1431,10 +1445,10 @@ class Solver:
         elif all_real.sum() == 4:
             # check if max arg in all real or not
             if all_real[max_arg]:
-                i_sp = np.array(range(6))[all_real]
+                i_sp = np.delete(np.array(range(6)),i_rb)[non_rb_real]
                 i_ph = np.delete(np.array(range(6)),np.concatenate((i_rb,i_sp)))
             else:
-                i_ph = np.array(range(6))[all_real]
+                i_ph = np.delete(np.array(range(6)),i_rb)[non_rb_real]
                 i_sp = np.delete(np.array(range(6)),np.concatenate((i_rb,i_ph)))
         else:
             raise NotImplementedError("This scenario has not been implemented")

@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.ticker import ScalarFormatter
+from matplotlib.legend_handler import HandlerTuple
 
 from eigensolver import Solver
 
 def analyze_aircraft(file_name):
     # run eigensolver
-    sys = Solver(file_name,report=False)
     print("running {}".format(file_name))
+    sys = Solver(file_name,report=False)
 
     ## Phugoid
     lnpm_0 = - sys.m_a/sys.L_a
@@ -48,20 +49,39 @@ def analyze_aircraft(file_name):
     z_sp_exact = dm2*0.
     CAP_sp_exact = dm2*0.
     craft_presented = ["Navion","F-94A","Lockheed Jetstar","Boeing 747"]
-    for i in range(dm2.shape[0]):
+    # evals = np.zeros((6,dm2.shape[0]),dtype=complex)
+    plot_sp = True
+    plot_ph = True
+    for i in reversed(range(dm2.shape[0])):
         sm2 = (dm2[i]*ryyb + sys.m_q*sys.g/sys.vo/sys.W)/sys.cwbar
         # sys.Cm_a = -sm2*sys.CL_a
         dx = -(lmpm_0 - dm2[i]*ryyb)
         # print(dm2[i],dx)
         sys._buckingham_matrices_and_approximations(cg_shift=[dx,0.,0.])
         sys._longitudinal_dimensional_properties(sys.b,is_alternate=True)
-        z_sp_exact[i] = sys.b["lon"]["zt"][sys.b["lon"]["sp"][0]]*1.
-        CAP_sp_exact[i] = sys.b["lon"]["wn"][sys.b["lon"]["sp"][0]]**2.\
-            /sys.CL_a*sys.CW
-        z_ph_exact[i] = sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.
-        # print(dm2[i])
-        # print(sys.b["lon"]["evals"])
-        # print(sys.b["lon"]["evals"][sys.b["lon"]["ph"]])
+        if plot_sp and np.imag(sys.b["lon"]["evals"][sys.b["lon"]["sp"][0]]):
+            z_sp_exact[i] = sys.b["lon"]["zt"][sys.b["lon"]["sp"][0]]*1.
+            CAP_sp_exact[i] = sys.b["lon"]["wn"][sys.b["lon"]["sp"][0]]**2.\
+                /sys.CL_a*sys.CW
+        else:
+            z_sp_exact[i] = None
+            CAP_sp_exact[i] = None
+            plot_sp = False
+        if plot_ph and np.imag(sys.b["lon"]["evals"][sys.b["lon"]["ph"][0]]):
+            z_ph_exact[i] = sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.
+        else:
+            z_ph_exact[i] = None
+            plot_ph = False
+        # print(dm2[i],sys.b["lon"]["evals"])
+        # print("ph",sys.b["lon"]["evals"][sys.b["lon"]["ph"]])
+        # print("sp",sys.b["lon"]["evals"][sys.b["lon"]["sp"]])
+        # print()
+        # evals[:,i] = sys.b["lon"]["evals"]
+        # ###   ###   ###   ###   ###
+        # evals[0:2,i] = sys.b["lon"]["evals"][sys.b["lon"]["rb"]]
+        # evals[2:4,i] = sys.b["lon"]["evals"][sys.b["lon"]["sp"]]
+        # evals[4:6,i] = sys.b["lon"]["evals"][sys.b["lon"]["ph"]]
+        # ###   ###   ###   ###   ###
         # # print(sys.b["spSg"]*-sys.vo/sys.g,sys.b["phSg"]*-sys.vo/sys.g)
         # print(sys.b["lon"]["evecs"])
         # print()
@@ -82,6 +102,33 @@ def analyze_aircraft(file_name):
         #     # print(z_ph_exact[i])
         #     # quit()
     # quit()
+    # sp_real_i = np.argwhere(np.imag(evals[2,:])==0.)
+    # sp_real_i = sp_real_i[-1,0]
+    # dm_sp_real = dm2[sp_real_i]
+    # ph_real_i = np.argwhere(np.imag(evals[4,:])==0.)
+    # # print(ph_real_i)
+    # ph_imag_i = ph_real_i[0,0]-1
+    # ph_real_i = ph_real_i[-1,0]
+    # dm_ph_real = dm2[ph_real_i]
+    # dm_ph_imag = dm2[ph_imag_i]
+    # print(sp_real_i,dm2[sp_real_i+1],dm_sp_real,-sys.m_q*sys.g/sys.vo/sys.W/ryyb,(dm_sp_real*ryyb + sys.m_q*sys.g/sys.vo/sys.W)/sys.cwbar)
+    # print(ph_real_i,dm2[ph_real_i+1],dm_ph_real,-sys.m_q*sys.g/sys.vo/sys.W/ryyb,(dm_ph_real*ryyb + sys.m_q*sys.g/sys.vo/sys.W)/sys.cwbar)
+    # print(ph_imag_i,dm2[ph_imag_i+1],dm_ph_imag,-sys.m_q*sys.g/sys.vo/sys.W/ryyb,(dm_ph_imag*ryyb + sys.m_q*sys.g/sys.vo/sys.W)/sys.cwbar)
+    # quit()
+    # cs = ["k","k","b","r","g","m"]
+    # flg, alg = plt.subplots()
+    # for i in range(6):
+    #     if cs[i] not in []:#"m","k","g"]:
+    #         for k in range(len(evals[i])):
+    #             alg.plot(np.real(evals[i,k]),np.imag(evals[i,k]),".",c=cs[i],\
+    #                 ms=float(k/dm2.shape[0])*5. + 1.0)#,c="k")
+    #         alg.plot(np.real(evals[i,:]),np.imag(evals[i,:]),linewidth=0.2,c=cs[i])
+    #         alg.set_title(sys.aircraft_name)
+    # folder = "hand_qual_plots/"
+    # aircraft_name = sys.aircraft_name.lower().replace(" ","_").replace("-","_")
+    # name = "eigs_" + aircraft_name
+    # savedict = dict(transparent=True,format="png",dpi=300.0)
+    # flg.savefig(folder + "eigvals/" + name + ".png",**savedict)
             
     # return to normal
     # sys.Cm_a = Cm_a_0*1.
@@ -99,29 +146,29 @@ def analyze_aircraft(file_name):
     aircraft_name = sys.aircraft_name.lower().replace(" ","_").replace("-","_")
 
     # initialize figures
-    # fsp, asp = plt.subplots()
+    fsp, asp = plt.subplots()
     fsC, asC = plt.subplots()
     fph, aph = plt.subplots()
 
     # plot grid
-    # asp.grid(which="major",lw=0.6,ls="-",c="0.5")
-    # asp.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    asp.grid(which="major",lw=0.6,ls="-",c="0.5")
+    asp.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
     aph.grid(which="major",lw=0.6,ls="-",c="0.5")
     aph.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
     asC.grid(which="major",lw=0.6,ls="-",c="0.5")
     asC.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
     
     # plot
-    # asp_y2 = asp.twinx()
-    # asp_y2.plot(dm2[1:],CAP_sp_exact[1:],c="0.25",marker="x",mfc="none",ms=4.,\
-    #     ls="none")
-    # asp_y2.plot(dm,CAP_sp,c="0.25",label="Eq. (105)")
+    asp_y2 = asp.twinx()
+    asp_y2.plot(dm2[1:],CAP_sp_exact[1:],c="0.25",marker="x",mfc="none",ms=4.,\
+        ls="none")
+    asp_y2.plot(dm,CAP_sp,c="0.25",label="Eq. (78)")
     # asp_y2.plot(lmpm_0/ryyb,sys.b["lon"]["wn"][sys.b["lon"]["sp"][0]]**2.\
     #     /sys.CL_a*sys.CW,\
     #     c="b",marker="x",mfc="none",ms=4.)
-    # asp.plot(dm2[1:],z_sp_exact[1:],c="k",marker="o",mfc="none",ms=4.,\
-    #     ls="none",label="exact")
-    # asp.plot(dm,z_sp,c="k",label="Eq. (106)")
+    asp.plot(dm,z_sp,c="k",label="Eq. (79)")
+    asp.plot(dm2[1:],z_sp_exact[1:],c="k",marker="o",mfc="none",ms=4.,\
+        ls="none",label="exact")
     # asp.plot(lmpm_0/ryyb,sys.b["lon"]["zt"][sys.b["lon"]["sp"][0]]*1.,\
     #     c="b",marker="o",mfc="none",ms=4.)
     # plot asC limits based on flight phase
@@ -157,10 +204,10 @@ def analyze_aircraft(file_name):
         arrowprops=dict(arrowstyle="->", color="0.25"),
         size=10.
         )
-    asC.plot(sys.b["lon"]["zt"][sys.b["lon"]["sp"][0]]*1.,\
-        sys.b["lon"]["wn"][sys.b["lon"]["sp"][0]]**2.\
-        /sys.CL_a*sys.CW,\
-        c="b",marker="x",mfc="none",ms=4.)
+    # asC.plot(sys.b["lon"]["zt"][sys.b["lon"]["sp"][0]]*1.,\
+    #     sys.b["lon"]["wn"][sys.b["lon"]["sp"][0]]**2.\
+    #     /sys.CL_a*sys.CW,\
+    #     c="b",marker="x",mfc="none",ms=4.)
     # plot level labels
     alfa = 0.8
     text = asC.text(l1pos[0],l1pos[1],"Level 1",va="center",ha="center",
@@ -175,33 +222,34 @@ def analyze_aircraft(file_name):
     text = asC.text(0.7,l4y,"Level 4",va="center",ha="center",
         bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
         boxstyle="Square, pad=0.0"))
+    # asp.plot(dm,z_sp_other,c="k",ls="--",label="Eq. (86)")
     #
+    aph.plot(dm[1:],z_ph[1:],c="k",label="Eq. (84)")
+    aph.plot(dm,z_ph_other,c="k",ls="--",label="Eq. (86)")
     aph.plot(dm2[1:],z_ph_exact[1:],c="k",marker="o",mfc="none",ms=4.,\
         ls="none",label="exact")
-    aph.plot(dm[1:],z_ph[1:],c="k",label="Eq. (111)")
-    aph.plot(dm,z_ph_other,c="k",ls="--",label="Eq. (113)")
-    aph.plot(lmpm_0/ryyb,sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.,\
-        c="b",marker="o",mfc="none",ms=4.)
+    # aph.plot(lmpm_0/ryyb,sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.,\
+    #     c="b",marker="o",mfc="none",ms=4.)
     # aph.plot([lnpm_0 - lmpm_0,lnpm_0 - lmpm_0],[0,1],c="k",ls="-.")
     # aph.plot(lnpm_0/sys.cwbar,sys.b["lon"]["zt"][sys.b["lon"]["ph"][0]]*1.,\
     #     marker="o",c="b",mfc="none",ms=4.,ls="none")
     # set plot limits
     if sys.aircraft_name == "Navion":
         ph_limit = 0.5
-        sp_limit = None
-        y2_limit = None
+        sp_limit = 3.0
+        y2_limit = 1.75
     elif sys.aircraft_name == "F-94A":
         ph_limit = 0.1
-        sp_limit = 0.2
-        y2_limit = 0.05
+        sp_limit = 2.0
+        y2_limit = 1.2
     elif sys.aircraft_name == "Lockheed Jetstar":
         ph_limit = 0.25
-        sp_limit = 0.35
-        y2_limit = 0.09
+        sp_limit = 2.0
+        y2_limit = 1.0
     elif sys.aircraft_name == "Boeing 747":
         ph_limit = 0.45
-        sp_limit = None
-        y2_limit = None
+        sp_limit = 2.5
+        y2_limit = 0.25
     else:
         ph_limit = 1.
         sp_limit = None
@@ -219,9 +267,9 @@ def analyze_aircraft(file_name):
         bbox=dict(facecolor="w",linewidth=0,alpha=0.6,
         boxstyle="Square, pad=0.0"))
     # implement plot limits
-    # asp.set_xlim((0.,dm_final))
-    # asp.set_ylim(bottom=sp_limit)
-    # asp_y2.set_ylim(bottom=y2_limit)
+    asp.set_xlim((0.,dm_final))
+    asp.set_ylim(top=sp_limit)
+    asp_y2.set_ylim(top=y2_limit)
     aph.set_xlim((0.,dm_final))
     aph.set_ylim((0.,ph_limit))
     asC.set_xlim((0.1,5.))
@@ -230,25 +278,38 @@ def analyze_aircraft(file_name):
     asC.yaxis.set_major_formatter(ScalarFormatter())
     # asC.semilogy()
     # asC.semilogx()
-    # asp.set_xlabel(r"Pitch dynamic margin, $l_{mp_m}/r_{yy_b}$")
-    # asp.set_ylabel(r"Short-period damping ratio, $\zeta_{sp}$")
-    # asp_y2.set_ylabel(r"Short-period CAP")
+    asp.set_xlabel(r"Pitch dynamic margin, $l_{mp_m}/r_{yy_b}$")
+    asp.set_ylabel(r"Short-period damping ratio, $\zeta_{sp}$")
+    asp_y2.set_ylabel(r"Short-period CAP")
     aph.set_xlabel(r"Pitch dynamic margin, $l_{mp_m}/r_{yy_b}$")
     aph.set_ylabel(r"Phugoid damping ratio, $\zeta_{ph}$")
     asC.set_xlabel(r"Short-period damping ratio, $\zeta_{sp}$")
     asC.set_ylabel(r"Short-period CAP")
     aph.legend()
-    lgnd_elms_sp = [
+    han0,lab0 = asp.get_legend_handles_labels()
+    han1,lab1 = asp_y2.get_legend_handles_labels()
+    han0.insert(1,han1[0])
+    lab0.insert(1,lab1[0])
+    han0[-1] = (
         Line2D([0], [0], c="k",marker="o",mfc="none",ms=4.,\
-        ls="none",label="exact"),
-        Line2D([0], [0], c='k', label='Eq. (106)'),
-        Line2D([0], [0], c='0.25', label='Eq. (105)')
-    ]
-    # asp.legend(handles=lgnd_elms_sp,loc="upper center")
+            ls="none"),
+        Line2D([0], [0], c="0.25",marker="x",mfc="none",ms=4.,\
+            ls="none")
+    )
+    # print(han0)
+    # quit()
+    # lgnd_elms_sp = [
+    #     Line2D([0], [0], c='k', label='Eq. (79)'),
+    #     Line2D([0], [0], c='0.25', label='Eq. (78)'),
+    #     Line2D([0], [0], c="k",marker="o",mfc="none",ms=4.,\
+    #     ls="none",label="exact")
+    # ]
+    asp.legend(handles=han0,labels=lab0,loc="upper center",\
+        handler_map={tuple: HandlerTuple(ndivide=None)})
     folder = "hand_qual_plots/"
     savedict = dict(transparent=True,format="png",dpi=300.0)
-    # name = "z_sp_" + aircraft_name
-    # fsp.savefig(folder + "short_period/" + name + ".png",**savedict)
+    name = "z_sp_" + aircraft_name
+    fsp.savefig(folder + "short_period/" + name + ".png",**savedict)
     name = "z_ph_" + aircraft_name
     fph.savefig(folder + "phugoid/" + name + ".png",**savedict)
     name = "CAP_v_z_sp_" + aircraft_name
@@ -266,14 +327,14 @@ def analyze_aircraft(file_name):
     lnpn_0 = - sys.n_b/sys.Y_b
     lmpn_0 = lnpn_0 - sys.n_r*sys.g/sys.vo/sys.W
     rzzb = ( sys.g*sys.Izz/sys.W )**0.5
-    print("axis  {:^12s} {:^12s} {:^12s} {:^12s} {:^12s}".format(\
-        "np","np/cref","mp","mp/rref","ratecdot"))
-    print("roll  {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f}".format(\
-        hnpl_0,hnpl_0/sys.bw,hmpl_0,hmpl_0/rxxb,hmpl_0*sys.g/rxxb**2.))
-    print("pitch {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f}".format(\
-        lnpm_0,lnpm_0/sys.cwbar,lmpm_0,lmpm_0/ryyb,lmpm_0*sys.g/ryyb**2.))
-    print("yaw   {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f}".format(\
-        lnpn_0,lnpn_0/sys.bw,lmpn_0,lmpn_0/rzzb,lmpn_0*sys.g/rzzb**2.))
+    # print("axis  {:^12s} {:^12s} {:^12s} {:^12s} {:^12s}".format(\
+    #     "np","np/cref","mp","mp/rref","ratecdot"))
+    # print("roll  {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f}".format(\
+    #     hnpl_0,hnpl_0/sys.bw,hmpl_0,hmpl_0/rxxb,hmpl_0*sys.g/rxxb**2.))
+    # print("pitch {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f}".format(\
+    #     lnpm_0,lnpm_0/sys.cwbar,lmpm_0,lmpm_0/ryyb,lmpm_0*sys.g/ryyb**2.))
+    # print("yaw   {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f}".format(\
+    #     lnpn_0,lnpn_0/sys.bw,lmpn_0,lmpn_0/rzzb,lmpn_0*sys.g/rzzb**2.))
     # print(sys.aircraft_name,hnpl_0/sys.bw,lnpn_0/sys.bw)
     # shift by 0.0025 lnpn/bw
     nsm_final = 0.30
@@ -535,7 +596,7 @@ if __name__ == "__main__":
     ]
     run_files = ["aircraft_database/" + i for i in run_files]
     num_craft = len(run_files)
-    for i in range(num_craft): # 1,2): # 
+    for i in range(num_craft): #  [1,5,9,19]: # range(1,2): #
         analyze_aircraft(run_files[i])
 
     # folder = "aircraft_database/"
