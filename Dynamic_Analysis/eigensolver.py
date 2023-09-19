@@ -1188,85 +1188,89 @@ class Solver:
         self.n_r = pSwbw_4 * self.vo * self.bw * self.Cn_rbar
 
         # other important terms
-        self.l_mp = -self.m_a/self.L_a - self.m_q/self.W * self.g/self.vo
-        self.l_np = -self.m_a/self.L_a
-        self.ryyb = ( self.g * self.Iyy / self.W )**0.5
+        self.l_mp_m = -self.m_a/self.L_a - self.m_q/self.W*self.g/self.vo
+        self.l_np_m = -self.m_a/self.L_a
+        self.l_mp_n = -self.n_b/self.Y_b - self.n_r/self.W*self.g/self.vo
+        self.l_np_n = -self.n_b/self.Y_b
+        self.h_mp_l =  self.l_b/self.Y_b + self.l_r/self.W*self.g/self.vo
+        self.h_np_l =  self.l_b/self.Y_b
         self.rxxb = ( self.g * self.Ixx / self.W )**0.5
+        self.ryyb = ( self.g * self.Iyy / self.W )**0.5
+        self.rzzb = ( self.g * self.Izz / self.W )**0.5
         self.RG0 = self.Lo / self.Do
         
         # simplified handling qualities
-        self.b["spwnhq"] = np.abs(( self.g*self.L_a/self.W*self.l_mp )**0.5 / \
+        self.b["spwnhq"] = np.abs(( self.g*self.L_a/self.W*self.l_mp_m )**0.5/\
             self.ryyb)
         num = - self.ryyb/self.Iyy * (-self.ryyb**2./self.vo*self.L_a + \
             self.m_q + self.m_adot)
-        den = 2. * ( self.g*self.L_a/self.W*self.l_mp )**0.5
+        den = 2. * ( self.g*self.L_a/self.W*self.l_mp_m )**0.5
         self.b["spzthq"] = np.abs(num / den)
-        self.b["phwnhq"] = self.g/self.vo * (2.*self.l_np/self.l_mp)**0.5
-        a = 1./self.RG0 * (self.l_mp/2./self.l_np)**0.5
+        self.b["phwnhq"] = self.g/self.vo * (2.*self.l_np_m/self.l_mp_m)**0.5
+        a = 1./self.RG0 * (self.l_mp_m/2./self.l_np_m)**0.5
         c = -self.ryyb**2./self.vo + self.m_q / self.L_a
-        b = self.g/self.vo * (2.*self.l_np/self.l_mp**3.)**0.5 * c
+        b = self.g/self.vo * (2.*self.l_np_m/self.l_mp_m**3.)**0.5 * c
         self.b["phzthq"] = a + b
         self.b["roSghq"] = -self.l_p / self.Ixx
         num = self.l_b * self.n_r - self.l_r * self.n_b
         den = self.l_b * self.n_p - self.l_p * self.n_b
         self.b["slSghq"] = self.g/self.vo * num / den
-        e = self.Ixx * self.l_b * self.n_p / self.l_p**2.
-        f = - self.l_r * self.n_p / self.l_p
-        a = 1./self.Izz*(self.n_r + e + f)
-        g = - self.Ixx * self.l_b / self.l_p**2.
-        b = self.g/self.vo * ( 1./self.W*self.Y_b + g )
-        Sg = -0.5*( a + b )
-        i = - self.rxxb**2. * self.Y_b / 2. / self.l_p
-        j = - self.Ixx / self.Izz * self.n_r / 2. / self.l_p
-        h = 1. + i + j
-        c = 1./self.Izz * ( self.n_b - self.l_b * self.n_p / self.l_p * h )
-        k = 1. / self.W / self.Izz * self.Y_b * self.n_r
-        d = self.g/self.vo * ( k + self.l_b / self.l_p * h )
-        Wn = ( c + d )**0.5
-        self.b["drwnhq"] = np.abs(Wn)
-        self.b["drzthq"] = Sg/np.abs(Wn)
 
-        a = (Ky_b + Kn_rbreve) / Kl_pbreve
-        b = Kl_b * (1.-Kn_pbreve)/Kl_pbreve
-        c = Kn_b + Ky_b * Kn_rbreve
-        self.b["drwnhq"] = self.g/self.vo*( -0.5*a*b+c+b )**0.5
-        a = Ky_b + Kn_rbreve
-        b = Kl_rbreve * Kn_pbreve / Kl_pbreve
-        c = Kl_b * (1.-Kn_pbreve)/Kl_pbreve**2.
-        Sg = -0.5*self.g/self.vo*(a-b-c)
-        self.b["drzthq"] = Sg/self.b["drwnhq"]
+        azzb = self.n_r/self.Y_b + self.rzzb**2./self.vo
+        sg_1 = self.n_p/self.l_p**2.*self.h_mp_l
+        sg_2 = self.W*self.rzzb**2./self.vo/self.l_p**2.*self.h_np_l
+        sg_3 = sg_1 - sg_2
+        sg_4 = self.l_r*self.n_p/self.Y_b/self.l_p
+        sg_5 = self.l_b * self.n_r - self.l_r * self.n_b
+        sg_6 = self.g/self.vo/self.l_p*(sg_5/self.Y_b)/self.l_mp_n
+        Sg = -0.5*(self.Y_b/self.Izz*(azzb + self.Ixx*sg_3 - sg_4) + sg_6)
+        self.b["drSghq"] = Sg
+        # print((self.b["drSghq"]-self.p["drSg"])/self.b["drSghq"]*100.,Ky_rbreve)#,Kn_pbreve)
+        wd1 = self.l_mp_n + self.h_mp_l*self.n_p/self.l_p
+        wd2 = self.W*self.rzzb**2.*self.h_np_l/self.vo/self.l_p
+        wd3 = 1./4.*self.Y_b/self.Izz*azzb**2.
+        wd = (-self.Y_b/self.Izz*(wd1 - wd2 + wd3))**0.5
+        self.b["drwdhq"] = wd
+        # print((self.b["drwdhq"]-self.p["drWD"])/self.b["drwdhq"]*100.,Ky_rbreve)
+        wn = (Sg**2. + wd**2.)**0.5
+        self.b["drwnhq"] = wn
+        # print((self.b["drwnhq"]-self.p["drwn"])/self.b["drwnhq"]*100.,Ky_rbreve)
+        self.b["drzthq"] = Sg/wn
+        # print((self.b["drzthq"]-self.p["drzt"])/self.b["drzthq"]*100.,Ky_rbreve)
+        # print()
+
+        # a = (Ky_b + Kn_rbreve) / Kl_pbreve
+        # b = Kl_b * (1.-Kn_pbreve)/Kl_pbreve
+        # c = Kn_b + Ky_b * Kn_rbreve
+        # self.b["drwnhq"] = self.g/self.vo*( -0.5*a*b+c+b )**0.5
+        # a = Ky_b + Kn_rbreve
+        # b = Kl_rbreve * Kn_pbreve / Kl_pbreve
+        # c = Kl_b * (1.-Kn_pbreve)/Kl_pbreve**2.
+        # Sg = -0.5*self.g/self.vo*(a-b-c)
+        # self.b["drzthq"] = Sg/self.b["drwnhq"]
 
         # a = (self.Y_b/self.W + self.vo*self.n_r/self.g/self.Izz) / (self.vo*self.l_p/self.g/self.Ixx)
         # b = self.vo**2.*self.l_b/self.g**2./self.Ixx * (1.-self.vo*self.n_p/self.g/self.Izz)/(self.vo*self.l_p/self.g/self.Ixx)
         # c = self.vo**2.*self.n_b/self.g**2./self.Izz + self.Y_b/self.W * self.vo*self.n_r/self.g/self.Izz
         # self.b["drwn"] = self.g/self.vo*( -0.5*a*b+c+b )**0.5
-        
-        sm_l = self.Cl_b/self.CY_b
-        sm_m = -self.Cm_a/self.CL_a
-        sm_n = -self.Cn_b/self.CY_b
-        # print(self.aircraft_name,sm_n>sm_m)
-        # print(self.aircraft_name, sm_m*self.cwbar,sm_n*self.bw)
-        # cy = "{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}".format(self.CY_b,self.CY_rbar,self.CY_pbar,self.CY_da,self.CY_dr)
-        # cl = "{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}".format(self.Cl_b,self.Cl_rbar,self.Cl_pbar,self.Cl_da,self.Cl_dr)
-        # cn = "{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}{:> 6.2f}".format(self.Cn_b,self.Cn_rbar,self.Cn_pbar,self.Cn_da,self.Cn_dr)
-        # print(cy,"  ",cl,"  ",cn)
 
-        a = - Kl_rbreve * Kn_pbreve / Kl_pbreve
-        b_num = Kl_rbreve * Kn_b - Kl_b * Kn_rbreve
-        b_den = Kn_b + Ky_b * Kn_rbreve
-        b = b_num / b_den / Kl_pbreve
-        c = -(Kl_b*(1.-(1.-Ky_rbreve)*Kn_pbreve) - Ky_b*Kl_rbreve*Kn_pbreve)/Kl_pbreve**2.
-        Sdr = -0.5 * self.g / self.vo * ( Ky_b + Kn_rbreve + a + b + c )
-        d = (Kl_rbreve * Kn_b - Kl_b * Kn_rbreve)/(Kn_b + Ky_b * Kn_rbreve)
-        e = -(Kl_b*(1.-(1.-Ky_rbreve)*Kn_pbreve) - Ky_b*Kl_rbreve*Kn_pbreve)/Kl_pbreve
-        f = - Kl_rbreve * Kn_pbreve
-        deff = d + e + f
-        g = 0.5 * (Ky_b + Kn_rbreve) / Kl_pbreve * deff
-        h = 0.25 / Kl_pbreve**2. * deff**2.
-        i = (1.-Ky_rbreve)*Kn_b + Ky_b*Kn_rbreve - e
-        wndr = self.g / self.vo * (g + h + i)**0.5
-        self.b["drwnhq"] = wndr
-        self.b["drzthq"] = Sdr/wndr # these are correct
+        # a = - Kl_rbreve * Kn_pbreve / Kl_pbreve
+        # b_num = Kl_rbreve * Kn_b - Kl_b * Kn_rbreve
+        # b_den = Kn_b + Ky_b * Kn_rbreve
+        # b = b_num / b_den / Kl_pbreve
+        # c = -(Kl_b*(1.-(1.-Ky_rbreve)*Kn_pbreve) - Ky_b*Kl_rbreve*Kn_pbreve)/Kl_pbreve**2.
+        # Sdr = -0.5 * self.g / self.vo * ( Ky_b + Kn_rbreve + a + b + c )
+        # Sdr = Sg
+        # d = (Kl_rbreve * Kn_b - Kl_b * Kn_rbreve)/(Kn_b + Ky_b * Kn_rbreve)
+        # e = -(Kl_b*(1.-(1.-Ky_rbreve)*Kn_pbreve) - Ky_b*Kl_rbreve*Kn_pbreve)/Kl_pbreve
+        # f = - Kl_rbreve * Kn_pbreve
+        # deff = d + e + f
+        # g = 0.5 * (Ky_b + Kn_rbreve) / Kl_pbreve * deff
+        # h = 0.25 / Kl_pbreve**2. * deff**2.
+        # i = (1.-Ky_rbreve)*Kn_b + Ky_b*Kn_rbreve - e
+        # wndr = self.g / self.vo * (g + h + i)**0.5
+        # self.b["drwnhq"] = wndr
+        # self.b["drzthq"] = Sdr/wndr # these are correct
 
 
 
@@ -1870,17 +1874,17 @@ if __name__ == "__main__":
     for i in range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
 
-        a = np.deg2rad(10.)
-        b = np.deg2rad(1.0)
-        s = np.arctan2(np.tan(b),np.tan(a))
-        s_b = np.sin(a)*np.cos(a)/(np.sin(a)**2.*np.cos(b)**2. + np.cos(a)**2.*np.sin(b)**2.)
-        s_2 = np.tan(a)/np.cos(a)**2./(np.tan(a)**2. + np.tan(b)**2.)
-        s_3 = a / (a**2. + b**2.)
-        # print(eigensolved[i].aircraft_short_name,np.rad2deg(s),s_b,s_2,s_3)
-        CL = eigensolved[i].CL0 + eigensolved[i].CL_a*a
-        CY = eigensolved[i].CY_b*b
-        print("{:^8}   CY = {:> 7.3f} CL*s = {:> 7.3f}, CY/CL/s = {:> 7.3f}".format(
-            eigensolved[i].aircraft_short_name,CY,CL*s,CY/CL/s))
+        # a = np.deg2rad(10.)
+        # b = np.deg2rad(1.0)
+        # s = np.arctan2(np.tan(b),np.tan(a))
+        # s_b = np.sin(a)*np.cos(a)/(np.sin(a)**2.*np.cos(b)**2. + np.cos(a)**2.*np.sin(b)**2.)
+        # s_2 = np.tan(a)/np.cos(a)**2./(np.tan(a)**2. + np.tan(b)**2.)
+        # s_3 = a / (a**2. + b**2.)
+        # # print(eigensolved[i].aircraft_short_name,np.rad2deg(s),s_b,s_2,s_3)
+        # CL = eigensolved[i].CL0 + eigensolved[i].CL_a*a
+        # CY = eigensolved[i].CY_b*b
+        # print("{:^8}   CY = {:> 7.3f} CL*s = {:> 7.3f}, CY/CL/s = {:> 7.3f}".format(
+        #     eigensolved[i].aircraft_short_name,CY,CL*s,CY/CL/s))
 
     
     quit()
