@@ -1141,19 +1141,6 @@ class Solver:
         self.b["drwn"] = ( self.b["drSg"]**2. + self.b["drWD"]**2. )**0.5
         self.b["drzt"] = self.b["drSg"] / self.b["drwn"]
 
-        # # print((1. - (1.-Ky_rbreve)*Kn_pbreve))
-        # # print(self.Cn_rbar*self.CY_b - self.Cn_b*self.CY_rbar)
-        # # print(self.Cl_rbar*self.Cn_b - self.Cl_b*self.Cn_rbar)
-        # # print((self.p["drSg"]-self.b["drSg"])/self.p["drSg"])
-        # # print((self.p["drWD"]-self.b["drWD"])/self.p["drWD"])
-        # pWn = ( self.p["drSg"]**2. + self.p["drWD"]**2. ) ** 0.5
-        # bWn = ( self.b["drSg"]**2. + self.b["drWD"]**2. ) ** 0.5
-        # print((pWn-bWn)/pWn)
-        # pz = self.p["drSg"] / pWn
-        # bz = self.b["drSg"] / bWn
-        # print((pz-bz)/pz)
-        # print()
-
 
         # ratios of import
         pSwcw_4 = self.rho * self.Sw * self.cwbar / 4.
@@ -1236,41 +1223,9 @@ class Solver:
         self.b["drwnhq"] = wn
         # print((self.b["drwnhq"]-self.p["drwn"])/self.b["drwnhq"]*100.,Ky_rbreve)
         self.b["drzthq"] = Sg/wn
-        # print((self.b["drzthq"]-self.p["drzt"])/self.b["drzthq"]*100.,Ky_rbreve)
+        # print(self.aircraft_name,(self.b["drzthq"]-self.p["drzt"])/self.b["drzthq"]*100.,Ky_rbreve)
         # print()
 
-        # a = (Ky_b + Kn_rbreve) / Kl_pbreve
-        # b = Kl_b * (1.-Kn_pbreve)/Kl_pbreve
-        # c = Kn_b + Ky_b * Kn_rbreve
-        # self.b["drwnhq"] = self.g/self.vo*( -0.5*a*b+c+b )**0.5
-        # a = Ky_b + Kn_rbreve
-        # b = Kl_rbreve * Kn_pbreve / Kl_pbreve
-        # c = Kl_b * (1.-Kn_pbreve)/Kl_pbreve**2.
-        # Sg = -0.5*self.g/self.vo*(a-b-c)
-        # self.b["drzthq"] = Sg/self.b["drwnhq"]
-
-        # a = (self.Y_b/self.W + self.vo*self.n_r/self.g/self.Izz) / (self.vo*self.l_p/self.g/self.Ixx)
-        # b = self.vo**2.*self.l_b/self.g**2./self.Ixx * (1.-self.vo*self.n_p/self.g/self.Izz)/(self.vo*self.l_p/self.g/self.Ixx)
-        # c = self.vo**2.*self.n_b/self.g**2./self.Izz + self.Y_b/self.W * self.vo*self.n_r/self.g/self.Izz
-        # self.b["drwn"] = self.g/self.vo*( -0.5*a*b+c+b )**0.5
-
-        # a = - Kl_rbreve * Kn_pbreve / Kl_pbreve
-        # b_num = Kl_rbreve * Kn_b - Kl_b * Kn_rbreve
-        # b_den = Kn_b + Ky_b * Kn_rbreve
-        # b = b_num / b_den / Kl_pbreve
-        # c = -(Kl_b*(1.-(1.-Ky_rbreve)*Kn_pbreve) - Ky_b*Kl_rbreve*Kn_pbreve)/Kl_pbreve**2.
-        # Sdr = -0.5 * self.g / self.vo * ( Ky_b + Kn_rbreve + a + b + c )
-        # Sdr = Sg
-        # d = (Kl_rbreve * Kn_b - Kl_b * Kn_rbreve)/(Kn_b + Ky_b * Kn_rbreve)
-        # e = -(Kl_b*(1.-(1.-Ky_rbreve)*Kn_pbreve) - Ky_b*Kl_rbreve*Kn_pbreve)/Kl_pbreve
-        # f = - Kl_rbreve * Kn_pbreve
-        # deff = d + e + f
-        # g = 0.5 * (Ky_b + Kn_rbreve) / Kl_pbreve * deff
-        # h = 0.25 / Kl_pbreve**2. * deff**2.
-        # i = (1.-Ky_rbreve)*Kn_b + Ky_b*Kn_rbreve - e
-        # wndr = self.g / self.vo * (g + h + i)**0.5
-        # self.b["drwnhq"] = wndr
-        # self.b["drzthq"] = Sdr/wndr # these are correct
 
 
 

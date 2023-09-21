@@ -241,11 +241,11 @@ def analyze_aircraft(file_name):
     # asC.semilogx()
     asp.set_xlabel(r"Pitch dynamic margin, $l_{mp_m}/r_{yy_b}$")
     asp.set_ylabel(r"Short-period damping ratio, $\zeta_{sp}$")
-    asp_y2.set_ylabel(r"Short-period CAP")
+    asp_y2.set_ylabel(r"Short-period CAP [s$^{-2}$]")
     aph.set_xlabel(r"Pitch dynamic margin, $l_{mp_m}/r_{yy_b}$")
     aph.set_ylabel(r"Phugoid damping ratio, $\zeta_{ph}$")
     asC.set_xlabel(r"Short-period damping ratio, $\zeta_{sp}$")
-    asC.set_ylabel(r"Short-period CAP")
+    asC.set_ylabel(r"Short-period CAP [s$^{-2}$]")
     aph.legend()
     han0,lab0 = asp.get_legend_handles_labels()
     han1,lab1 = asp_y2.get_legend_handles_labels()
@@ -291,22 +291,22 @@ def analyze_aircraft(file_name):
     lmpn_sm_0 = - sys.n_r*sys.g/sys.vo/sys.W
     rzzb = ( sys.g*sys.Izz/sys.W )**0.5
     azzb = sys.n_r/sys.Y_b + rzzb**2./sys.vo
-    print("axis  {:^12s} {:^12s} {:^12s} {:^12s} {:^12s} {:^12s}".format(\
-        "np","np/cref","mp","mp/rref","ratecdot","Inertia"))
-    print("roll  {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.3f}".format(\
-        hnpl_0,hnpl_0/sys.bw,hmpl_0,hmpl_0/rxxb,hmpl_0*sys.g/rxxb**2.,sys.Ixx))
-    print("pitch {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.3f}".format(\
-        lnpm_0,lnpm_0/sys.cwbar,lmpm_0,lmpm_0/ryyb,lmpm_0*sys.g/ryyb**2.,sys.Iyy))
-    print("yaw   {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.3f}".format(\
-        lnpn_0,lnpn_0/sys.bw,lmpn_0,lmpn_0/rzzb,lmpn_0*sys.g/rzzb**2.,sys.Izz))
+    # print("axis  {:^12s} {:^12s} {:^12s} {:^12s} {:^12s} {:^12s}".format(\
+    #     "np","np/cref","mp","mp/rref","ratecdot","Inertia"))
+    # print("roll  {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.3f}".format(\
+    #     hnpl_0,hnpl_0/sys.bw,hmpl_0,hmpl_0/rxxb,hmpl_0*sys.g/rxxb**2.,sys.Ixx))
+    # print("pitch {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.3f}".format(\
+    #     lnpm_0,lnpm_0/sys.cwbar,lmpm_0,lmpm_0/ryyb,lmpm_0*sys.g/ryyb**2.,sys.Iyy))
+    # print("yaw   {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.8f} {:> 12.3f}".format(\
+    #     lnpn_0,lnpn_0/sys.bw,lmpn_0,lmpn_0/rzzb,lmpn_0*sys.g/rzzb**2.,sys.Izz))
     # print(sys.aircraft_name,hnpl_0/sys.bw,lnpn_0/sys.bw)
-    # shift by 0.0025 lnpn/bw
     ndm_final = 1.5
-    step = 0.0125
+    step = 0.0025 # 0.00625 # 0.0125 # 
     num = int(ndm_final/step) + 1
+    num_n = num + 0
     ndm = np.linspace(0.,ndm_final,num=num)
     ndm[0] = 0.001
-    ndm2 = np.linspace(0.,ndm_final,num=int(num/3))
+    ndm2 = np.linspace(0.,ndm_final,num=int(num/15))
     ndm2[0] = 0.001
     lmpn = ndm*rzzb
     lnpn = lmpn + sys.n_r*sys.g/sys.vo/sys.W
@@ -322,17 +322,24 @@ def analyze_aircraft(file_name):
 
     # initialize figures
     fsl, asl = plt.subplots()
-    fdr, adr = plt.subplots()
+    fdz, adz = plt.subplots()
+    fds, ads = plt.subplots()
+    fdw, adw = plt.subplots()
     fdC, adC = plt.subplots()
 
     # plot grid
     asl.grid(which="major",lw=0.6,ls="-",c="0.5")
     asl.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
-    adr.grid(which="major",lw=0.6,ls="-",c="0.5")
-    adr.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    adz.grid(which="major",lw=0.6,ls="-",c="0.5")
+    adz.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    ads.grid(which="major",lw=0.6,ls="-",c="0.5")
+    ads.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
+    adw.grid(which="major",lw=0.6,ls="-",c="0.5")
+    adw.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
     adC.grid(which="major",lw=0.6,ls="-",c="0.5")
     adC.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
-
+    adC_z_lim = (0.01,5.)
+    adC_C_lim = (0.02,20.)
 
     # evals = np.zeros((6,ndm2.shape[0]),dtype=complex)
     # flg, alg = plt.subplots()
@@ -347,12 +354,6 @@ def analyze_aircraft(file_name):
         t_sl_other = - np.log(2.)/sys.W*sys.g/sys.vo*(sys.Izz/lnpn)/\
             (hmpli/hnpli - lmpn/lnpn)
 
-        # calculate dutch roll damping ratio
-        # rzzb = ( sys.g*sys.Izz/sys.W )**0.5
-        # azzb = sys.n_r/sys.Y_b + rzzb**2./sys.vo
-        # hmpl = hnpl + sys.l_r*sys.g/sys.vo/sys.W
-        # lmpn = lnpn - sys.n_r*sys.g/sys.vo/sys.W
-
         dr_a = azzb + sys.Ixx*(sys.n_p/sys.l_p**2.*hmpli)
         dr_b = - sys.l_r*sys.n_p/sys.Y_b/sys.l_p
         dr_c = sys.g/sys.vo/sys.l_p*Er/lmpn
@@ -361,40 +362,9 @@ def analyze_aircraft(file_name):
         dr_e = - sys.Y_b/sys.Izz*(lmpn + dr_d + 0.25*sys.Y_b/sys.Izz*azzb**2.)
         wn_dr = ( s_dr**2. + dr_e )**0.5
         z_dr = s_dr / wn_dr
-        z_dr_other = 0.5*(-sys.Y_b/sys.Izz/lmpn)**0.5*azzb
-
-        # # phillips
-        # Cn_b = -ndm*sys.CY_b
-        # Cl_b = ldm[i]*sys.CY_b
-        # Rpy = sys.rho * sys.Sw * sys.bw / 4.0 / (sys.W / sys.g)
-        # Rgy = sys.g * sys.bw / 2. / sys.vo**2.
-        # Rxx = sys.rho * sys.Sw * sys.bw**3. / 8. / sys.Ixx
-        # Rzz = sys.rho * sys.Sw * sys.bw**3. / 8. / sys.Izz
-        # Ry_b = Rpy * sys.CY_b
-        # Rl_b = Rxx * Cl_b
-        # Rn_b = Rzz * Cn_b
-        # Rl_pbar = Rxx * sys.Cl_pbar
-        # Rn_pbar = Rzz * sys.Cn_pbar
-        # Ry_rbar = Rpy * sys.CY_rbar
-        # Rl_rbar = Rxx * sys.Cl_rbar
-        # Rn_rbar = Rzz * sys.Cn_rbar
-        # RDRs = (Rl_b*(Rgy - (1.-Ry_rbar)*Rn_pbar) - Ry_b*Rl_rbar*Rn_pbar) / \
-        #     Rl_pbar
-        # RDRc = Rl_rbar * Rn_pbar / Rl_pbar
-        # RDRp = Rgy*(Rl_rbar*Rn_b-Rl_b*Rn_rbar)/Rl_pbar/(Rn_b+Ry_b*Rn_rbar) - \
-        #     RDRs/Rl_pbar
-        # drSg = - sys.vo / sys.bw * (Ry_b + Rn_rbar - RDRc + RDRp)
-        # a = (1.-Ry_rbar)*Rn_b 
-        # b = Ry_b * Rn_rbar 
-        # c = RDRs 
-        # d = - 0.25*( Ry_b + Rn_rbar)**2.
-        # e = abs(a + b + c + d)
-        # drWD = np.abs(2. * sys.vo / sys.bw * np.sqrt( e ))
-        # drZ = drSg/drWD
-        # # z_dr = drZ
-        # print(s_dr  - drSg)
-        # # print(wn_dr - )
-        # print(z_dr  - drZ)
+        s_dr_other = -0.5*sys.Y_b/sys.Izz*azzb + 0.*lmpn
+        wn_dr_other = (-sys.Y_b/sys.Izz*lmpn)**0.5
+        z_dr_other = s_dr_other / wn_dr_other
 
         # calculate dutch roll CAP
         CAP_dr = sys.g*lmpn/rzzb**2.
@@ -415,6 +385,8 @@ def analyze_aircraft(file_name):
         Cl_b_0 = sys.Cl_b*1.
         t_sl_exact = ndm2*0.
         z_dr_exact = ndm2*0.
+        wn_dr_exact = ndm2*0.
+        s_dr_exact = ndm2*0.
         CAP_dr_exact = ndm2*0.
         for j in range(ndm2.shape[0]):
             # sys.Cn_b = -ndm2[j]*sys.CY_b
@@ -431,8 +403,9 @@ def analyze_aircraft(file_name):
             # sys._lateral_dimensional_properties(sys.b,is_alternate=True)
             t_sl_exact[j] = sys.b["lat"]["double"][sys.b["lat"]["sl"]]*1.
             z_dr_exact[j] = sys.b["lat"]["zt"][sys.b["lat"]["dr"][0]]*1.
-            CAP_dr_exact[j] = -sys.b["lat"]["wn"][sys.b["lat"]["dr"][0]]**2./\
-                sys.CY_b*sys.CW
+            s_dr_exact[j] = sys.b["lat"]["Sg"][sys.b["lat"]["dr"][0]]*1.
+            wn_dr_exact[j] = sys.b["lat"]["wn"][sys.b["lat"]["dr"][0]]*1.
+            CAP_dr_exact[j] = -wn_dr_exact[j]**2./sys.CY_b*sys.CW
         #     ###   ###   ###   ###   ###
         #     evals[0:2,j] = sys.b["lat"]["evals"][sys.b["lat"]["rb"]]
         #     evals[2:3,j] = sys.b["lat"]["evals"][sys.b["lat"]["ro"]]
@@ -466,28 +439,62 @@ def analyze_aircraft(file_name):
             mfc="none",ms=4.,ls="none")
 
         # plot Dutch-roll damping ratio
-        adr.plot(ndm,z_dr_other,ls="--",c=str(i/num*0.95))
-        adr.plot(ndm,z_dr,c=str(i/num*0.95))
-        adr.plot(ndm2[2:],z_dr_exact[2:],c=str(i/num*0.95),marker="o",\
+        adz.plot(ndm,z_dr_other,ls="--",c=str(i/num*0.95))
+        adz.plot(ndm,z_dr,c=str(i/num*0.95))
+        adz.plot(ndm2[2:],z_dr_exact[2:],c=str(i/num*0.95),marker="o",\
+            mfc="none",ms=4.,ls="none")
+
+        # plot Dutch-roll natural frequency
+        adw.plot(ndm,wn_dr_other,ls="--",c=str(i/num*0.95))
+        adw.plot(ndm,wn_dr,c=str(i/num*0.95))
+        adw.plot(ndm2[2:],wn_dr_exact[2:],c=str(i/num*0.95),marker="o",\
+            mfc="none",ms=4.,ls="none")
+
+        # plot Dutch-roll damping rate
+        ads.plot(ndm,s_dr_other,ls="--",c=str(i/num*0.95))
+        ads.plot(ndm,s_dr,c=str(i/num*0.95))
+        ads.plot(ndm2[2:],s_dr_exact[2:],c=str(i/num*0.95),marker="o",\
             mfc="none",ms=4.,ls="none")
         
         # plot Dutch-roll CAP
-        if i == 0:
-            adC.plot(ndm,CAP_dr,c=str(i/num*0.95))
-            adC.plot(ndm2[2:],CAP_dr_exact[2:],c=str(i/num*0.95),marker="o",\
-                mfc="none",ms=4.,ls="none")
+
+        adC.loglog(z_dr,CAP_dr,c=str(i/num*0.95))
+        for q in range(0,len(CAP_dr)-1,int((num_n-1)/6)): # ind_list: #
+            if adC_z_lim[0] <= z_dr[q] <= adC_z_lim[1] and \
+                adC_C_lim[0] <= CAP_dr[q] <= adC_C_lim[1]:
+                adC.annotate('', xytext=(z_dr[q],CAP_dr[q]),
+                xy=(z_dr[q+1],CAP_dr[q+1]), arrowprops=dict(arrowstyle="->",
+                color=str(i/num*0.95)), size=10.)
+        # if i == 0:
+        #     adC.plot(ndm,CAP_dr,c=str(i/num*0.95))
+        #     adC.plot(ndm2[2:],CAP_dr_exact[2:],c=str(i/num*0.95),marker="o",\
+        #         mfc="none",ms=4.,ls="none")
     
     # shade levels spiral
     sl_l3 = 4.
+    alfa = 0.8
     if sys.aircraft_name in ["F-94A"]:
         sl_l1, sl_l2 = 12., 12.
-    elif sys.aircraft_name in ["Navion"]:
-        sl_l1, sl_l2 = 20., 12.
-    elif sys.aircraft_name in ["Lockheed Jetstar","Boeing 747"]:
-        sl_l1, sl_l2 = 20., 12.
     else:
-        sl_l1, sl_l2 = 20., 12.
+        if sys.aircraft_name in ["Navion"]:
+            sl_l1, sl_l2 = 20., 12.
+        elif sys.aircraft_name in ["Lockheed Jetstar","Boeing 747"]:
+            sl_l1, sl_l2 = 20., 12.
+        else:
+            sl_l1, sl_l2 = 20., 12.
+        asl.text(0.0,sl_l1,"Level 2",va="bottom",ha="left",c="w",
+            bbox=dict(facecolor="0.5",linewidth=0,alpha=alfa,
+            boxstyle="Square, pad=0.0"))
     asl.fill_between([0.0,ndm_final],2*[sl_l3],2*[ 0.00],color="0.5",alpha=0.4)
+    asl.text(0.2,100.,"Level 1",va="center",ha="right",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    asl.text(1.325,sl_l3,"Level 3",va="bottom",ha="right",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    asl.text(ndm_final,0.0,"Level 4",va="bottom",ha="right",c="w",
+        bbox=dict(facecolor="0.5",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
     # asl.fill_between([0.0,ndm_final],2*[sl_l2],2*[sl_l3],color="0.5",alpha=0.4)
     asl.fill_between([0.0,ndm_final],2*[sl_l1],2*[sl_l2],color="0.5",alpha=0.4)
     # asl.text(dm_final/2.,0.0,"Level 2",va="bottom",ha="center",
@@ -505,8 +512,8 @@ def analyze_aircraft(file_name):
     lgnd_elms_sl = [
         Line2D([0], [0], c='k', ls='none',lw=1,marker="o",\
             mfc="none",ms=4., label='exact'),
-        Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (115)'),
-        Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (118)'),
+        Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (88)'),
+        Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (89)'),
         Line2D([0], [0], c=str(f_lo*0.95), ls='-',lw=1, label=lbl_name + \
             "{:>3.1f}".format(ldm[int(num*f_lo)])),
         Line2D([0], [0], c=str(f_md*0.95), ls='-',lw=1, label=lbl_name + \
@@ -514,53 +521,135 @@ def analyze_aircraft(file_name):
         Line2D([0], [0], c=str(f_hi*0.95), ls='-',lw=1, label=lbl_name + \
             "{:>3.1f}".format(ldm[int(num*f_hi)]))
     ]
-    lgnd_elms_dr = [
+    lgnd_elms_dr = [ # zeta
         Line2D([0], [0], c='k', ls='none',lw=1,marker="o",\
             mfc="none",ms=4., label='exact'),
-        Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (122)'),
-        Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (125)'),
-        Line2D([0], [0], c=str(0/num*0.95), ls='-',lw=1, label=lbl_name + "0.0"),
-        Line2D([0], [0], c=str(2/num*0.95), ls='-',lw=1, label=lbl_name + "0.1"),
-        Line2D([0], [0], c=str(4/num*0.95), ls='-',lw=1, label=lbl_name + "0.2")
-    ]
-    lgnd_elms_CP = [
-        Line2D([0], [0], c='k', ls='none',lw=1,marker="o",\
-            mfc="none",ms=4., label='exact'),
-        Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (126)')
+        Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (93)'),
+        Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (96)'),
+        Line2D([0], [0], c=str(f_lo*0.95), ls='-',lw=1, label=lbl_name + \
+            "{:>3.1f}".format(ldm[int(num*f_lo)])),
+        Line2D([0], [0], c=str(f_md*0.95), ls='-',lw=1, label=lbl_name + \
+            "{:>3.1f}".format(ldm[int(num*f_md)])),
+        Line2D([0], [0], c=str(f_hi*0.95), ls='-',lw=1, label=lbl_name + \
+            "{:>3.1f}".format(ldm[int(num*f_hi)]))
     ]
 
     t_2m = 240.
     asl.set_xlim((0.,ndm_final)) # lmpn_sm_0,ndm_final)) # 
     asl.set_ylim((0.,t_2m))
     asl.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
-    asl.set_ylabel(r"Spiral time to double, $\tau_{sl}$")
+    asl.set_ylabel(r"Spiral time to double, $\tau_{sl}$ [s]")
     asl.legend(handles=lgnd_elms_sl)
     name = "t_sl_" + aircraft_name
     fsl.savefig(folder + "spiral/" + name + ".png",**savedict)
 
     if sys.aircraft_name == "Navion":
-        limit = 0.75
+        z_limit = 0.75
+        s_limit = 0.6
+        w_limit = 3.5
     elif sys.aircraft_name == "F-94A":
-        limit = 0.4
+        z_limit = 0.4
+        s_limit = 0.25
+        w_limit = 3.
     elif sys.aircraft_name == "Lockheed Jetstar":
-        limit = 0.6
+        z_limit = 0.6
+        s_limit = 0.25
+        w_limit = 2.5
     elif sys.aircraft_name == "Boeing 747":
-        limit = 0.6
+        z_limit = 0.6
+        s_limit = 0.2
+        w_limit = 1.5
     else:
-        limit = 1.
-    adr.set_xlim((0.,ndm_final))
-    adr.set_ylim((0.,limit))
-    adr.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
-    adr.set_ylabel(r"Dutch-roll damping ratio, $\zeta_{dr}$")
-    adr.legend(handles=lgnd_elms_dr)
+        z_limit = 1.
+        s_limit = 1.
+        w_limit = 5.
+    adz.set_xlim((0.,ndm_final))
+    adz.set_ylim((0.,z_limit))
+    adz.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
+    adz.set_ylabel(r"Dutch-roll damping ratio, $\zeta_{dr}$")
+    adz.legend(handles=lgnd_elms_dr)
     name = "z_dr_" + aircraft_name
-    fdr.savefig(folder + "dutch_roll_z/" + name + ".png",**savedict)
+    fdz.savefig(folder + "dutch_roll_z/" + name + ".png",**savedict)
 
-    adC.set_xlim((0.,ndm_final))
-    # adC.set_ylim((0.,limit))
-    adC.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
-    adC.set_ylabel(r"Dutch-roll CAP")
-    adC.legend(handles=lgnd_elms_CP)
+    lgnd_elms_dr[1] = Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (92)')
+    lgnd_elms_dr[2] = Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (95)')
+    adw.set_xlim((0.,ndm_final))
+    adw.set_ylim((0.,w_limit))
+    adw.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
+    adw.set_ylabel(r"Dutch-roll natural frequency, $\omega_{n_{dr}}$ [rad/s]")
+    adw.legend(handles=lgnd_elms_dr)
+    name = "wn_dr_" + aircraft_name
+    fdw.savefig(folder + "dutch_roll_wn/" + name + ".png",**savedict)
+
+    lgnd_elms_dr[1] = Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (90)')
+    lgnd_elms_dr[2] = Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (94)')
+    ads.set_xlim((0.,ndm_final))
+    ads.set_ylim((0.,s_limit))
+    ads.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
+    ads.set_ylabel(r"Dutch-roll damping rate, $\sigma_{dr}$ [s$^{-1}$]")
+    ads.legend(handles=lgnd_elms_dr)
+    name = "s_dr_" + aircraft_name
+    fds.savefig(folder + "dutch_roll_s/" + name + ".png",**savedict)
+
+    # draw limits
+    wn_2_CAP = lambda wn : -wn**2./sys.CY_b*sys.CW
+    CAP_2_wn = lambda CAP : (-CAP*sys.CY_b/sys.CW)**0.5
+    if sys.aircraft_name in ["F-94A"]:
+        # maneuvering lines -- A flight phases
+        wn_1 = 1.0
+        z_1  = 0.4
+        s_1  = 0.4
+    elif sys.aircraft_name in ["Navion"]:
+        # cruise lines -- B flight phases
+        wn_1 = 0.4
+        z_1  = 0.08
+        s_1  = 0.15
+    elif sys.aircraft_name in ["Lockheed Jetstar","Boeing 747"]:
+        # landing lines -- C flight phases
+        wn_1 = 0.4
+        z_1  = 0.08
+        s_1  = 0.1
+    else:
+        # plot cruise lines
+        wn_1 = 0.4
+        z_1  = 0.08
+        s_1  = 0.15
+    CAP_1 = wn_2_CAP(wn_1)
+    wn_3 = 0.4
+    CAP_3 = wn_2_CAP(wn_3)
+    adC.loglog([5.,0.01],[CAP_3,CAP_3],c="k")
+    s_2 = 0.05
+    wn_2 = 0.4
+    z_2  = 0.02
+    CAP_2 = wn_2_CAP(wn_2)
+    z_s_2 = s_2/wn_2
+    CAP_s_2 = wn_2_CAP(s_2/z_2)
+    adC.loglog([5.,z_s_2,z_2,z_2],[CAP_2,CAP_2,CAP_s_2,20.],c="k")
+    z_s_1 = s_1/wn_1
+    CAP_s_1 = wn_2_CAP(s_1/z_1)
+    adC.loglog([5.,z_s_1,z_1,z_1],[CAP_1,CAP_1,CAP_s_1,20.],c="k")
+    # plot level labels
+    alfa = 0.8
+    text = adC.text(2.0,1.0,"Level 1",va="center",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    text = adC.text(10.**(((np.log10(z_2)+np.log10(z_1)))/2.),
+        CAP_s_2,"Level 2",va="bottom",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    text = adC.text(0.02,1.,"Level 3",va="center",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    text = adC.text(0.2,0.05,"Level 4",va="center",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    adC.set_xlim(adC_z_lim)
+    adC.set_ylim(adC_C_lim)
+    adC.xaxis.set_major_formatter(ScalarFormatter())
+    adC.yaxis.set_major_formatter(ScalarFormatter())
+    adC.legend(handles=lgnd_elms_dr[3:])
+    adC.set_xlabel(r"Dutch-roll damping ratio, $\zeta_{dr}$")
+    adC.set_ylabel(r"Dutch-roll CAP [s$^{-2}$]")
     name = "CAP_dr_" + aircraft_name
     fdC.savefig(folder + "dutch_roll_CAP/" + name + ".png",**savedict)
     if False:
@@ -626,7 +715,7 @@ if __name__ == "__main__":
     ]
     run_files = ["aircraft_database/" + i for i in run_files]
     num_craft = len(run_files)
-    for i in [1,5,9,19]: # range(num_craft): # range(1,2): # 
+    for i in range(num_craft): # [1,5,9,19]: # range(1,2): # 
         analyze_aircraft(run_files[i])
 
     # folder = "aircraft_database/"
