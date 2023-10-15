@@ -49,6 +49,7 @@ if __name__ == "__main__":
 
         "babble.txt", 
         "bubble.txt", 
+        "gurgle.txt",
     ]
 
     ngrams = {}
@@ -112,6 +113,9 @@ if __name__ == "__main__":
     ngrams_simp["bubble"] = (
         + ngrams["bubble"]
     )
+    ngrams_simp["gurgle"] = (
+        + ngrams["gurgle"]
+    )
 
     # plot condensed plot
     order = ["burble","flow_separation",
@@ -125,14 +129,14 @@ if __name__ == "__main__":
     plt.xlabel("Year")
     plt.ylabel("Word Use / Annual Words Published")
     plt.legend()
-    plt.savefig(fname=plots_folder+"condensed.png",dpi=300.0,transparent=True)
+    plt.savefig(fname=plots_folder+"condensed.pdf",dpi=300.0,transparent=True)
     if show_plots:
         plt.show()
     else:
         plt.close()
 
     # plot comparison plot
-    order = ["burble","babble","bubble"]
+    order = ["burble","babble","bubble","gurgle"]
 
     for i in range(len(order)):
         ngram = order[i]
@@ -142,14 +146,14 @@ if __name__ == "__main__":
     plt.xlabel("Year")
     plt.ylabel("Word Use / Annual Words Published")
     plt.legend()
-    plt.savefig(fname=plots_folder+"comparison.png",dpi=300.0,transparent=True)
+    plt.savefig(fname=plots_folder+"comparison.pdf",dpi=300.0,transparent=True)
     if show_plots:
         plt.show()
     else:
         plt.close()
 
     # plot normalized comparison plot
-    order = ["burble","babble","bubble"]
+    order = ["burble","babble","bubble","gurgle"]
 
     for i in range(len(order)):
         ngram = order[i]
@@ -160,7 +164,7 @@ if __name__ == "__main__":
     plt.xlabel("Year")
     plt.ylabel("Word Use / Latest Word Use")
     plt.legend()
-    plt.savefig(fname=plots_folder+"norm_comparison.png",dpi=300.0,\
+    plt.savefig(fname=plots_folder+"norm_comparison.pdf",dpi=300.0,\
         transparent=True)
     if show_plots:
         plt.show()
