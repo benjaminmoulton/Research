@@ -82,7 +82,7 @@ def analyze_aircraft(file_name):
     # folder = "hand_qual_plots/"
     # aircraft_name = sys.aircraft_name.lower().replace(" ","_").replace("-","_")
     # name = "eigs_" + aircraft_name
-    # savedict = dict(transparent=True,format="png",dpi=300.0)
+    # savedict = dict(transparent=False,format="png",dpi=300.0)
     # flg.savefig(folder + "lon_eigvals/" + name + ".png",**savedict)
             
     # return to normal
@@ -268,13 +268,13 @@ def analyze_aircraft(file_name):
     asp.legend(handles=han0,labels=lab0,loc="upper center",\
         handler_map={tuple: HandlerTuple(ndivide=None)})
     folder = "hand_qual_plots/"
-    savedict = dict(transparent=True,format="png",dpi=300.0)
+    savedict = dict(transparent=False,format="pdf",dpi=300.0)
     name = "z_sp_" + aircraft_name
-    fsp.savefig(folder + "short_period/" + name + ".png",**savedict)
+    fsp.savefig(folder + "short_period/" + name + ".pdf",**savedict)
     name = "z_ph_" + aircraft_name
-    fph.savefig(folder + "phugoid/" + name + ".png",**savedict)
+    fph.savefig(folder + "phugoid/" + name + ".pdf",**savedict)
     name = "CAP_v_z_sp_" + aircraft_name
-    fsC.savefig(folder + "short_period_CAP_v_z/" + name + ".png",**savedict)
+    fsC.savefig(folder + "short_period_CAP_v_z/" + name + ".pdf",**savedict)
     if False:
         plt.show()
     else:
@@ -327,6 +327,9 @@ def analyze_aircraft(file_name):
     fdw, adw = plt.subplots()
     fdC, adC = plt.subplots()
 
+    # print(lmpn_0/rzzb)
+    # asl.plot([lmpn_0/rzzb,lmpn_0/rzzb],[0.,200.],"r")
+
     # plot grid
     asl.grid(which="major",lw=0.6,ls="-",c="0.5")
     asl.grid(which="minor",lw=0.5,ls="dotted",c="0.5")
@@ -344,7 +347,7 @@ def analyze_aircraft(file_name):
     # evals = np.zeros((6,ndm2.shape[0]),dtype=complex)
     # flg, alg = plt.subplots()
 
-    for i,hmpli in enumerate(hmpl):
+    for i,hmpli in reversed(list(enumerate(hmpl))):
         hnpli = hmpli - sys.l_r*sys.g/sys.vo/sys.W
         # calculate spiral time to double
         Ep = hnpli*sys.n_p + lnpn*sys.l_p
@@ -372,11 +375,11 @@ def analyze_aircraft(file_name):
 
         # get positive indices for spiral
         try:
-            ips = np.argwhere(t_sl >= 0.0)[0,0]
+            ips = np.argwhere(t_sl > 0.0)[0,0]
         except:
             ips = None
         try:
-            ipo = np.argwhere(t_sl_other >= 0.0)[-1,0]
+            ipo = np.argwhere(t_sl_other > 0.0)[-1,0]
         except:
             ipo = None
         
@@ -423,7 +426,7 @@ def analyze_aircraft(file_name):
         # folder = "hand_qual_plots/"
         # aircraft_name = sys.aircraft_name.lower().replace(" ","_").replace("-","_")
         # name = "eigs_" + aircraft_name
-        # savedictr = dict(transparent=True,format="png",dpi=300.0)
+        # savedictr = dict(transparent=False,format="png",dpi=300.0)
         # flg.savefig(folder + "lat_eigvals/" + name + "_{:>02d}".format(i) + ".png",**savedictr)
         # alg.cla()
         # return to normal
@@ -515,11 +518,11 @@ def analyze_aircraft(file_name):
         Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (88)'),
         Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (89)'),
         Line2D([0], [0], c=str(f_lo*0.95), ls='-',lw=1, label=lbl_name + \
-            "{:>3.1f}".format(ldm[int(num*f_lo)])),
+            "{:>4.2f}".format(ldm[int(num*f_lo)])),
         Line2D([0], [0], c=str(f_md*0.95), ls='-',lw=1, label=lbl_name + \
-            "{:>3.1f}".format(ldm[int(num*f_md)])),
+            "{:>4.2f}".format(ldm[int(num*f_md)])),
         Line2D([0], [0], c=str(f_hi*0.95), ls='-',lw=1, label=lbl_name + \
-            "{:>3.1f}".format(ldm[int(num*f_hi)]))
+            "{:>4.2f}".format(ldm[int(num*f_hi)]))
     ]
     lgnd_elms_dr = [ # zeta
         Line2D([0], [0], c='k', ls='none',lw=1,marker="o",\
@@ -527,11 +530,11 @@ def analyze_aircraft(file_name):
         Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (93)'),
         Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (96)'),
         Line2D([0], [0], c=str(f_lo*0.95), ls='-',lw=1, label=lbl_name + \
-            "{:>3.1f}".format(ldm[int(num*f_lo)])),
+            "{:>4.2f}".format(ldm[int(num*f_lo)])),
         Line2D([0], [0], c=str(f_md*0.95), ls='-',lw=1, label=lbl_name + \
-            "{:>3.1f}".format(ldm[int(num*f_md)])),
+            "{:>4.2f}".format(ldm[int(num*f_md)])),
         Line2D([0], [0], c=str(f_hi*0.95), ls='-',lw=1, label=lbl_name + \
-            "{:>3.1f}".format(ldm[int(num*f_hi)]))
+            "{:>4.2f}".format(ldm[int(num*f_hi)]))
     ]
 
     t_2m = 240.
@@ -541,59 +544,8 @@ def analyze_aircraft(file_name):
     asl.set_ylabel(r"Spiral time to double, $\tau_{sl}$ [s]")
     asl.legend(handles=lgnd_elms_sl)
     name = "t_sl_" + aircraft_name
-    fsl.savefig(folder + "spiral/" + name + ".png",**savedict)
-
-    if sys.aircraft_name == "Navion":
-        z_limit = 0.75
-        s_limit = 0.6
-        w_limit = 3.5
-    elif sys.aircraft_name == "F-94A":
-        z_limit = 0.4
-        s_limit = 0.25
-        w_limit = 3.
-    elif sys.aircraft_name == "Lockheed Jetstar":
-        z_limit = 0.6
-        s_limit = 0.25
-        w_limit = 2.5
-    elif sys.aircraft_name == "Boeing 747":
-        z_limit = 0.6
-        s_limit = 0.2
-        w_limit = 1.5
-    else:
-        z_limit = 1.
-        s_limit = 1.
-        w_limit = 5.
-    adz.set_xlim((0.,ndm_final))
-    adz.set_ylim((0.,z_limit))
-    adz.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
-    adz.set_ylabel(r"Dutch-roll damping ratio, $\zeta_{dr}$")
-    adz.legend(handles=lgnd_elms_dr)
-    name = "z_dr_" + aircraft_name
-    fdz.savefig(folder + "dutch_roll_z/" + name + ".png",**savedict)
-
-    lgnd_elms_dr[1] = Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (92)')
-    lgnd_elms_dr[2] = Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (95)')
-    adw.set_xlim((0.,ndm_final))
-    adw.set_ylim((0.,w_limit))
-    adw.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
-    adw.set_ylabel(r"Dutch-roll natural frequency, $\omega_{n_{dr}}$ [rad/s]")
-    adw.legend(handles=lgnd_elms_dr)
-    name = "wn_dr_" + aircraft_name
-    fdw.savefig(folder + "dutch_roll_wn/" + name + ".png",**savedict)
-
-    lgnd_elms_dr[1] = Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (90)')
-    lgnd_elms_dr[2] = Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (94)')
-    ads.set_xlim((0.,ndm_final))
-    ads.set_ylim((0.,s_limit))
-    ads.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
-    ads.set_ylabel(r"Dutch-roll damping rate, $\sigma_{dr}$ [s$^{-1}$]")
-    ads.legend(handles=lgnd_elms_dr)
-    name = "s_dr_" + aircraft_name
-    fds.savefig(folder + "dutch_roll_s/" + name + ".png",**savedict)
-
-    # draw limits
-    wn_2_CAP = lambda wn : -wn**2./sys.CY_b*sys.CW
-    CAP_2_wn = lambda CAP : (-CAP*sys.CY_b/sys.CW)**0.5
+    fsl.savefig(folder + "spiral/" + name + ".pdf",**savedict)
+    # hq limits
     if sys.aircraft_name in ["F-94A"]:
         # maneuvering lines -- A flight phases
         wn_1 = 1.0
@@ -614,13 +566,94 @@ def analyze_aircraft(file_name):
         wn_1 = 0.4
         z_1  = 0.08
         s_1  = 0.15
-    CAP_1 = wn_2_CAP(wn_1)
     wn_3 = 0.4
-    CAP_3 = wn_2_CAP(wn_3)
-    adC.loglog([5.,0.01],[CAP_3,CAP_3],c="k")
     s_2 = 0.05
     wn_2 = 0.4
     z_2  = 0.02
+    # single var plot hq limits
+    ads.fill_between([0.0,ndm_final],2*[s_1],2*[s_2],color="0.5",alpha=0.4)
+    ads.text(ndm_final/2.,(s_2+s_1)/2.,"Level 2",va="center",ha="center",c="w",
+        bbox=dict(facecolor="0.5",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    ads.text(0.4,s_1+0.05,"Level 1",va="bottom",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    adw.fill_between([0.0,ndm_final],2*[wn_1+0.005],2*[wn_2-0.005],color="0.5",alpha=0.4)
+    adw.text(0.4,wn_2-0.05,"Level 4",va="top",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    if sys.aircraft_name in ["F-94A"]:
+        adw.text(0.4,(wn_1+wn_2)/2.,"Level 2",va="bottom",ha="center",c="w",
+            bbox=dict(facecolor="0.5",linewidth=0,alpha=alfa,
+            boxstyle="Square, pad=0.0"))
+    adw.text(0.4,wn_1+0.05,"Level 1",va="bottom",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    adz.fill_between([0.0,ndm_final],2*[z_1],2*[z_2],color="0.5",alpha=0.4)
+    adz.text(0.6,0.0,"Level 3",va="bottom",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    adz.text(0.4,z_1+0.05,"Level 1",va="top",ha="center",
+        bbox=dict(facecolor="w",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    adz.text(0.4,(z_1+z_2)/2.,"Level 2",va="top",ha="center",c="w",
+        bbox=dict(facecolor="0.5",linewidth=0,alpha=alfa,
+        boxstyle="Square, pad=0.0"))
+    # limits
+    if sys.aircraft_name == "Navion":
+        z_limit = 0.75
+        s_limit = 0.6
+        w_limit = 3.5
+    elif sys.aircraft_name == "F-94A":
+        z_limit = 0.5
+        s_limit = 0.5
+        w_limit = 3.
+    elif sys.aircraft_name == "Lockheed Jetstar":
+        z_limit = 0.6
+        s_limit = 0.25
+        w_limit = 2.5
+    elif sys.aircraft_name == "Boeing 747":
+        z_limit = 0.6
+        s_limit = 0.2
+        w_limit = 1.5
+    else:
+        z_limit = 1.
+        s_limit = 1.
+        w_limit = 5.
+    adz.set_xlim((0.,ndm_final))
+    adz.set_ylim((0.,z_limit))
+    adz.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
+    adz.set_ylabel(r"Dutch-roll damping ratio, $\zeta_{dr}$")
+    adz.legend(handles=lgnd_elms_dr)
+    name = "z_dr_" + aircraft_name
+    fdz.savefig(folder + "dutch_roll_z/" + name + ".pdf",**savedict)
+
+    lgnd_elms_dr[1] = Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (92)')
+    lgnd_elms_dr[2] = Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (95)')
+    adw.set_xlim((0.,ndm_final))
+    adw.set_ylim((0.,w_limit))
+    adw.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
+    adw.set_ylabel(r"Dutch-roll natural frequency, $\omega_{n_{dr}}$ [rad/s]")
+    adw.legend(handles=lgnd_elms_dr)
+    name = "wn_dr_" + aircraft_name
+    fdw.savefig(folder + "dutch_roll_wn/" + name + ".pdf",**savedict)
+
+    lgnd_elms_dr[1] = Line2D([0], [0], c='k', ls='-',lw=1, label='Eq. (90)')
+    lgnd_elms_dr[2] = Line2D([0], [0], c='k', ls='--',lw=1, label='Eq. (94)')
+    ads.set_xlim((0.,ndm_final))
+    ads.set_ylim((0.,s_limit))
+    ads.set_xlabel(r"Yaw dynamic margin, $l_{mp_n}/r_{zz_b}$")
+    ads.set_ylabel(r"Dutch-roll damping rate, $\sigma_{dr}$ [s$^{-1}$]")
+    ads.legend(handles=lgnd_elms_dr)
+    name = "s_dr_" + aircraft_name
+    fds.savefig(folder + "dutch_roll_s/" + name + ".pdf",**savedict)
+
+    # draw limits
+    wn_2_CAP = lambda wn : -wn**2./sys.CY_b*sys.CW
+    CAP_2_wn = lambda CAP : (-CAP*sys.CY_b/sys.CW)**0.5
+    CAP_1 = wn_2_CAP(wn_1)
+    CAP_3 = wn_2_CAP(wn_3)
+    adC.loglog([5.,0.01],[CAP_3,CAP_3],c="k")
     CAP_2 = wn_2_CAP(wn_2)
     z_s_2 = s_2/wn_2
     CAP_s_2 = wn_2_CAP(s_2/z_2)
@@ -651,7 +684,7 @@ def analyze_aircraft(file_name):
     adC.set_xlabel(r"Dutch-roll damping ratio, $\zeta_{dr}$")
     adC.set_ylabel(r"Dutch-roll CAP [s$^{-2}$]")
     name = "CAP_dr_" + aircraft_name
-    fdC.savefig(folder + "dutch_roll_CAP/" + name + ".png",**savedict)
+    fdC.savefig(folder + "dutch_roll_CAP/" + name + ".pdf",**savedict)
     if False:
         plt.show()
     else:

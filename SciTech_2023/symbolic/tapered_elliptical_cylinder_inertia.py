@@ -17,6 +17,7 @@ if __name__ == "__main__":
     tan = sy.tan
     mat = sy.Matrix
     pi = sy.pi
+    frac = sy.Rational
 
     # declare variables
     print("declaring variables...")
@@ -38,11 +39,12 @@ if __name__ == "__main__":
     # create bounds
     print("creating bounds...")
     r = (r1-r0) * x/h + r0
-    ay = (ay1-ay0) * x/h + ay0
-    az = (az1-az0) * x/h + az0
+    ay = ( (ay1-ay0) * x/h + ay0 )
+    az = ( (az1-az0) * x/h + az0 )
     x_up = h; x_lo = 0
     theta_up = t1 # 2 * pi # 
     theta_lo = t0 # 0 # 
+    # r_eq = ( (ay*cos(t))**2 + (az*sin(t))**2 )**frac(1,2)
     r_up = 1; r_lo = 0
     x_bnd = (x,x_lo,x_up)
     r_bnd = (rp,r_lo,r_up)
@@ -76,6 +78,7 @@ if __name__ == "__main__":
         
     print()
     print()
+    quit()
 
     print("tapered elliptic cylinder eqs...")
     m = simp(V_ints[0])

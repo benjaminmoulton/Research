@@ -1828,6 +1828,7 @@ if __name__ == "__main__":
     eigensolved = [0.0] * num_craft
     for i in range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
+        # print(eigensolved[i].aircraft_name, eigensolved[i].CL_a / eigensolved[i].CW)
 
         # a = np.deg2rad(10.)
         # b = np.deg2rad(1.0)
