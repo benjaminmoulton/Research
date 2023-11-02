@@ -55,13 +55,18 @@ if __name__ == "__main__":
     ngrams = {}
     folder = "./ngrams/"
     plots_folder = "./plots/"
-    show_plots = True
+    plots_folder_inv = "./plots_inv/"
+    show_plots = False
 
     # color blind colors
     cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080",
     '#377eb8', '#4daf4a',
     '#f781bf', '#a65628', '#984ea3',
     '#999999', '#e41a1c', '#dede00']
+    cs_inv = ["#0a86c5","#56a55e","#7a3f06","#f0df7f",
+    '#c88147', '#b250b5',
+    '#087e40', '#59a9d7', '#67b15c',
+    '#666666', '#1be5e3', '#2121ff']
 
     for i,file in enumerate(ngram_files):
         ngram = file.split(".")[0]
@@ -72,7 +77,10 @@ if __name__ == "__main__":
     plt.xlabel("Year")
     plt.ylabel("Word Use as Percentage of Annual Words Published")
     plt.legend()
-    plt.show()
+    if show_plots:
+        plt.show()
+    else:
+        plt.close()
     
     ngrams_simp = {}
     ngrams_simp["compressibility_burble"] = (
@@ -121,52 +129,87 @@ if __name__ == "__main__":
     order = ["burble","flow_separation",
     "compressibility_burble","separation_region","burble_point","burble_fence"]
 
-    for i in range(len(order)):
-        ngram = order[i]
-        lbl = ngram.replace("_"," ")
-        plt.plot(t[it:],ngrams_simp[ngram][it:],c=cs[i],label=lbl)
-    
-    plt.xlabel("Year")
-    plt.ylabel("Word Use / Annual Words Published")
-    plt.legend()
-    plt.savefig(fname=plots_folder+"condensed.pdf",dpi=300.0,transparent=True)
-    if show_plots:
-        plt.show()
-    else:
-        plt.close()
+    for run_dark in [True,False]:
+        if run_dark:
+            save_folder = plots_folder_inv
+            plt.style.use(['dark_background'])
+            csr = cs_inv
+        else:
+            save_folder = plots_folder
+            plt.style.use(['default'])
+            csr = cs
+        
+        # run
+        for i in range(len(order)):
+            ngram = order[i]
+            lbl = ngram.replace("_"," ")
+            plt.plot(t[it:],ngrams_simp[ngram][it:],c=csr[i],label=lbl)
+        
+        plt.xlabel("Year")
+        plt.ylabel("Word Use / Annual Words Published")
+        plt.legend()
+        plt.savefig(fname=save_folder+"condensed.pdf",dpi=300.0,\
+            transparent=True)
+        if show_plots:
+            plt.show()
+        else:
+            plt.close()
 
     # plot comparison plot
     order = ["burble","babble","bubble","gurgle"]
 
-    for i in range(len(order)):
-        ngram = order[i]
-        lbl = ngram.replace("_"," ")
-        plt.plot(t[it:],ngrams_simp[ngram][it:],c=cs[i],label=lbl)
-    
-    plt.xlabel("Year")
-    plt.ylabel("Word Use / Annual Words Published")
-    plt.legend()
-    plt.savefig(fname=plots_folder+"comparison.pdf",dpi=300.0,transparent=True)
-    if show_plots:
-        plt.show()
-    else:
-        plt.close()
+    for run_dark in [True,False]:
+        if run_dark:
+            save_folder = plots_folder_inv
+            plt.style.use(['dark_background'])
+            csr = cs_inv
+        else:
+            save_folder = plots_folder
+            plt.style.use(['default'])
+            csr = cs
+        
+        # run
+        for i in range(len(order)):
+            ngram = order[i]
+            lbl = ngram.replace("_"," ")
+            plt.plot(t[it:],ngrams_simp[ngram][it:],c=csr[i],label=lbl)
+        
+        plt.xlabel("Year")
+        plt.ylabel("Word Use / Annual Words Published")
+        plt.legend()
+        plt.savefig(fname=save_folder+"comparison.pdf",dpi=300.0,\
+            transparent=True)
+        if show_plots:
+            plt.show()
+        else:
+            plt.close()
 
     # plot normalized comparison plot
     order = ["burble","babble","bubble","gurgle"]
 
-    for i in range(len(order)):
-        ngram = order[i]
-        lbl = ngram.replace("_"," ")
-        div_2019 = ngrams_simp[ngram][it:] / ngrams_simp[ngram][-1]
-        plt.plot(t[it:],div_2019,c=cs[i],label=lbl)
-    
-    plt.xlabel("Year")
-    plt.ylabel("Word Use / Latest Word Use")
-    plt.legend()
-    plt.savefig(fname=plots_folder+"norm_comparison.pdf",dpi=300.0,\
-        transparent=True)
-    if show_plots:
-        plt.show()
-    else:
-        plt.close()
+    for run_dark in [True,False]:
+        if run_dark:
+            save_folder = plots_folder_inv
+            plt.style.use(['dark_background'])
+            csr = cs_inv
+        else:
+            save_folder = plots_folder
+            plt.style.use(['default'])
+            csr = cs
+        
+        # run
+        for i in range(len(order)):
+            ngram = order[i]
+            lbl = ngram.replace("_"," ")
+            div_2019 = ngrams_simp[ngram][it:] / ngrams_simp[ngram][-1]
+            plt.plot(t[it:],div_2019,c=csr[i],label=lbl)
+        
+        plt.xlabel("Year")
+        plt.ylabel("Word Use / Latest Word Use")
+        plt.legend()
+        plt.savefig(fname=save_folder+"norm_comparison.pdf",dpi=300.0,\
+            transparent=True)
+        if show_plots:
+            plt.show()
+        else:
+            plt.close()
