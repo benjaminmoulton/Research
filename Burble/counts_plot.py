@@ -35,6 +35,8 @@ if __name__ == "__main__":
 
         "burble_point.txt", 
 
+        "interference_burble.txt",
+
         "separation_region.txt",
 
         "compressibility_burble.txt", # only _INF version
@@ -46,6 +48,8 @@ if __name__ == "__main__":
         "flow_separation.txt", "flow_separations.txt",
         "separation_of_flow.txt", "separation_of_flowing.txt", 
         "separation_of_flows.txt",
+
+        "air_wake.txt",
 
         "babble.txt", 
         "bubble.txt", 
@@ -72,7 +76,7 @@ if __name__ == "__main__":
         ngram = file.split(".")[0]
         ngrams[ngram] = get_info(folder + file)
         c_i = i % len(cs)
-        plt.plot(t,ngrams[ngram],c=cs[c_i],label = ngram.replace("_"," "))
+        plt.plot(t,ngrams[ngram],c=cs[c_i],lw=1.,label = ngram.replace("_"," "))
     
     plt.xlabel("Year")
     plt.ylabel("Word Use as Percentage of Annual Words Published")
@@ -85,8 +89,8 @@ if __name__ == "__main__":
     ngrams_simp = {}
     ngrams_simp["compressibility_burble"] = (
         + ngrams["compressibility_burble"] 
-        # + ngrams["Compressibility_burble_"]
-        # + ngrams["Compressibility_Burble__"] + ngrams["COMPRESSIBILITY_BURBLE___"]
+        + ngrams["Compressibility_burble_"]
+        + ngrams["Compressibility_Burble__"] + ngrams["COMPRESSIBILITY_BURBLE___"]
     )
     ngrams_simp["burble_point"] = (
         + ngrams["burble_point"]
@@ -94,26 +98,32 @@ if __name__ == "__main__":
     ngrams_simp["burble_fence"] = (
         + ngrams["burble_fence"]
     )
+    ngrams_simp["interference_burble"] = (
+        + ngrams["interference_burble"]
+    )
     ngrams_simp["separation_region"] = (
         + ngrams["separation_region"]
     )
     ngrams_simp["burble"] = (ngrams["burble"] 
-        # + ngrams["burbled"] 
-        # + ngrams["burbles"] + ngrams["burbling"]
-        # + ngrams["Burble_"] + ngrams["BURBLE__"]
-        # + ngrams["Burbles_"] + ngrams["BURBLES__"]
-        # + ngrams["Burbling_"]
+        + ngrams["burbled"] 
+        + ngrams["burbles"] + ngrams["burbling"]
+        + ngrams["Burble_"] + ngrams["BURBLE__"]
+        + ngrams["Burbles_"] + ngrams["BURBLES__"]
+        + ngrams["Burbling_"]
         - ngrams_simp["compressibility_burble"]
         - ngrams_simp["burble_point"]
         - ngrams_simp["burble_fence"]
     )
     ngrams_simp["flow_separation"] = (
         + ngrams["flow_separation"] 
-        # + ngrams["flow_separate"] + ngrams["flow_separated"] 
-        # + ngrams["flow_separates"] + ngrams["flow_separating"]
-        #  + ngrams["flow_separations"]
-        # + ngrams["separation_of_flow"] + ngrams["separation_of_flowing"]
-        # + ngrams["separation_of_flows"]
+        + ngrams["flow_separate"] + ngrams["flow_separated"] 
+        + ngrams["flow_separates"] + ngrams["flow_separating"]
+         + ngrams["flow_separations"]
+        + ngrams["separation_of_flow"] + ngrams["separation_of_flowing"]
+        + ngrams["separation_of_flows"]
+    )
+    ngrams_simp["air_wake"] = (
+        + ngrams["air_wake"]
     )
     ngrams_simp["babble"] = (
         + ngrams["babble"]
@@ -126,8 +136,9 @@ if __name__ == "__main__":
     )
 
     # plot condensed plot
-    order = ["burble","flow_separation",
-    "compressibility_burble","separation_region","burble_point","burble_fence"]
+    order = ["burble","burble_point","interference_burble",
+    "compressibility_burble","burble_fence",
+    "flow_separation","separation_region","air_wake"]
 
     for run_dark in [True,False]:
         if run_dark:
@@ -143,11 +154,13 @@ if __name__ == "__main__":
         for i in range(len(order)):
             ngram = order[i]
             lbl = ngram.replace("_"," ")
-            plt.plot(t[it:],ngrams_simp[ngram][it:],c=csr[i],label=lbl)
+            plt.plot(t[it:],ngrams_simp[ngram][it:],c=csr[i],lw=1.,label=lbl)
         
         plt.xlabel("Year")
         plt.ylabel("Word Use / Annual Words Published")
-        plt.legend()
+        plt.legend()#loc=(1.0,0.0))
+        plt.xlim((t[it],t[-1]))
+        plt.tight_layout()
         plt.savefig(fname=save_folder+"condensed.pdf",dpi=300.0,\
             transparent=True)
         if show_plots:
@@ -172,11 +185,13 @@ if __name__ == "__main__":
         for i in range(len(order)):
             ngram = order[i]
             lbl = ngram.replace("_"," ")
-            plt.plot(t[it:],ngrams_simp[ngram][it:],c=csr[i],label=lbl)
+            plt.plot(t[it:],ngrams_simp[ngram][it:],c=csr[i],lw=1.,label=lbl)
         
         plt.xlabel("Year")
         plt.ylabel("Word Use / Annual Words Published")
         plt.legend()
+        plt.xlim((t[it],t[-1]))
+        plt.tight_layout()
         plt.savefig(fname=save_folder+"comparison.pdf",dpi=300.0,\
             transparent=True)
         if show_plots:
@@ -202,11 +217,13 @@ if __name__ == "__main__":
             ngram = order[i]
             lbl = ngram.replace("_"," ")
             div_2019 = ngrams_simp[ngram][it:] / ngrams_simp[ngram][-1]
-            plt.plot(t[it:],div_2019,c=csr[i],label=lbl)
+            plt.plot(t[it:],div_2019,c=csr[i],lw=1.,label=lbl)
         
         plt.xlabel("Year")
-        plt.ylabel("Word Use / Latest Word Use")
+        plt.ylabel("Word Use / 2019 Word Use")
         plt.legend()
+        plt.xlim((t[it],t[-1]))
+        plt.tight_layout()
         plt.savefig(fname=save_folder+"norm_comparison.pdf",dpi=300.0,\
             transparent=True)
         if show_plots:

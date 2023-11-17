@@ -1762,6 +1762,29 @@ class Solver:
         a = 10
 
 
+    def rerun_solver(self,report="o",show_evector=False):
+        if isinstance(report,str):
+            report = self.report
+        
+        # create A and B matrices, 
+        self._phillips_matrices_and_approximations()
+        self._hunsaker_matrices_and_approximations()
+        self._buckingham_matrices_and_approximations()
+
+        # determine longitudinal dimensional properties
+        self._longitudinal_dimensional_properties(self.p)
+        self._longitudinal_dimensional_properties(self.h)
+        self._longitudinal_dimensional_properties(self.b,is_alternate=True)
+
+        # determine lateral dimensional properties
+        self._lateral_dimensional_properties(self.p)
+        self._lateral_dimensional_properties(self.h)
+        self._lateral_dimensional_properties(self.b,is_alternate=True)
+
+        # report properties
+        if report:
+            self._full_report(show_evector)
+
 
 def print_hq(hq,print_bold=False):
     if type(hq) != str:
@@ -1826,8 +1849,14 @@ if __name__ == "__main__":
     run_files = ["aircraft_database/" + i for i in run_files]
     num_craft = len(run_files)
     eigensolved = [0.0] * num_craft
+    eigensolvedV = [0.0] * num_craft
     for i in range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
+        eigensolvedV[i] = Solver(run_files[i],report=False)
+        # eigensolvedV[i].vo *= 1.2
+        # eigensolvedV[i].rho -= 0.0005
+        eigensolvedV[i].W *= 1.2
+        eigensolvedV[i].rerun_solver()
         # print(eigensolved[i].aircraft_name, eigensolved[i].CL_a / eigensolved[i].CW)
 
         # a = np.deg2rad(10.)
@@ -1843,63 +1872,63 @@ if __name__ == "__main__":
         #     eigensolved[i].aircraft_short_name,CY,CL*s,CY/CL/s))
 
     
-    quit()
+    # quit()
     
 
-    # evaluate controllability, condition number
-    title_string = "{:^6} |".format("name")
-    for i in ["P","H","B","D"]:
-        for j in ["lon","lat","fll", "fac"]:
-            if j == "fll" or j == "fac":
-                title_string += " "
-            title_string += " {:>1} {:>6}  ".format("R","C," + i + j)
-            if j == "fac":
-                title_string = title_string[:-1] + "|"
-    print(title_string)
-    print("-"*len(title_string))
-    for i in range(num_craft):
-        craft = eigensolved[i]
-        print("{:^6} |".format(craft.aircraft_short_name),end="")
-        # print(np.max(craft.p["lon"]["Ac_dim"]-craft.h["lon"]["Ac_dim"]))
-        # print(np.max(craft.p["lon"]["Ac_dim"]-craft.b["lon"]["Ac_dim"]))
-        # print(np.max(craft.p["lat"]["Ac_dim"]-craft.h["lat"]["Ac_dim"]))
-        # print(np.max(craft.p["lat"]["Ac_dim"]-craft.b["lat"]["Ac_dim"]))
-        # print(np.max(craft.p["lon"]["Bc_dim"]-craft.h["lon"]["Bc_dim"]))
-        # print(np.max(craft.p["lon"]["Bc_dim"]-craft.b["lon"]["Bc_dim"]))
-        # print(np.max(craft.p["lat"]["Bc_dim"]-craft.h["lat"]["Bc_dim"]))
-        # print(np.max(craft.p["lat"]["Bc_dim"]-craft.b["lat"]["Bc_dim"]))
+    # # evaluate controllability, condition number
+    # title_string = "{:^6} |".format("name")
+    # for i in ["P","H","B","D"]:
+    #     for j in ["lon","lat","fll", "fac"]:
+    #         if j == "fll" or j == "fac":
+    #             title_string += " "
+    #         title_string += " {:>1} {:>6}  ".format("R","C," + i + j)
+    #         if j == "fac":
+    #             title_string = title_string[:-1] + "|"
+    # print(title_string)
+    # print("-"*len(title_string))
+    # for i in range(num_craft):
+    #     craft = eigensolved[i]
+    #     print("{:^6} |".format(craft.aircraft_short_name),end="")
+    #     # print(np.max(craft.p["lon"]["Ac_dim"]-craft.h["lon"]["Ac_dim"]))
+    #     # print(np.max(craft.p["lon"]["Ac_dim"]-craft.b["lon"]["Ac_dim"]))
+    #     # print(np.max(craft.p["lat"]["Ac_dim"]-craft.h["lat"]["Ac_dim"]))
+    #     # print(np.max(craft.p["lat"]["Ac_dim"]-craft.b["lat"]["Ac_dim"]))
+    #     # print(np.max(craft.p["lon"]["Bc_dim"]-craft.h["lon"]["Bc_dim"]))
+    #     # print(np.max(craft.p["lon"]["Bc_dim"]-craft.b["lon"]["Bc_dim"]))
+    #     # print(np.max(craft.p["lat"]["Bc_dim"]-craft.h["lat"]["Bc_dim"]))
+    #     # print(np.max(craft.p["lat"]["Bc_dim"]-craft.b["lat"]["Bc_dim"]))
         
-        # print("Sg same =",abs(craft.b["drSg"] - craft.p["drSg"])<1e-15,"  ",
-        #     "WD same =",abs(craft.b["drWD"] - craft.p["drWD"])<1e-15,"  ",
-        #     "wn same =",abs(craft.b["drwn"] - craft.p["drwn"])<1e-15,"  ",
-        #     "zt same =",abs(craft.b["drzt"] - craft.p["drzt"])<1e-15)
-        dm = ["","","","_dim"]
-        for j,method in enumerate([craft.p,craft.h,craft.b,craft.b]):
-            G_lon = ctrb(method["lon"]["Ac"+dm[j]],method["lon"]["Bc"+dm[j]])
-            G_lon_r = np.linalg.matrix_rank(G_lon)
-            G_lon_c = np.linalg.cond(G_lon)
-            G_lat = ctrb(method["lat"]["Ac"+dm[j]],method["lat"]["Bc"+dm[j]])
-            G_lat_r = np.linalg.matrix_rank(G_lat)
-            G_lat_c = np.linalg.cond(G_lat)
-            A = block_diag(method["lon"]["Ac"+dm[j]],method["lat"]["Ac"+dm[j]])
-            B = block_diag(method["lon"]["Bc"+dm[j]],method["lat"]["Bc"+dm[j]])
-            G = ctrb(A,B)
-            G_r = np.linalg.matrix_rank(G)
-            G_c = np.linalg.cond(G)
-            s = 1./0.0495
-            S = np.diag([s,s,s])
-            Z = np.zeros((A.shape[0],B.shape[1]))
-            A_act = np.block([[A,B],[Z.T,-S]])
-            B_act = np.block([[Z],[S]])
-            G_act = ctrb(A_act,B_act)
-            G_act_r = np.linalg.matrix_rank(G_act)
-            G_act_c = np.linalg.cond(G_act)
-            print(" {:>1} {:> 6.0e}  ".format(G_lon_r,G_lon_c),end="")
-            print(" {:>1} {:> 6.0e}  ".format(G_lat_r,G_lat_c),end="")
-            print(" {:>2} {:> 6.0e}  ".format(G_r,G_c),end="")
-            print(" {:>2} {:> 6.0e} |".format(G_act_r,G_act_c),end="")
-        print()
-    quit()
+    #     # print("Sg same =",abs(craft.b["drSg"] - craft.p["drSg"])<1e-15,"  ",
+    #     #     "WD same =",abs(craft.b["drWD"] - craft.p["drWD"])<1e-15,"  ",
+    #     #     "wn same =",abs(craft.b["drwn"] - craft.p["drwn"])<1e-15,"  ",
+    #     #     "zt same =",abs(craft.b["drzt"] - craft.p["drzt"])<1e-15)
+    #     dm = ["","","","_dim"]
+    #     for j,method in enumerate([craft.p,craft.h,craft.b,craft.b]):
+    #         G_lon = ctrb(method["lon"]["Ac"+dm[j]],method["lon"]["Bc"+dm[j]])
+    #         G_lon_r = np.linalg.matrix_rank(G_lon)
+    #         G_lon_c = np.linalg.cond(G_lon)
+    #         G_lat = ctrb(method["lat"]["Ac"+dm[j]],method["lat"]["Bc"+dm[j]])
+    #         G_lat_r = np.linalg.matrix_rank(G_lat)
+    #         G_lat_c = np.linalg.cond(G_lat)
+    #         A = block_diag(method["lon"]["Ac"+dm[j]],method["lat"]["Ac"+dm[j]])
+    #         B = block_diag(method["lon"]["Bc"+dm[j]],method["lat"]["Bc"+dm[j]])
+    #         G = ctrb(A,B)
+    #         G_r = np.linalg.matrix_rank(G)
+    #         G_c = np.linalg.cond(G)
+    #         s = 1./0.0495
+    #         S = np.diag([s,s,s])
+    #         Z = np.zeros((A.shape[0],B.shape[1]))
+    #         A_act = np.block([[A,B],[Z.T,-S]])
+    #         B_act = np.block([[Z],[S]])
+    #         G_act = ctrb(A_act,B_act)
+    #         G_act_r = np.linalg.matrix_rank(G_act)
+    #         G_act_c = np.linalg.cond(G_act)
+    #         print(" {:>1} {:> 6.0e}  ".format(G_lon_r,G_lon_c),end="")
+    #         print(" {:>1} {:> 6.0e}  ".format(G_lat_r,G_lat_c),end="")
+    #         print(" {:>2} {:> 6.0e}  ".format(G_r,G_c),end="")
+    #         print(" {:>2} {:> 6.0e} |".format(G_act_r,G_act_c),end="")
+    #     print()
+    # quit()
 
     # create dictionaries for pretty title-ing of print out
     modes = ["sp","ph","sl","ro","dr"]
@@ -1943,11 +1972,15 @@ if __name__ == "__main__":
     t = np.linspace(0.0,4.*np.pi,num=num)
     r = np.linspace(0.0,2.0,num=num)
 
-    for i in range(num_craft):
+    fig, ax = plt.subplots(2,2,figsize=(6,6),
+        subplot_kw={"projection" : "polar"})
+    for i in range(num_craft): # 
         dyn = eigensolved[i]
+        dynV = eigensolvedV[i]
         print(" "*11 + dyn.aircraft_name + "...")
         for j in range(len(modes)):
             method = dyn.b
+            methodV = dynV.b
             si = sides[j]
             mo = modes[j]
             direc = bd + "phasor_" + modenames[mo].lower().replace(" ","_")+"/"
@@ -1955,54 +1988,77 @@ if __name__ == "__main__":
             file = file.replace("-","_") + ".png"
             # print(file)
             mbind = dyn.b[si][mo]
+            mbindV = dynV.b[si][mo]
             if mo in ["sp","ph","dr"]:
                 mbind = mbind[0]
+                mbindV = mbindV[0]
             mpind = dyn.p[si][mo]
+            mpindV = dynV.p[si][mo]
             if mo in ["sp","ph","dr"]:
                 mpind = mpind[0]
+                mpindV = mpindV[0]
 
             # print(dyn.b["lon"]["evals"])
             A_b = dyn.b[si][ "amp" ][:, mbind]
             P_b = np.deg2rad(dyn.b[si]["phase"][:, mbind])
             A_p = dyn.p[si][ "amp" ][:, mpind]
             P_p = np.deg2rad(dyn.p[si]["phase"][:, mpind])
+            A_bV = dynV.b[si][ "amp" ][:, mbindV]
+            P_bV = np.deg2rad(dynV.b[si]["phase"][:, mbindV])
+            A_pV = dynV.p[si][ "amp" ][:, mpindV]
+            P_pV = np.deg2rad(dynV.p[si]["phase"][:, mpindV])
             # print(A_b)
             # print(np.rad2deg(P_b))
 
             # determine phase difference between methods
-            b_p_diff = P_b[0] - P_p[0]
-            P_b = P_b - b_p_diff
+            P_b = P_b - (P_b[0] - P_p[0])
+            P_bV = P_bV - (P_bV[0] - P_pV[0])
 
             # plot
-            fig, ax = plt.subplots(1,2,figsize=(10,5),
-                subplot_kw={"projection" : "polar"})
             for k in range(len(A_b)):
-                ax[1].plot([0,P_b[k]],[0,A_b[k]],c=clrs[si][k],
-                    marker=mrks[si][k],label=evecnames[si][k])
-                ax[0].plot([0,P_p[k]],[0,A_p[k]],c=clrs[si][k],
-                    marker=mrks[si][k],mfc="none")
+                # if (mo in ["sp","ph"] and k in [0,1,2,5]) or \
+                #     (mo in ["dr","sl","ro"] and k in [0,1,2,4,5]):
+                c = clrs[si][k]
+                m = mrks[si][k]
+                l = evecnames[si][k]
+                n = "none"
+                ax[0,0].plot([0., P_p[k]],[0., A_p[k]],c=c,marker=m,mfc=n)
+                ax[0,1].plot([0., P_b[k]],[0., A_b[k]],c=c,marker=m,label=l)
+                ax[1,0].plot([0.,P_pV[k]],[0.,A_pV[k]],c=c,marker=m,mfc=n)
+                ax[1,1].plot([0.,P_bV[k]],[0.,A_bV[k]],c=c,marker=m)
             # ax.set_rmax(2)
             # ax.set_rticks([0.5, 1, 1.5, 2])  # Less radial ticks
-            ax[0].set_rlabel_position(60.0)
-            ax[0].grid(True)
-            ax[0].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
-            ax[0].set_xlabel("Phase Angle [deg]")
-            ax[0].text(np.deg2rad(80.0),0.4*max(A_p),"Amplitude",rotation=60.0)
-            ax[0].set_title("Traditional Dimensionless Form")
-            ax[1].set_rlabel_position(60.0)
-            ax[1].grid(True)
-            ax[1].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
-            ax[1].set_xlabel("Phase Angle [deg]")
-            ax[1].text(np.deg2rad(80.0),0.4*max(A_b),"Amplitude",rotation=60.0)
-            ax[1].set_title("Alternate Dimensionless Form")
-            ax[1].legend(bbox_to_anchor=(-0.05, 1.0), loc='upper right')
+            ax[0,0].set_rlabel_position(60.0)
+            ax[0,0].grid(True)
+            ax[0,0].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
+            ax[0,0].set_xlabel("Phase Angle [deg]")
+            ax[0,0].text(np.deg2rad(80.0),0.4*max(A_p),"Amplitude",rotation=60.0)
+            ax[0,0].set_title("Traditional Dimensionless Form")
+            ax[0,1].set_rlabel_position(60.0)
+            ax[0,1].grid(True)
+            ax[0,1].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
+            ax[0,1].set_xlabel("Phase Angle [deg]")
+            ax[0,1].text(np.deg2rad(80.0),0.4*max(A_b),"Amplitude",rotation=60.0)
+            ax[0,1].set_title("Alternate Dimensionless Form")
+            ax[0,1].legend(bbox_to_anchor=(-0.05, 1.0), loc='upper right')
+            # ax[2].set_rlabel_position(60.0)
+            # ax[2].grid(True)
+            # ax[2].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
+            # ax[2].set_xlabel("Phase Angle [deg]")
+            # ax[2].text(np.deg2rad(80.0),0.4*max(A_b),"Amplitude",rotation=60.0)
+            # ax[2].set_title("Alternate Dimensionless Form")
             fig.suptitle(dyn.aircraft_name + " " + modenames[mo])
             plt.tight_layout()
             plt.savefig(file,dpi=300.0)
             if show:
                 plt.show()
             else:
-                plt.close()
+                ax[0,0].cla()
+                ax[0,1].cla()
+                ax[1,0].cla()
+                ax[1,1].cla()
+    if not show:
+        plt.close()
 
 
 
