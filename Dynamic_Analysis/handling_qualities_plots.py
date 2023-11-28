@@ -114,9 +114,10 @@ def analyze_aircraft(file_name):
     
     # plot
     asp_y2 = asp.twinx()
-    asp_y2.plot(dm2[1:],CAP_sp_exact[1:],c="0.25",marker="x",mfc="none",ms=4.,\
+    CK = "0.5"
+    asp_y2.plot(dm2[1:],CAP_sp_exact[1:],c=CK,marker="x",mfc="none",ms=4.,\
         ls="none")
-    asp_y2.plot(dm,CAP_sp,c="0.25",label="Eq. (78)")
+    asp_y2.plot(dm,CAP_sp,c=CK,label="Eq. (78)") # ls="-.",
     # asp_y2.plot(lmpm_0/ryyb,sys.b["lon"]["wn"][sys.b["lon"]["sp"][0]]**2.\
     #     /sys.CL_a*sys.CW,\
     #     c="b",marker="x",mfc="none",ms=4.)
