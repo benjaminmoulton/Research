@@ -1853,9 +1853,9 @@ if __name__ == "__main__":
     for i in range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
         eigensolvedV[i] = Solver(run_files[i],report=False)
-        # eigensolvedV[i].vo *= 1.2
+        eigensolvedV[i].vo *= 1.2
         # eigensolvedV[i].rho -= 0.0005
-        eigensolvedV[i].W *= 1.2
+        # eigensolvedV[i].W *= 1.2
         eigensolvedV[i].rerun_solver()
         # print(eigensolved[i].aircraft_name, eigensolved[i].CL_a / eigensolved[i].CW)
 
@@ -1952,14 +1952,17 @@ if __name__ == "__main__":
             r"$\Delta \breve{y}$", r"$\Delta \phi$", r"$\Delta \psi$"]
     }
     cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080"]
+    cs = ["0.75","k","0.5","0.25"]
     clrs = {
         "lon" : [cs[0],cs[0],cs[1],cs[2],cs[2],cs[3]],
         "lat" : [cs[0],cs[1],cs[1],cs[2],cs[3],cs[3]]
     }
-    ms = ["o","^","s"]
+    ms = ["o","^","s","v","P","d"]
     mrks = {
-        "lon" : [ms[0],ms[2],ms[1],ms[0],ms[2],ms[1]],
-        "lat" : [ms[1],ms[0],ms[2],ms[1],ms[0],ms[2]]
+        # "lon" : [ms[0],ms[2],ms[1],ms[0],ms[2],ms[1]],
+        # "lat" : [ms[1],ms[0],ms[2],ms[1],ms[0],ms[2]]
+        "lon" : [ms[0],ms[1],ms[2],ms[3],ms[4],ms[5]],
+        "lat" : [ms[0],ms[1],ms[2],ms[3],ms[4],ms[5]]
     }
     # base directory
     bd = "phasor_plots/"
@@ -1972,9 +1975,9 @@ if __name__ == "__main__":
     t = np.linspace(0.0,4.*np.pi,num=num)
     r = np.linspace(0.0,2.0,num=num)
 
-    fig, ax = plt.subplots(2,2,figsize=(6,6),
+    fig, ax = plt.subplots(1,2,figsize=(6,3),
         subplot_kw={"projection" : "polar"})
-    for i in range(num_craft): # 
+    for i in [1,1,5,9,19]: # range(num_craft): # 
         dyn = eigensolved[i]
         dynV = eigensolvedV[i]
         print(" "*11 + dyn.aircraft_name + "...")
@@ -1985,7 +1988,7 @@ if __name__ == "__main__":
             mo = modes[j]
             direc = bd + "phasor_" + modenames[mo].lower().replace(" ","_")+"/"
             file = direc + mo + "_"+ dyn.aircraft_name.lower().replace(" ","_")
-            file = file.replace("-","_") + ".png"
+            file = file.replace("-","_") + ".pdf"
             # print(file)
             mbind = dyn.b[si][mo]
             mbindV = dynV.b[si][mo]
@@ -2022,41 +2025,46 @@ if __name__ == "__main__":
                 m = mrks[si][k]
                 l = evecnames[si][k]
                 n = "none"
-                ax[0,0].plot([0., P_p[k]],[0., A_p[k]],c=c,marker=m,mfc=n)
-                ax[0,1].plot([0., P_b[k]],[0., A_b[k]],c=c,marker=m,label=l)
-                ax[1,0].plot([0.,P_pV[k]],[0.,A_pV[k]],c=c,marker=m,mfc=n)
-                ax[1,1].plot([0.,P_bV[k]],[0.,A_bV[k]],c=c,marker=m)
-            # ax.set_rmax(2)
+                ax[0].plot([0., P_p[k]],[0., A_p[k]],lw=1.0,c=c,marker=m,\
+                    markevery=[-1],label=l)#,mfc=n)
+                ax[1].plot([0., P_b[k]],[0., A_b[k]],lw=1.0,c=c,marker=m,\
+                    markevery=[-1],label=l)
+                # ax[1,0].plot([0.,P_pV[k]],[0.,A_pV[k]],c=c,marker=m,mfc=n)
+                # ax[1,1].plot([0.,P_bV[k]],[0.,A_bV[k]],c=c,marker=m)
             # ax.set_rticks([0.5, 1, 1.5, 2])  # Less radial ticks
-            ax[0,0].set_rlabel_position(60.0)
-            ax[0,0].grid(True)
-            ax[0,0].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
-            ax[0,0].set_xlabel("Phase Angle [deg]")
-            ax[0,0].text(np.deg2rad(80.0),0.4*max(A_p),"Amplitude",rotation=60.0)
-            ax[0,0].set_title("Traditional Dimensionless Form")
-            ax[0,1].set_rlabel_position(60.0)
-            ax[0,1].grid(True)
-            ax[0,1].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
-            ax[0,1].set_xlabel("Phase Angle [deg]")
-            ax[0,1].text(np.deg2rad(80.0),0.4*max(A_b),"Amplitude",rotation=60.0)
-            ax[0,1].set_title("Alternate Dimensionless Form")
-            ax[0,1].legend(bbox_to_anchor=(-0.05, 1.0), loc='upper right')
+            ax[0].set_rlabel_position(60.0)
+            ax[1].set_rlabel_position(60.0)
+            ax[0].set_rticks(np.round(max(A_p),decimals=1)\
+                *np.linspace(0.,1.,4,endpoint=False)[1:])
+            ax[1].set_rticks(np.round(max(A_b),decimals=1)\
+                *np.linspace(0.,1.,4,endpoint=False)[1:])
+            ax[0].grid(True)
+            ax[1].grid(True)
+            ax[0].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
+            ax[1].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
+            ax[0].set_xlabel("Phase Angle [deg]")
+            ax[1].set_xlabel("Phase Angle [deg]")
+            ax[0].text(np.deg2rad(90.0),0.3*max(A_p),"Amplitude",rotation=60.0)
+            ax[1].text(np.deg2rad(90.0),0.3*max(A_b),"Amplitude",rotation=60.0)
+            ax[0].set_title("Traditional Dimensionless Form")
+            ax[1].set_title("Alternate Dimensionless Form")
+            ax[1].legend(bbox_to_anchor=(-0.2, 1.0), loc='upper right')
             # ax[2].set_rlabel_position(60.0)
             # ax[2].grid(True)
             # ax[2].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
             # ax[2].set_xlabel("Phase Angle [deg]")
             # ax[2].text(np.deg2rad(80.0),0.4*max(A_b),"Amplitude",rotation=60.0)
             # ax[2].set_title("Alternate Dimensionless Form")
-            fig.suptitle(dyn.aircraft_name + " " + modenames[mo])
+            # fig.suptitle(dyn.aircraft_name + " " + modenames[mo]) # "Aircraft"
             plt.tight_layout()
-            plt.savefig(file,dpi=300.0)
+            plt.savefig(file,transparent=True,dpi=300.0)
             if show:
                 plt.show()
             else:
-                ax[0,0].cla()
-                ax[0,1].cla()
-                ax[1,0].cla()
-                ax[1,1].cla()
+                ax[0].clear()
+                ax[1].clear()
+                # ax[1,0].cla()
+                # ax[1,1].cla()
     if not show:
         plt.close()
 
