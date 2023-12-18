@@ -1850,85 +1850,55 @@ if __name__ == "__main__":
     num_craft = len(run_files)
     eigensolved = [0.0] * num_craft
     eigensolvedV = [0.0] * num_craft
-    for i in range(num_craft):
+    for i in [5]: # range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
         eigensolvedV[i] = Solver(run_files[i],report=False)
-        eigensolvedV[i].vo *= 1.2
-        # eigensolvedV[i].rho -= 0.0005
-        # eigensolvedV[i].W *= 1.2
-        eigensolvedV[i].rerun_solver()
-        # print(eigensolved[i].aircraft_name, eigensolved[i].CL_a / eigensolved[i].CW)
 
-        # a = np.deg2rad(10.)
-        # b = np.deg2rad(1.0)
-        # s = np.arctan2(np.tan(b),np.tan(a))
-        # s_b = np.sin(a)*np.cos(a)/(np.sin(a)**2.*np.cos(b)**2. + np.cos(a)**2.*np.sin(b)**2.)
-        # s_2 = np.tan(a)/np.cos(a)**2./(np.tan(a)**2. + np.tan(b)**2.)
-        # s_3 = a / (a**2. + b**2.)
-        # # print(eigensolved[i].aircraft_short_name,np.rad2deg(s),s_b,s_2,s_3)
-        # CL = eigensolved[i].CL0 + eigensolved[i].CL_a*a
-        # CY = eigensolved[i].CY_b*b
-        # print("{:^8}   CY = {:> 7.3f} CL*s = {:> 7.3f}, CY/CL/s = {:> 7.3f}".format(
-        #     eigensolved[i].aircraft_short_name,CY,CL*s,CY/CL/s))
+        # define array of velocity scalings
+        num = 50
+        scale = np.linspace(0.6,2.0,num=num)
+        peigs = np.zeros((6,num))
+        beigs = np.zeros((6,num))
+        si = "lat" # "lon" # 
+        mo = "dr" # "ph" # "sp" # 
+        for j in range(len(scale)):
+            # eigensolvedV[i].vo = eigensolved[i].vo*scale[j]
+            # eigensolvedV[i].Iyy = eigensolved[i].Iyy*scale[j]
+            # eigensolvedV[i].Izz = eigensolved[i].Izz*scale[j]
+            # eigensolvedV[i].g = eigensolved[i].g*scale[j]
+            eigensolvedV[i].rho = eigensolved[i].rho*(scale[j]/2.)
+            # eigensolvedV[i].rho -= 0.0005
+            # eigensolvedV[i].W *= 1.2
+            eigensolvedV[i].rerun_solver()
 
-    
-    # quit()
-    
-
-    # # evaluate controllability, condition number
-    # title_string = "{:^6} |".format("name")
-    # for i in ["P","H","B","D"]:
-    #     for j in ["lon","lat","fll", "fac"]:
-    #         if j == "fll" or j == "fac":
-    #             title_string += " "
-    #         title_string += " {:>1} {:>6}  ".format("R","C," + i + j)
-    #         if j == "fac":
-    #             title_string = title_string[:-1] + "|"
-    # print(title_string)
-    # print("-"*len(title_string))
-    # for i in range(num_craft):
-    #     craft = eigensolved[i]
-    #     print("{:^6} |".format(craft.aircraft_short_name),end="")
-    #     # print(np.max(craft.p["lon"]["Ac_dim"]-craft.h["lon"]["Ac_dim"]))
-    #     # print(np.max(craft.p["lon"]["Ac_dim"]-craft.b["lon"]["Ac_dim"]))
-    #     # print(np.max(craft.p["lat"]["Ac_dim"]-craft.h["lat"]["Ac_dim"]))
-    #     # print(np.max(craft.p["lat"]["Ac_dim"]-craft.b["lat"]["Ac_dim"]))
-    #     # print(np.max(craft.p["lon"]["Bc_dim"]-craft.h["lon"]["Bc_dim"]))
-    #     # print(np.max(craft.p["lon"]["Bc_dim"]-craft.b["lon"]["Bc_dim"]))
-    #     # print(np.max(craft.p["lat"]["Bc_dim"]-craft.h["lat"]["Bc_dim"]))
-    #     # print(np.max(craft.p["lat"]["Bc_dim"]-craft.b["lat"]["Bc_dim"]))
+            # plot short period eigvecs
+            mbind = eigensolvedV[i].b[si][mo][0]
+            beigs[:,j] = eigensolvedV[i].b[si][ "amp" ][:, mbind]*1.
+            mpind = eigensolvedV[i].p[si][mo][0]
+            peigs[:,j] = eigensolvedV[i].p[si][ "amp" ][:, mpind]*1.
         
-    #     # print("Sg same =",abs(craft.b["drSg"] - craft.p["drSg"])<1e-15,"  ",
-    #     #     "WD same =",abs(craft.b["drWD"] - craft.p["drWD"])<1e-15,"  ",
-    #     #     "wn same =",abs(craft.b["drwn"] - craft.p["drwn"])<1e-15,"  ",
-    #     #     "zt same =",abs(craft.b["drzt"] - craft.p["drzt"])<1e-15)
-    #     dm = ["","","","_dim"]
-    #     for j,method in enumerate([craft.p,craft.h,craft.b,craft.b]):
-    #         G_lon = ctrb(method["lon"]["Ac"+dm[j]],method["lon"]["Bc"+dm[j]])
-    #         G_lon_r = np.linalg.matrix_rank(G_lon)
-    #         G_lon_c = np.linalg.cond(G_lon)
-    #         G_lat = ctrb(method["lat"]["Ac"+dm[j]],method["lat"]["Bc"+dm[j]])
-    #         G_lat_r = np.linalg.matrix_rank(G_lat)
-    #         G_lat_c = np.linalg.cond(G_lat)
-    #         A = block_diag(method["lon"]["Ac"+dm[j]],method["lat"]["Ac"+dm[j]])
-    #         B = block_diag(method["lon"]["Bc"+dm[j]],method["lat"]["Bc"+dm[j]])
-    #         G = ctrb(A,B)
-    #         G_r = np.linalg.matrix_rank(G)
-    #         G_c = np.linalg.cond(G)
-    #         s = 1./0.0495
-    #         S = np.diag([s,s,s])
-    #         Z = np.zeros((A.shape[0],B.shape[1]))
-    #         A_act = np.block([[A,B],[Z.T,-S]])
-    #         B_act = np.block([[Z],[S]])
-    #         G_act = ctrb(A_act,B_act)
-    #         G_act_r = np.linalg.matrix_rank(G_act)
-    #         G_act_c = np.linalg.cond(G_act)
-    #         print(" {:>1} {:> 6.0e}  ".format(G_lon_r,G_lon_c),end="")
-    #         print(" {:>1} {:> 6.0e}  ".format(G_lat_r,G_lat_c),end="")
-    #         print(" {:>2} {:> 6.0e}  ".format(G_r,G_c),end="")
-    #         print(" {:>2} {:> 6.0e} |".format(G_act_r,G_act_c),end="")
-    #     print()
-    # quit()
+        # plot
+        evecnames = {
+            "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \breve{q}$", 
+                r"$\Delta \breve{x}$", r"$\Delta \breve{z}$", r"$\Delta \theta$"],
+            "lat" : [r"$\Delta \beta$", r"$\Delta \breve{p}$", r"$\Delta \breve{r}$", 
+                r"$\Delta \breve{y}$", r"$\Delta \phi$", r"$\Delta \psi$"]
+        }
+        lss = ["-","--",":","-.",(0, (3, 5, 3, 5, 1, 5)),(0, (3, 5, 1, 5, 1, 5))]
+        ms = ["o","^","s","v","P","d"]
+        fig, ax = plt.subplots(figsize=(4,3))
+        for k in range(6):
+            ax.plot(scale,beigs[k,:],c="b",marker=ms[k],label=evecnames[si][k])
+            ax.plot(scale,peigs[k,:],c="k",marker=ms[k])#,label=evecnames[si][k])
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.legend()
+        plt.show()
+
+
+
+    
+    quit()
 
     # create dictionaries for pretty title-ing of print out
     modes = ["sp","ph","sl","ro","dr"]
@@ -1977,7 +1947,7 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots(1,2,figsize=(6,3),
         subplot_kw={"projection" : "polar"})
-    for i in [1,1,5,9,19]: # range(num_craft): # 
+    for i in [5]: # [1,1,5,9,19]: # range(num_craft): # 
         dyn = eigensolved[i]
         dynV = eigensolvedV[i]
         print(" "*11 + dyn.aircraft_name + "...")
