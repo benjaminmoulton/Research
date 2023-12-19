@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 from scipy.linalg import eig, block_diag
 from control import ctrb
 
+from os import mkdir, rmdir, walk, remove, listdir
+from os.path import exists as path_exists
+
 class Solver:
     """A class which solves an eigenproblem based on an aircraft 
     derivatives input file.
@@ -20,7 +23,8 @@ class Solver:
         If the input_vars type is not a dictionary or the file path to 
         a .json file
     """
-    def __init__(self,input_vars={},report=True,show_evector=False):
+    def __init__(self,input_vars={},report=True,drop_rigid_body_states=False,
+    show_evector=False):
 
         # report
         self.report = report
@@ -29,6 +33,7 @@ class Solver:
 
         # get info or raise error
         self.input = input_vars
+        self.drop_rb = drop_rigid_body_states
         self._get_input_vars(input_vars)
 
         # retrieve info
@@ -295,7 +300,11 @@ class Solver:
         self.p["lon"]["Bc"] = E
         self.p["lon"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
         self.p["lon"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
-        self.p["lon"]["evals"],self.p["lon"]["evecs"] = eig(C)
+        if self.drop_rb:
+            rwcl = [0,1,2,5]
+        else:
+            rwcl = [0,1,2,3,4,5]
+        self.p["lon"]["evals"],self.p["lon"]["evecs"] = eig((C[rwcl])[:,rwcl])
 
         # calculate amplitude and phase angles
         self.p["lon"]["amp"] = np.sqrt(np.real(self.p["lon"]["evecs"])**2. + \
@@ -378,7 +387,11 @@ class Solver:
         self.p["lat"]["Bc"] = E
         self.p["lat"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
         self.p["lat"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
-        self.p["lat"]["evals"],self.p["lat"]["evecs"] = eig(C)
+        if self.drop_rb:
+            rwcl = [0,1,2,4,5]
+        else:
+            rwcl = [0,1,2,3,4,5]
+        self.p["lat"]["evals"],self.p["lat"]["evecs"] = eig((C[rwcl])[:,rwcl])
 
         # calculate amplitude and phase angles
         self.p["lat"]["amp"] = np.sqrt(np.real(self.p["lat"]["evecs"])**2. + \
@@ -594,7 +607,11 @@ class Solver:
         self.h["lon"]["Bc"] = E
         self.h["lon"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
         self.h["lon"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
-        self.h["lon"]["evals"],self.h["lon"]["evecs"] = eig(C)
+        if self.drop_rb:
+            rwcl = [0,1,2,5]
+        else:
+            rwcl = [0,1,2,3,4,5]
+        self.h["lon"]["evals"],self.h["lon"]["evecs"] = eig((C[rwcl])[:,rwcl])
 
         # calculate amplitude and phase angles
         self.h["lon"]["amp"] = np.sqrt(np.real(self.h["lon"]["evecs"])**2. + \
@@ -662,7 +679,11 @@ class Solver:
         self.h["lat"]["Bc"] = E
         self.h["lat"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
         self.h["lat"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
-        self.h["lat"]["evals"],self.h["lat"]["evecs"] = eig(C)
+        if self.drop_rb:
+            rwcl = [0,1,2,4,5]
+        else:
+            rwcl = [0,1,2,3,4,5]
+        self.h["lat"]["evals"],self.h["lat"]["evecs"] = eig((C[rwcl])[:,rwcl])
 
         # calculate amplitude and phase angles
         self.h["lat"]["amp"] = np.sqrt(np.real(self.h["lat"]["evecs"])**2. + \
@@ -990,7 +1011,11 @@ class Solver:
         self.b["lon"]["Bc"] = E
         self.b["lon"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
         self.b["lon"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
-        self.b["lon"]["evals"],self.b["lon"]["evecs"] = eig(C)
+        if self.drop_rb:
+            rwcl = [0,1,2,5]
+        else:
+            rwcl = [0,1,2,3,4,5]
+        self.b["lon"]["evals"],self.b["lon"]["evecs"] = eig((C[rwcl])[:,rwcl])
 
         # calculate amplitude and phase angles
         self.b["lon"]["amp"] = np.sqrt(np.real(self.b["lon"]["evecs"])**2. + \
@@ -1055,7 +1080,11 @@ class Solver:
         self.b["lat"]["Bc"] = E
         self.b["lat"]["Ac_dim"] = np.matmul(dim_C,np.matmul(C,C_dim))
         self.b["lat"]["Bc_dim"] = np.matmul(dim_C,np.matmul(E,E_dim))
-        self.b["lat"]["evals"],self.b["lat"]["evecs"] = eig(C)
+        if self.drop_rb:
+            rwcl = [0,1,2,4,5]
+        else:
+            rwcl = [0,1,2,3,4,5]
+        self.b["lat"]["evals"],self.b["lat"]["evecs"] = eig((C[rwcl])[:,rwcl])
 
         # calculate amplitude and phase angles
         self.b["lat"]["amp"] = np.sqrt(np.real(self.b["lat"]["evecs"])**2. + \
@@ -1329,10 +1358,30 @@ class Solver:
             side = "lat"
         
         if is_alternate:
+            uvw_dim = self.vo
+            pqr_lon_dim = self.g/self.vo
+            pqr_lat_dim = self.g/self.vo
+            xyz_lon_dim = self.vo**2./self.g
+            xyz_lat_dim = self.vo**2./self.g
+            ptp_dim = 1.
             redim = self.g / self.vo
         else:
+            uvw_dim = self.vo
+            pqr_lon_dim = 2.*self.vo/self.cwbar
+            pqr_lat_dim = 2.*self.vo/self.bw
+            xyz_lon_dim = self.cwbar/2.
+            xyz_lat_dim = self.bw/2.
+            ptp_dim = 1.
             redim = 2. * self.vo / ref_len
-
+        
+        if is_longitudinal:
+            vcdim = np.array([uvw_dim,uvw_dim,pqr_lon_dim,
+                xyz_lon_dim,xyz_lon_dim,ptp_dim])
+        else:
+            vcdim = np.array([uvw_dim,pqr_lat_dim,pqr_lat_dim,
+                xyz_lat_dim,ptp_dim,ptp_dim])
+        
+        
         
         # initialize properties arrays
         method[side]["Sg"] = np.zeros(6,)
@@ -1343,12 +1392,25 @@ class Solver:
         method[side]["wn"] = np.zeros(6,)
         method[side]["zt"] = np.zeros(6,)
         method[side]["dimevals"] = method[side]["evals"] * 0.0
+        method[side]["dimevecs"] = method[side]["evecs"] * 0.0
         
         # cycle through eigenvalues
         for i in range(method[side]["evals"].shape[0]):
 
             # dimensionalize eigenvalue
             method[side]["dimevals"][i] = method[side]["evals"][i] * redim
+
+            # dimensionalize eigenvector
+            dimvec = method[side]["evecs"][:,i]*vcdim
+            method[side]["dimevecs"][:,i] = dimvec/np.linalg.norm(dimvec)
+
+            if "dimamps" not in method[side]:
+                method[side]["dimamp"] = np.sqrt(\
+                    np.real(method[side]["dimevecs"])**2. + \
+                    np.imag(method[side]["dimevecs"])**2.)
+                method[side]["dimphase"] = np.rad2deg(\
+                    np.arctan2(np.imag(method[side]["dimevecs"]),\
+                    np.real(method[side]["dimevecs"])))
 
             # calculate damping rate
             method[side]["Sg"][i] = - np.real(method[side]["evals"][i]) * \
@@ -1387,28 +1449,29 @@ class Solver:
         
         # determine indexes for rigid body modes
         i_rb = np.argwhere(np.abs(method["lon"]["evals"]) == 0.0).T[0]
-
+        
         # determine indexes for short period mode
         all_real = np.imag(method["lon"]["evals"]) == 0.0
         non_rb_real = np.delete(all_real,i_rb)
         max_arg = np.abs(method["lon"]["evals"]).argmax()
-        if all_real.sum() in [2,6]:
+        rb = self.drop_rb*2
+        if all_real.sum() in [2-rb,6-rb]:
             # get sp mode
-            i_sp = i_rb * 0
+            i_sp = np.zeros((2,),dtype=int)
             i_sp[0] = np.abs(method["lon"]["evals"]).argmax()
             i_sp[1] = np.abs(np.delete(method["lon"]["evals"],i_sp[0])).argmax()
             if i_sp[1] >= i_sp[0]:
                 i_sp[1] += 1
             # determine indexes for phugoid mode
-            i_ph = np.delete(np.array(range(6)),np.concatenate((i_rb,i_sp)))
-        elif all_real.sum() == 4:
+            i_ph = np.delete(np.array(range(6-rb)),np.concatenate((i_rb,i_sp)))
+        elif all_real.sum() == 4-rb:
             # check if max arg in all real or not
             if all_real[max_arg]:
-                i_sp = np.delete(np.array(range(6)),i_rb)[non_rb_real]
-                i_ph = np.delete(np.array(range(6)),np.concatenate((i_rb,i_sp)))
+                i_sp = np.delete(np.array(range(6-rb)),i_rb)[non_rb_real]
+                i_ph = np.delete(np.array(range(6-rb)),np.concatenate((i_rb,i_sp)))
             else:
-                i_ph = np.delete(np.array(range(6)),i_rb)[non_rb_real]
-                i_sp = np.delete(np.array(range(6)),np.concatenate((i_rb,i_ph)))
+                i_ph = np.delete(np.array(range(6-rb)),i_rb)[non_rb_real]
+                i_sp = np.delete(np.array(range(6-rb)),np.concatenate((i_rb,i_ph)))
         else:
             raise NotImplementedError("This scenario has not been implemented")
         
@@ -1814,7 +1877,9 @@ if __name__ == "__main__":
     # plt.rcParams["xtick.minor.width"] = plt.rcParams["ytick.minor.width"] = 1.0
     # plt.rcParams["xtick.major.size"] = plt.rcParams["ytick.major.size"] = 5.0
     # plt.rcParams["xtick.minor.size"] = plt.rcParams["ytick.minor.size"] = 2.5
-    # plt.rcParams["mathtext.fontset"] = "dejavuserif"
+    plt.rcParams["mathtext.fontset"] = "dejavuserif"
+    plt.rcParams['figure.dpi'] = 300.0
+    plt.rcParams['figure.constrained_layout.use'] = True
 
     # Convair 990 https://www.nasa.gov/centers/dryden/pdf/87810main_H-693.pdf
     # some aircraft (plots, not values) in "" by Edward Seckel
@@ -1855,27 +1920,36 @@ if __name__ == "__main__":
         eigensolvedV[i] = Solver(run_files[i],report=False)
 
         # define array of velocity scalings
-        num = 50
-        scale = np.linspace(0.6,2.0,num=num)
+        num = 25 # 50 # 
+        start = 0.6
+        end = 2.0
+        scale =  np.linspace(start,end,num=num)
+        scale = np.geomspace(start,end,num=num) # /2. # 
         peigs = np.zeros((6,num))
         beigs = np.zeros((6,num))
+        deigs = np.zeros((6,num))
         si = "lat" # "lon" # 
-        mo = "dr" # "ph" # "sp" # 
+        mo = "dr" # "ro" # "ph" # "sl" # "sp" # 
         for j in range(len(scale)):
             # eigensolvedV[i].vo = eigensolved[i].vo*scale[j]
+            # eigensolvedV[i].Ixx = eigensolved[i].Ixx*scale[j]
             # eigensolvedV[i].Iyy = eigensolved[i].Iyy*scale[j]
-            # eigensolvedV[i].Izz = eigensolved[i].Izz*scale[j]
+            eigensolvedV[i].Izz = eigensolved[i].Izz*scale[j]
             # eigensolvedV[i].g = eigensolved[i].g*scale[j]
-            eigensolvedV[i].rho = eigensolved[i].rho*(scale[j]/2.)
+            # eigensolvedV[i].rho = eigensolved[i].rho*scale[j]
             # eigensolvedV[i].rho -= 0.0005
             # eigensolvedV[i].W *= 1.2
             eigensolvedV[i].rerun_solver()
 
             # plot short period eigvecs
-            mbind = eigensolvedV[i].b[si][mo][0]
-            beigs[:,j] = eigensolvedV[i].b[si][ "amp" ][:, mbind]*1.
-            mpind = eigensolvedV[i].p[si][mo][0]
-            peigs[:,j] = eigensolvedV[i].p[si][ "amp" ][:, mpind]*1.
+            mbind = eigensolvedV[i].b[si][mo]
+            mpind = eigensolvedV[i].p[si][mo]
+            if mo in ["sp","ph","dr"]:
+                mbind = mbind[0]
+                mpind = mpind[0]
+            beigs[:,j] = eigensolvedV[i].b[si][ "amp"  ][:, mbind]*1.
+            peigs[:,j] = eigensolvedV[i].p[si][ "amp"  ][:, mpind]*1.
+            deigs[:,j] = eigensolvedV[i].p[si]["dimamp"][:, mpind]*1.
         
         # plot
         evecnames = {
@@ -1888,12 +1962,57 @@ if __name__ == "__main__":
         ms = ["o","^","s","v","P","d"]
         fig, ax = plt.subplots(figsize=(4,3))
         for k in range(6):
-            ax.plot(scale,beigs[k,:],c="b",marker=ms[k],label=evecnames[si][k])
-            ax.plot(scale,peigs[k,:],c="k",marker=ms[k])#,label=evecnames[si][k])
+            ax.plot(scale,peigs[k,:],c="0.5",marker=ms[k],lw=0.75,markersize=3.0,ls="--")#,label=evecnames[si][k])
+        for k in range(6):
+            ax.plot(scale,beigs[k,:],c=  "k",marker=ms[k],lw=0.75,markersize=3.0,label=evecnames[si][k])
+        # for k in range(6):
+        #     ax.plot(scale,deigs[k,:],c=  "b",marker=ms[k],lw=0.75,markersize=3.0)#,label=evecnames[si][k])
         ax.set_xscale("log")
         ax.set_yscale("log")
+        ax.set_xlim((start,end))
         ax.legend()
         plt.show()
+
+        # start = 0.0
+        # end = 2.0
+        # t = np.linspace(start,end,num)
+        # # t = np.geomspace(1.0e-10,2.,num)
+        # tau = eigensolved[i].g*t/eigensolved[i].vo
+        # if si == "lon":
+        #     taup = 2.*eigensolved[i].vo*t/eigensolved[i].cwbar
+        # else:
+        #     taup = 2.*eigensolved[i].vo*t/eigensolved[i].bw
+        # mbind = eigensolved[i].b[si][mo]
+        # mpind = eigensolved[i].p[si][mo]
+        # if mo in ["sp","ph","dr"]:
+        #     mbind = mbind[0]
+        #     mpind = mpind[0]
+        # bevc = eigensolved[i].b[si][ "evecs" ][:, mbind]*1.
+        # pevc = eigensolved[i].p[si][ "evecs" ][:, mpind]*1.
+        # devc = eigensolved[i].b[si][ "dimevecs" ][:, mbind]*1.
+        # bevl = eigensolved[i].b[si][ "evals" ][mbind]*1.
+        # pevl = eigensolved[i].p[si][ "evals" ][mpind]*1.
+        # devl = eigensolved[i].b[si][ "dimevals" ][mbind]*1.
+        # brsp = np.real(np.matmul(bevc[:,np.newaxis],np.exp(bevl*tau )[np.newaxis,:]))
+        # prsp = np.real(np.matmul(pevc[:,np.newaxis],np.exp(pevl*taup)[np.newaxis,:]))
+        # drsp = np.real(np.matmul(devc[:,np.newaxis],np.exp(devl*t)[np.newaxis,:]))
+        # fig, ax = plt.subplots(figsize=(4,3))
+        # # print(bevl,pevl)
+        # # print(bevc,pevc)
+        # # print(brsp,prsp)
+        # # for k in range(6): # 
+        # #     ax.plot(t,np.real(brsp[k]))
+        # for k in range(6):
+        #     ax.plot(t,prsp[k],c="0.5",marker=ms[k],lw=0.75,markersize=3.0,ls="--")#,label=evecnames[si][k])
+        # for k in range(6):
+        #     ax.plot(t,brsp[k],c=  "k",marker=ms[k],lw=0.75,markersize=3.0,label=evecnames[si][k])
+        # # for k in range(6):
+        # #     ax.plot(t,drsp[k],c=  "b",marker=ms[k],lw=0.75,markersize=3.0,label=evecnames[si][k])
+        # # ax.set_xscale("log")
+        # # ax.set_yscale("log")
+        # ax.legend()
+        # ax.set_xlim((start,end))        
+        # plt.show()
 
 
 
@@ -1915,12 +2034,20 @@ if __name__ == "__main__":
         "wn" : "Natural Frequency, rad/s",
         "Sg" : "Damping Rate, 1/s"
     }
-    evecnames = {
-        "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \breve{q}$", 
-            r"$\Delta \breve{x}$", r"$\Delta \breve{z}$", r"$\Delta \theta$"],
-        "lat" : [r"$\Delta \beta$", r"$\Delta \breve{p}$", r"$\Delta \breve{r}$", 
-            r"$\Delta \breve{y}$", r"$\Delta \phi$", r"$\Delta \psi$"]
-    }
+    if drop_rb_states:
+        evecnames = {
+            "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \breve{q}$", 
+                r"$\Delta \theta$"],
+            "lat" : [r"$\Delta \beta$", r"$\Delta \breve{p}$", r"$\Delta \breve{r}$", 
+                r"$\Delta \phi$", r"$\Delta \psi$"]
+        }
+    else:
+        evecnames = {
+            "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \breve{q}$", 
+                r"$\Delta \breve{x}$", r"$\Delta \breve{z}$", r"$\Delta \theta$"],
+            "lat" : [r"$\Delta \beta$", r"$\Delta \breve{p}$", r"$\Delta \breve{r}$", 
+                r"$\Delta \breve{y}$", r"$\Delta \phi$", r"$\Delta \psi$"]
+        }
     cs = ["#F5793A","#A95AA1","#85C0F9","#0F2080"]
     cs = ["0.75","k","0.5","0.25"]
     clrs = {
@@ -1936,6 +2063,14 @@ if __name__ == "__main__":
     }
     # base directory
     bd = "phasor_plots/"
+
+    # # clear folders
+    # print("clearing folders...")
+    # for j in range(len(modes)):
+    #     mo = modes[j]
+    #     direc = bd + "phasor_" + modenames[mo].lower().replace(" ","_")#+"/"
+    #     for filename in listdir(direc):
+    #         remove(direc + "/" + filename)
     # show plots
     show = False
     print("plotting...")
@@ -1945,7 +2080,7 @@ if __name__ == "__main__":
     t = np.linspace(0.0,4.*np.pi,num=num)
     r = np.linspace(0.0,2.0,num=num)
 
-    fig, ax = plt.subplots(1,2,figsize=(6,3),
+    fig, ax = plt.subplots(2,2,figsize=(6,6), # 1,2,figsize=(6,3), # 
         subplot_kw={"projection" : "polar"})
     for i in [5]: # [1,1,5,9,19]: # range(num_craft): # 
         dyn = eigensolved[i]
@@ -1958,7 +2093,7 @@ if __name__ == "__main__":
             mo = modes[j]
             direc = bd + "phasor_" + modenames[mo].lower().replace(" ","_")+"/"
             file = direc + mo + "_"+ dyn.aircraft_name.lower().replace(" ","_")
-            file = file.replace("-","_") + ".pdf"
+            file = file.replace("-","_")
             # print(file)
             mbind = dyn.b[si][mo]
             mbindV = dynV.b[si][mo]
@@ -1984,7 +2119,9 @@ if __name__ == "__main__":
             # print(np.rad2deg(P_b))
 
             # determine phase difference between methods
-            P_b = P_b - (P_b[0] - P_p[0])
+            P_p  = P_p  -  P_p[np.argmax(A_p )]
+            P_b  = P_b  - ( P_b[0] -  P_p[0])
+            P_pV = P_pV - P_pV[np.argmax(A_p )]
             P_bV = P_bV - (P_bV[0] - P_pV[0])
 
             # plot
@@ -1995,46 +2132,56 @@ if __name__ == "__main__":
                 m = mrks[si][k]
                 l = evecnames[si][k]
                 n = "none"
-                ax[0].plot([0., P_p[k]],[0., A_p[k]],lw=1.0,c=c,marker=m,\
+                ax[0,0].plot([0., P_p[k]],[0., A_p[k]],lw=1.0,c=c,marker=m,\
                     markevery=[-1],label=l)#,mfc=n)
-                ax[1].plot([0., P_b[k]],[0., A_b[k]],lw=1.0,c=c,marker=m,\
+                ax[0,1].plot([0., P_b[k]],[0., A_b[k]],lw=1.0,c=c,marker=m,\
                     markevery=[-1],label=l)
-                # ax[1,0].plot([0.,P_pV[k]],[0.,A_pV[k]],c=c,marker=m,mfc=n)
-                # ax[1,1].plot([0.,P_bV[k]],[0.,A_bV[k]],c=c,marker=m)
+                ax[1,0].plot([0.,P_pV[k]],[0.,A_pV[k]],lw=1.0,c=c,marker=m,\
+                    markevery=[-1],label=l)#,mfc=n)
+                ax[1,1].plot([0.,P_bV[k]],[0.,A_bV[k]],lw=1.0,c=c,marker=m,\
+                    markevery=[-1],label=l)
             # ax.set_rticks([0.5, 1, 1.5, 2])  # Less radial ticks
-            ax[0].set_rlabel_position(60.0)
-            ax[1].set_rlabel_position(60.0)
-            ax[0].set_rticks(np.round(max(A_p),decimals=1)\
+            ax[0,0].set_rlabel_position(60.0)
+            ax[0,1].set_rlabel_position(60.0)
+            ax[0,0].set_rticks(np.round(max(A_p),decimals=1)\
                 *np.linspace(0.,1.,4,endpoint=False)[1:])
-            ax[1].set_rticks(np.round(max(A_b),decimals=1)\
+            ax[0,1].set_rticks(np.round(max(A_b),decimals=1)\
                 *np.linspace(0.,1.,4,endpoint=False)[1:])
-            ax[0].grid(True)
-            ax[1].grid(True)
-            ax[0].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
-            ax[1].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
-            ax[0].set_xlabel("Phase Angle [deg]")
-            ax[1].set_xlabel("Phase Angle [deg]")
-            ax[0].text(np.deg2rad(90.0),0.3*max(A_p),"Amplitude",rotation=60.0)
-            ax[1].text(np.deg2rad(90.0),0.3*max(A_b),"Amplitude",rotation=60.0)
-            ax[0].set_title("Traditional Dimensionless Form")
-            ax[1].set_title("Alternate Dimensionless Form")
-            ax[1].legend(bbox_to_anchor=(-0.2, 1.0), loc='upper right')
-            # ax[2].set_rlabel_position(60.0)
-            # ax[2].grid(True)
-            # ax[2].set_xticks(np.pi/180. * np.linspace(0.0, 360.0, 16, endpoint=False))
-            # ax[2].set_xlabel("Phase Angle [deg]")
-            # ax[2].text(np.deg2rad(80.0),0.4*max(A_b),"Amplitude",rotation=60.0)
-            # ax[2].set_title("Alternate Dimensionless Form")
-            # fig.suptitle(dyn.aircraft_name + " " + modenames[mo]) # "Aircraft"
-            plt.tight_layout()
-            plt.savefig(file,transparent=True,dpi=300.0)
+            ax[0,0].grid(True)
+            ax[0,1].grid(True)
+            ax[0,0].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
+            ax[0,1].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
+            ax[0,0].set_xlabel("Phase Angle [deg]")
+            ax[0,1].set_xlabel("Phase Angle [deg]")
+            ax[0,0].text(np.deg2rad(90.0),0.3*max(A_p),"Amplitude",rotation=60.0)
+            ax[0,1].text(np.deg2rad(90.0),0.3*max(A_b),"Amplitude",rotation=60.0)
+            ax[0,0].set_title("Traditional Dimensionless Form")
+            ax[0,1].set_title("Alternate Dimensionless Form")
+            ax[0,1].legend(bbox_to_anchor=(-0.2, 1.0), loc='upper right')
+            # changed
+            ax[1,0].set_rlabel_position(60.0)
+            ax[1,1].set_rlabel_position(60.0)
+            ax[1,0].set_rticks(np.round(max(A_pV),decimals=1)\
+                *np.linspace(0.,1.,4,endpoint=False)[1:])
+            ax[1,1].set_rticks(np.round(max(A_bV),decimals=1)\
+                *np.linspace(0.,1.,4,endpoint=False)[1:])
+            ax[1,0].grid(True)
+            ax[1,1].grid(True)
+            ax[1,0].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
+            ax[1,1].set_xticks(np.pi/180.*np.linspace(0.,360.,8,endpoint=False))
+            ax[1,0].set_xlabel("Phase Angle [deg]")
+            ax[1,1].set_xlabel("Phase Angle [deg]")
+            ax[1,0].text(np.deg2rad(90.0),0.3*max(A_pV),"Amplitude",rotation=60.0)
+            ax[1,1].text(np.deg2rad(90.0),0.3*max(A_bV),"Amplitude",rotation=60.0)
+            plt.savefig(file + ".png",transparent=False, # True, # 
+                dpi=300.0)
             if show:
                 plt.show()
             else:
-                ax[0].clear()
-                ax[1].clear()
-                # ax[1,0].cla()
-                # ax[1,1].cla()
+                ax[0,0].clear()
+                ax[0,1].clear()
+                ax[1,0].cla()
+                ax[1,1].cla()
     if not show:
         plt.close()
 
