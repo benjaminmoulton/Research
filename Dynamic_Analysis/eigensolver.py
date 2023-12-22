@@ -1858,7 +1858,97 @@ def print_hq(hq,print_bold=False):
         print("\033[1m" + string + "\033[0m", end="")
     else:
         print(string, end="")
+
+
+def delta_plot(aircraft,var="vo",modes=["dr"],
+    log_in_x_and_var=True,num_points=25,bounds=(0.6,2.0),figtype="png"):
+    # define array of velocity scalings
+    start = bounds[0]
+    end = bounds[1]
+    if log_in_x_and_var:
+        scale = np.geomspace(start,end,num=num_points)
+    else:
+        scale =  np.linspace(start,end,num=num_points)
+    peigs = np.zeros((len(modes),6,num_points))
+    beigs = np.zeros((len(modes),6,num_points))
+    deigs = np.zeros((len(modes),6,num_points))
+    sides = []
+    for i in range(len(modes)):
+        if modes[i] in ["sp","ph"]:
+            sides.append("lon")
+        elif modes[i] in ["ro","sl","dr"]:
+            sides.append("lat")
+        else:
+            raise ValueError("Incorrect dynamic mode specified. options are"+\
+                "'sp','ph','ro','sl','dr'.")
     
+    if var == "vo":
+        mvar = "$V_o$"
+    elif var in ["Ixx","Iyy","Izz","Ixy","Ixz","Iyz"]:
+        mvar = "$"+var[0]+"_{"+var[1:]+"_b}$"
+    elif var == "rho":
+        mvar = r"$\rho$"
+    elif var == "cwbar":
+        mvar = r"$\bar{c}_w$"
+    elif var == "bw":
+        mvar = r"$b_w$"
+    else:
+        mvar = "$" + var + "$"
+
+    # get eigvecs
+    def_var = aircraft.__dict__[var]*1.
+    for j in range(len(scale)):
+        aircraft.__dict__[var] = def_var*scale[j]
+        aircraft.rerun_solver()
+
+        # save eigvecs
+        for k in range(len(modes)):
+            si = sides[k]
+            mo = modes[k]
+            mbind = aircraft.b[si][mo]
+            mpind = aircraft.p[si][mo]
+            if mo in ["sp","ph","dr"]:
+                mbind = mbind[0]
+                mpind = mpind[0]
+            beigs[k,:,j] = aircraft.b[si][ "amp"  ][:, mbind]*1.
+            peigs[k,:,j] = aircraft.p[si][ "amp"  ][:, mpind]*1.
+            deigs[k,:,j] = aircraft.p[si]["dimamp"][:, mpind]*1.
+    
+    # plot
+    evecnames = {
+        "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \breve{q}$", 
+            r"$\Delta \breve{x}$", r"$\Delta \breve{z}$", r"$\Delta \theta$"],
+        "lat" : [r"$\Delta \beta$", r"$\Delta \breve{p}$", r"$\Delta \breve{r}$", 
+            r"$\Delta \breve{y}$", r"$\Delta \phi$", r"$\Delta \psi$"]
+    }
+    lss = ["-","--",":","-.",(0, (3, 5, 3, 5, 1, 5)),(0, (3, 5, 1, 5, 1, 5))]
+    ms = ["o","^","s","v","P","d"]
+    fig, ax = plt.subplots(figsize=(4,3))
+    for k in range(len(modes)):
+        si = sides[k]
+        mo = modes[k]
+        for j in range(6):
+            ax.plot(scale,peigs[k,j,:],c="0.5",marker=ms[j],lw=0.75,markersize=2.0,ls="--")#,label=evecnames[si][j])
+        for j in range(6):
+            ax.plot(scale,beigs[k,j,:],c=  "k",marker=ms[j],lw=0.75,markersize=2.0,label=evecnames[si][j])
+        # for k in range(6):
+        #     ax.plot(scale,deigs[k,j,:],c=  "b",marker=ms[j],lw=0.75,markersize=3.0)#,label=evecnames[si][j])
+        ax.grid(color="0.75",linestyle="--",linewidth=0.5,which="major")
+        ax.grid(color="0.75",linestyle="--",linewidth=0.25,which="minor")
+        if log_in_x_and_var:
+            ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_xlim((start,end))
+        ax.legend()
+        ax.set_ylabel("Dimensionless Eigenvector Component")
+        ax.set_xlabel("Scaling from nominal " + mvar)
+        file = "delta_"+var+"_"+aircraft.aircraft_name.lower().replace(" ","_")
+        file = file.replace("-","_") + "_" + mo
+        fig.savefig("phasor_plots/phasor_delta/"+file+"."+figtype,
+            transparent=False, # True, # 
+            dpi=300.0)
+        ax.cla()
+    plt.close() 
 
 
 if __name__ == "__main__":
@@ -1915,66 +2005,38 @@ if __name__ == "__main__":
     num_craft = len(run_files)
     eigensolved = [0.0] * num_craft
     eigensolvedV = [0.0] * num_craft
+    # check directory for plots, remove if there
+    delta_folder = "phasor_plots/phasor_delta"
+    if path_exists(delta_folder):
+        for filename in listdir(delta_folder):
+            remove(delta_folder + "/" + filename)
+    else:
+        mkdir(delta_folder)
     for i in [5]: # range(num_craft):
         eigensolved[i] = Solver(run_files[i],report=False)
         eigensolvedV[i] = Solver(run_files[i],report=False)
 
-        # define array of velocity scalings
-        num = 25 # 50 # 
-        start = 0.6
-        end = 2.0
-        scale =  np.linspace(start,end,num=num)
-        scale = np.geomspace(start,end,num=num) # /2. # 
-        peigs = np.zeros((6,num))
-        beigs = np.zeros((6,num))
-        deigs = np.zeros((6,num))
-        si = "lat" # "lon" # 
-        mo = "dr" # "ro" # "ph" # "sl" # "sp" # 
-        for j in range(len(scale)):
-            # eigensolvedV[i].vo = eigensolved[i].vo*scale[j]
-            # eigensolvedV[i].Ixx = eigensolved[i].Ixx*scale[j]
-            # eigensolvedV[i].Iyy = eigensolved[i].Iyy*scale[j]
-            eigensolvedV[i].Izz = eigensolved[i].Izz*scale[j]
-            # eigensolvedV[i].g = eigensolved[i].g*scale[j]
-            # eigensolvedV[i].rho = eigensolved[i].rho*scale[j]
-            # eigensolvedV[i].rho -= 0.0005
-            # eigensolvedV[i].W *= 1.2
-            eigensolvedV[i].rerun_solver()
-
-            # plot short period eigvecs
-            mbind = eigensolvedV[i].b[si][mo]
-            mpind = eigensolvedV[i].p[si][mo]
-            if mo in ["sp","ph","dr"]:
-                mbind = mbind[0]
-                mpind = mpind[0]
-            beigs[:,j] = eigensolvedV[i].b[si][ "amp"  ][:, mbind]*1.
-            peigs[:,j] = eigensolvedV[i].p[si][ "amp"  ][:, mpind]*1.
-            deigs[:,j] = eigensolvedV[i].p[si]["dimamp"][:, mpind]*1.
-        
-        # plot
-        evecnames = {
-            "lon" : [r"$\Delta \mu$", r"$\Delta \alpha$", r"$\Delta \breve{q}$", 
-                r"$\Delta \breve{x}$", r"$\Delta \breve{z}$", r"$\Delta \theta$"],
-            "lat" : [r"$\Delta \beta$", r"$\Delta \breve{p}$", r"$\Delta \breve{r}$", 
-                r"$\Delta \breve{y}$", r"$\Delta \phi$", r"$\Delta \psi$"]
-        }
-        lss = ["-","--",":","-.",(0, (3, 5, 3, 5, 1, 5)),(0, (3, 5, 1, 5, 1, 5))]
-        ms = ["o","^","s","v","P","d"]
-        fig, ax = plt.subplots(figsize=(4,3))
-        for k in range(6):
-            ax.plot(scale,peigs[k,:],c="0.5",marker=ms[k],lw=0.75,markersize=3.0,ls="--")#,label=evecnames[si][k])
-        for k in range(6):
-            ax.plot(scale,beigs[k,:],c=  "k",marker=ms[k],lw=0.75,markersize=3.0,label=evecnames[si][k])
-        # for k in range(6):
-        #     ax.plot(scale,deigs[k,:],c=  "b",marker=ms[k],lw=0.75,markersize=3.0)#,label=evecnames[si][k])
-        ax.set_xscale("log")
-        ax.set_yscale("log")
-        ax.set_xlim((start,end))
-        ax.legend()
-        plt.show()
+        # delta plots
+        if i in [5]:
+            delta_dict = {
+                "num_points" : 25,
+                "bounds" : (0.1,1.0),
+                "figtype" : "pdf",
+                "log_in_x_and_var" : False
+            }
+            allmo = ["sp","ph","ro","sl","dr"]
+            delta_plot(eigensolvedV[i],var="rho",modes=allmo,**delta_dict)
+            delta_dict["bounds"] = (0.5,1.5)
+            delta_plot(eigensolvedV[i],var="W",modes=allmo,**delta_dict)
+            delta_dict["bounds"] = (0.6,2.0)
+            delta_plot(eigensolvedV[i],var="vo",modes=allmo,**delta_dict)
+            delta_plot(eigensolvedV[i],var="Ixx",modes=["ro","sl","dr"],**delta_dict)
+            delta_plot(eigensolvedV[i],var="Iyy",modes=["sp","ph"],**delta_dict)
+            delta_plot(eigensolvedV[i],var="Izz",modes=["ro","sl","dr"],**delta_dict)
 
         # start = 0.0
-        # end = 2.0
+        # end = 60.0
+        # num = 1000
         # t = np.linspace(start,end,num)
         # # t = np.geomspace(1.0e-10,2.,num)
         # tau = eigensolved[i].g*t/eigensolved[i].vo
