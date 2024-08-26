@@ -1,0 +1,83 @@
+{
+    "aircraft" : {
+        "name" : "F-18A",
+        "short_name" : "F-18A",
+        "wing_area[ft^2]" : 0.0,
+        "wing_span[ft]" : 0.0,
+        "weight[lbf]" : 0.0,
+        "Ixx[slug-ft^2]" : 0.0,
+        "Iyy[slug-ft^2]" : 0.0,
+        "Izz[slug-ft^2]" : 0.0,
+        "Ixy[slug-ft^2]" : 0.0,
+        "Ixz[slug-ft^2]" : 0.0,
+        "Iyz[slug-ft^2]" : 0.0,
+        "from" : "Susceptibility of F/A-18 Flight Controllers to the Falling-Leaf Mode: Linear Analysis -- Chakraborty et. al. 2011",
+        "notes" : "-",
+        "paper_link" : "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=978959991e59457f57fcd3e1420a0c93a8521f93"
+    },
+    "analysis" : {
+        "density[slugs/ft^3]" : 0.0
+    },
+    "aerodynamics" : {
+        "CL" : {
+            "0" : 0.0,
+            "alpha" : 0.0,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.0
+        },
+        "CS" : {
+            "beta" : 0.0,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "da" : 0.0,
+            "dr" : 0.0
+        },
+        "CD" : {
+            "L0" : 0.0,
+            "L" : 0.0,
+            "L2" : 0.0,
+			"qbar": 0.0,
+			"Lqbar": 0.0,
+			"L2qbar": 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0
+        },
+        "Cl" : {
+            "beta" : 0.0,
+            "pbar" : 0.0,
+            "rbar" : 0.0,
+			"Lrbar": 0.0,
+            "da" : 0.0,
+            "dr" : 0.0
+        },
+        "Cm" : {
+            "0" : 0.0,
+            "alpha" : 0.0,
+            "qbar" : 0.0,
+            "alpha_hat" : 0.0,
+            "mu_hat" : 0.0,
+            "de" : 0.0
+        },
+        "Cn" : {
+            "beta" : 0.0,
+            "pbar" : 0.0,
+			"Lpbar": 0.0,
+            "rbar" : 0.0,
+            "da" : 0.0,
+            "dr" : 0.0
+        }
+    },
+    "handling_qualities": {
+        "zt_sp": "n/a",
+        "wn_sp": "n/a",
+        "zt_ph": "n/a",
+        "wn_ph": "n/a",
+        "Sg_ro": "n/a",
+        "Sg_sl": "n/a",
+        "zt_dr": "n/a",
+        "wn_dr": "n/a"
+    }
+}

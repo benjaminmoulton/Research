@@ -749,7 +749,7 @@ if __name__ == "__main__":
     ]
     run_files = ["aircraft_database/" + i for i in run_files]
     num_craft = len(run_files)
-    for i in range(num_craft): # [1,5,9,19]: # range(1,2): # 
+    for i in [1,5,9,19]: # range(num_craft): # range(1,2): # 
         analyze_aircraft(run_files[i])
 
     # folder = "aircraft_database/"
