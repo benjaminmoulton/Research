@@ -242,7 +242,7 @@ def pyaic_to_mux(filename,force_symmetric=False,untwist=False,straight_c_4=False
 
 if __name__ == "__main__":
     # pyaic_to_mux("curvy.json",force_symmetric=True,straight_c_4=True,tag="curvy_straight")
-    # pyaic_to_mux("simple_foam_wings.json")
+    pyaic_to_mux("simple_foam_wings.json")
     # pyaic_to_mux("CRM.json",English_units=False,tag="CRM_OML") # OML # redo this one...
     # pyaic_to_mux("CRM.json",force_symmetric=True,English_units=False,tag="CRM_symm")
     # pyaic_to_mux("CRM.json",force_symmetric=True,untwist=True,English_units=False,tag="CRM_notwist")
@@ -250,6 +250,6 @@ if __name__ == "__main__":
     # pyaic_to_mux("horizon.json",tag="horizon_OML")
     # pyaic_to_mux("horizon.json",force_symmetric=True,tag="horizon_symm")
     # pyaic_to_mux("horizon.json",force_symmetric=True,straight_c_4=True,tag="horizon_straight")
-    pyaic_to_mux("propeller_for_mux.json",tag="propeller_OML")
-    pyaic_to_mux("propeller_for_mux.json",force_symmetric=True,tag="propeller_symm")
+    # pyaic_to_mux("propeller_for_mux.json",tag="propeller_OML")
+    # pyaic_to_mux("propeller_for_mux.json",force_symmetric=True,tag="propeller_symm")
     # pyaic_to_mux("propeller_for_mux.json",force_symmetric=True,untwist=True,tag="propeller_notwist")

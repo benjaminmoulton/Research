@@ -440,10 +440,10 @@ class AircraftSystem:
 if __name__ == "__main__":
     # AS = AircraftSystem("test_input.json")
     # AS.get_mass_properties()
-    AS = AircraftSystem("hunsaker_test.json")
-    AS.get_mass_properties(report=True,individual=True)
-    # AS = AircraftSystem("simple_foam_wings.json")
+    # AS = AircraftSystem("hunsaker_test.json")
     # AS.get_mass_properties(report=True,individual=True)
+    AS = AircraftSystem("simple_foam_wings.json")
+    AS.get_mass_properties(report=True,individual=True)
     # AS = AircraftSystem("CRM.json")
     # AS.get_mass_properties(report=True,use_Lanham=True)
     # AS = AircraftSystem("horizon.json")
